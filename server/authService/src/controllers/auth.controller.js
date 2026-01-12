@@ -17,7 +17,7 @@ async function registerUser(req, res) {
   });
 
   if (userAlredyExists) {
-    return res.status(400).json({
+    return res.status(409).json({
       message: "User with given email, username or phone already exists",
     });
   }
