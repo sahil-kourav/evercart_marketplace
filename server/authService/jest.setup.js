@@ -8,6 +8,7 @@ beforeAll(async () => {
   mongoServer = await MongoMemoryServer.create();
   const uri = mongoServer.getUri();
   await mongoose.connect(uri);
+  process.env.JWT_SECRET = 'testsecret';
 });
 
 afterAll(async () => {
