@@ -1,7 +1,5 @@
+// This file configures Jest to use the in-memory MongoDB server for tests.
 module.exports = {
-  testEnvironment: "node",
-  testMatch: ["**/_tests/**/*.test.js"],
-  setupFilesAfterEnv: ["<rootDir>/test/setup.js"],
-  collectCoverageFrom: ["src/**/*.js", "!src/**/index.js"],
-  verbose: true,
+  testEnvironment: 'node',
+  setupFilesAfterEnv: ['<rootDir>/jest.setup.js'],
 };
