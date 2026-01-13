@@ -1,11 +1,20 @@
 const request = require('supertest');
-const app = require('../src/app');
+require('dotenv').config(); 
 const mongoose = require('mongoose');
-const User = require('../src/models/user.model');
+const app = require('../src/app');
+const connectDB = require('../src/db/database');
+const userModel = require('../src/models/user.model');
 
 describe('Auth Register', () => {
+
+  // Clean DB after each test
   afterEach(async () => {
-    await User.deleteMany();
+    await userModel.deleteMany({});
+  });
+
+  // Close DB after all tests
+  afterAll(async () => {
+    await mongoose.connection.close();
   });
 
   it('should create a user and return 201 with user (no password)', async () => {
@@ -18,6 +27,7 @@ describe('Auth Register', () => {
         phone: '1234567890',
         fullName: { firstName: 'Test', lastName: 'User' }
       });
+
     expect(res.statusCode).toBe(201);
     expect(res.body).toHaveProperty('user');
     expect(res.body.user.email).toBe('test@example.com');
@@ -25,13 +35,15 @@ describe('Auth Register', () => {
   });
 
   it('should reject duplicate username/email with 409', async () => {
-    await User.create({
+    // Seed user
+    await userModel.create({
       email: 'test@example.com',
-      password: 'Test1234',
+      password: 'Test1234', // (hash not required for register duplicate test)
       username: 'testuser',
       phone: '1234567890',
       fullName: { firstName: 'Test', lastName: 'User' }
     });
+
     // Duplicate email
     let res = await request(app)
       .post('/api/auth/register')
@@ -42,7 +54,9 @@ describe('Auth Register', () => {
         phone: '0987654321',
         fullName: { firstName: 'Test', lastName: 'User' }
       });
+
     expect(res.statusCode).toBe(409);
+
     // Duplicate username
     res = await request(app)
       .post('/api/auth/register')
@@ -53,6 +67,7 @@ describe('Auth Register', () => {
         phone: '0987654322',
         fullName: { firstName: 'Test', lastName: 'User' }
       });
+
     expect(res.statusCode).toBe(409);
   });
 
@@ -60,7 +75,8 @@ describe('Auth Register', () => {
     const res = await request(app)
       .post('/api/auth/register')
       .send({});
+
     expect(res.statusCode).toBe(400);
-    expect(res.body.errors).toBeDefined();
+    expect(res.body).toHaveProperty('errors');
   });
 });

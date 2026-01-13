@@ -19,8 +19,6 @@ const registerUserValidation = [
 
   body("email")
     .isEmail()
-    .notEmpty()
-    .withMessage("Email is required")
     .withMessage("Please provide a valid email address"),
 
   body("password")
@@ -51,9 +49,88 @@ const registerUserValidation = [
     .isLength({ min: 2 })
     .withMessage("Last name must be at least 2 characters long"),
 
+  body("role")
+    .optional()
+    .isIn(["user", "admin"])
+    .withMessage("Role must be either user or admin"),
+
+  respondValidationErrors,
+];
+
+const loginUserValidation = [
+  // At least one of email, username, or phone is required
+  (req, res, next) => {
+    const { email, username, phone } = req.body;
+    if (!email && !username && !phone) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg: "At least one of email, username, or phone is required",
+            param: "identifier",
+            location: "body",
+          },
+        ],
+      });
+    }
+    next();
+  },
+  body("email")
+    .optional()
+    .isEmail()
+    .withMessage("Please provide a valid email address"),
+
+  body("username")
+    .optional()
+    .isString()
+    .withMessage("Username must be a string"),
+
+  body("phone")
+    .optional()
+    .isString()
+    .withMessage("Phone number must be a string")
+    .isLength({ min: 10 })
+    .withMessage("Phone number must be at least 10 digits long"),
+
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+  respondValidationErrors,
+];
+
+const userAddressValidation = [
+  body("street")
+    .isString()
+    .withMessage("Street must be a string")
+    .notEmpty()
+    .withMessage("Street is required"),
+  body("city")
+    .isString()
+    .withMessage("City must be a string")
+    .notEmpty()
+    .withMessage("City is required"),
+  body("state")
+    .isString()
+    .withMessage("State must be a string")
+    .notEmpty()
+    .withMessage("State is required"),
+body("zip")
+  .isString()
+  .withMessage("ZIP/PIN code must be a string")
+  .matches(/^\d{6}$/)
+  .withMessage("Please provide a valid 6-digit PIN code")
+  .notEmpty()
+  .withMessage("ZIP/PIN code is required"),
+
+  body("country")
+    .isString()
+    .withMessage("Country must be a string")
+    .notEmpty()
+    .withMessage("Country is required"),
   respondValidationErrors,
 ];
 
 module.exports = {
   registerUserValidation,
+  loginUserValidation,
+  userAddressValidation,
 };
