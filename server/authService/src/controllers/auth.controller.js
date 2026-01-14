@@ -6,7 +6,6 @@ const redis = require("../db/redis");
 
 async function registerUser(req, res) {
   const {
-    username,
     email,
     password,
     phone,
@@ -15,19 +14,18 @@ async function registerUser(req, res) {
   } = req.body;
 
   const userAlredyExists = await userModel.findOne({
-    $or: [{ email }, { username }, { phone }],
+    $or: [{ email }, { phone }],
   });
 
   if (userAlredyExists) {
     return res.status(409).json({
-      message: "User with given email, username or phone already exists",
+      message: "User with given email or phone already exists",
     });
   }
 
   const hash = await bcrypt.hash(password, 10);
 
   const user = await userModel.create({
-    username,
     email,
     password: hash,
     phone,
@@ -38,7 +36,6 @@ async function registerUser(req, res) {
   const token = jwt.sign(
     {
       userId: user._id,
-      username: user.username,
       email: user.email,
       phone: user.phone,
       role: user.role,
@@ -57,7 +54,6 @@ async function registerUser(req, res) {
     message: "User registered successfully",
     user: {
       id: user._id,
-      username: user.username,
       email: user.email,
       phone: user.phone,
       fullName: user.fullName,
@@ -68,24 +64,23 @@ async function registerUser(req, res) {
 }
 
 async function loginUser(req, res) {
-  const { username, phone, email, password } = req.body;
+  const { phone, email, password } = req.body;
   const user = await userModel
     .findOne({
-      $or: [{ email }, { username }, { phone }],
+      $or: [{ email }, { phone }],
     })
     .select("+password");
 
   if (!user) {
-    return res.status(401).json({ message: "Invalid email or password" });
+    return res.status(401).json({ message: "Invalid credential" });
   }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(401).json({ message: "Invalid email or password" });
+    return res.status(401).json({ message: "Invalid credential" });
   }
   const token = jwt.sign(
     {
       userId: user._id,
-      username: user.username,
       email: user.email,
       phone: user.phone,
       role: user.role,
@@ -104,7 +99,6 @@ async function loginUser(req, res) {
     message: "Login successful",
     user: {
       id: user._id,
-      username: user.username,
       email: user.email,
       phone: user.phone,
       fullName: user.fullName,

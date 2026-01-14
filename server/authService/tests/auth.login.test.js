@@ -19,7 +19,6 @@ describe('POST /api/auth/login', () => {
 
   it('should login a user with valid credentials', async () => {
     const user = {
-      username: 'testuser',
       email: 'testuser@example.com',
       password: 'Password123!',
       phone: '1234567890',
@@ -53,6 +52,7 @@ describe('POST /api/auth/login', () => {
       .post('/api/auth/login')
       .send({
         email: 'wrong@example.com',
+        phone: '1234567890',
         password: 'wrongpassword'
       });
 

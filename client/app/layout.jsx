@@ -23,12 +23,6 @@
 //     );
 // }
 
-
-
-
-
-
-
 import { Toaster } from "react-hot-toast";
 import StoreProvider from "@/app/StoreProvider";
 import "./globals.css";
@@ -49,7 +43,17 @@ export default function RootLayout({ children }) {
       </head>
       <body className="font-outfit antialiased">
         <StoreProvider>
-          <Toaster />
+          <Toaster
+            position="top-right"
+            toastOptions={{
+              duration: 3000,
+              style: {
+                background: "#333",
+                color: "#fff",
+              },
+            }}
+          />
+
           {children}
         </StoreProvider>
       </body>

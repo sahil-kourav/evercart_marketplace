@@ -9,14 +9,6 @@ const respondValidationErrors = (req, res, next) => {
 };
 
 const registerUserValidation = [
-  body("username")
-    .isString()
-    .withMessage("Username must be a string")
-    .notEmpty()
-    .withMessage("Username is required")
-    .isLength({ min: 3 })
-    .withMessage("Username must be at least 3 characters long"),
-
   body("email")
     .isEmail()
     .withMessage("Please provide a valid email address"),
@@ -59,30 +51,26 @@ const registerUserValidation = [
 
 const loginUserValidation = [
   // At least one of email, username, or phone is required
-  (req, res, next) => {
-    const { email, username, phone } = req.body;
-    if (!email && !username && !phone) {
-      return res.status(400).json({
-        errors: [
-          {
-            msg: "At least one of email, username, or phone is required",
-            param: "identifier",
-            location: "body",
-          },
-        ],
-      });
-    }
-    next();
-  },
+  // (req, res, next) => {
+  //   const { email, phone } = req.body;
+  //   if (!email && !phone) {
+  //     return res.status(400).json({
+  //       errors: [
+  //         {
+  //           msg: "At least one of email or phone is required",
+  //           param: "identifier",
+  //           location: "body",
+  //         },
+  //       ],
+  //     });
+  //   }
+  //   next();
+  // },
+  
   body("email")
     .optional()
     .isEmail()
     .withMessage("Please provide a valid email address"),
-
-  body("username")
-    .optional()
-    .isString()
-    .withMessage("Username must be a string"),
 
   body("phone")
     .optional()
