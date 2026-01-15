@@ -65,8 +65,8 @@ export default function Register() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-16 p-4">
-      <div className="w-full max-w-4xl bg-white rounded-xl shadow-md overflow-hidden flex flex-col md:flex-row">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="w-full max-w-4xl bg-white rounded-xl overflow-hidden flex flex-col md:flex-row">
         {/* Left Section */}
         <aside className="hidden md:flex md:w-2/5 flex-col gap-4 p-8 bg-gradient-to-br from-emerald-500 to-cyan-500 text-white">
           <div className="w-28 h-28 rounded-lg bg-white/10 flex items-center justify-center" />
