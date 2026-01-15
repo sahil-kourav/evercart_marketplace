@@ -1,5 +1,6 @@
 import logo from './Logo.png'
 import logo1 from './Logo1.png'
+import menublack from "./menu-black.png"
 import gs_logo from "./gs_logo.jpg"
 import happy_store from "./happy_store.webp"
 import upload_area from "./upload_area.svg"
@@ -26,6 +27,7 @@ import profile_pic3 from "./profile_pic3.jpg"
 export const assets = {
     logo,
     logo1,
+    menublack,
     upload_area, hero_model_img,
     hero_product_img1, hero_product_img2, gs_logo,
     product_img1, product_img2, product_img3, product_img4, product_img5, product_img6,
