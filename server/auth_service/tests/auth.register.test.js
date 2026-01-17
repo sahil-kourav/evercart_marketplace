@@ -23,7 +23,6 @@ describe('Auth Register', () => {
       .send({
         email: 'test@example.com',
         password: 'Test1234',
-        username: 'testuser',
         phone: '1234567890',
         fullName: { firstName: 'Test', lastName: 'User' }
       });
@@ -34,42 +33,42 @@ describe('Auth Register', () => {
     expect(res.body.user).not.toHaveProperty('password');
   });
 
-  it('should reject duplicate username/email with 409', async () => {
-    // Seed user
-    await userModel.create({
-      email: 'test@example.com',
-      password: 'Test1234', // (hash not required for register duplicate test)
-      username: 'testuser',
-      phone: '1234567890',
-      fullName: { firstName: 'Test', lastName: 'User' }
+  it('should reject duplicate email or phone with 409', async () => {
+  // Seed an existing user
+  await userModel.create({
+    email: 'test@example.com',
+    password: 'Test1234', // hashing not required here
+    phone: '1234567890',
+    fullName: { firstName: 'Test', lastName: 'User' }
+  });
+
+  // ❌ Duplicate EMAIL
+  let res = await request(app)
+    .post('/api/auth/register')
+    .send({
+      email: 'test@example.com', // duplicate email
+      password: 'Test12345',
+      phone: '9999999999',
+      fullName: { firstName: 'New', lastName: 'User' }
     });
 
-    // Duplicate email
-    let res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'test@example.com',
-        password: 'Test1234',
-        username: 'anotheruser',
-        phone: '0987654321',
-        fullName: { firstName: 'Test', lastName: 'User' }
-      });
+  expect(res.statusCode).toBe(409);
+  expect(res.body.message).toMatch(/email/i);
 
-    expect(res.statusCode).toBe(409);
+  // ❌ Duplicate PHONE
+  res = await request(app)
+    .post('/api/auth/register')
+    .send({
+      email: 'new@example.com',
+      password: 'Test12345',
+      phone: '1234567890', // duplicate phone
+      fullName: { firstName: 'Another', lastName: 'User' }
+    });
 
-    // Duplicate username
-    res = await request(app)
-      .post('/api/auth/register')
-      .send({
-        email: 'another@example.com',
-        password: 'Test1234',
-        username: 'testuser',
-        phone: '0987654322',
-        fullName: { firstName: 'Test', lastName: 'User' }
-      });
+  expect(res.statusCode).toBe(409);
+  expect(res.body.message).toMatch(/phone/i);
+});
 
-    expect(res.statusCode).toBe(409);
-  });
 
   it('should validate missing fields with 400', async () => {
     const res = await request(app)

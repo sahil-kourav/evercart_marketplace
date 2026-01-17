@@ -13,8 +13,8 @@ router.post("/login", validator.loginUserValidation, authController.loginUser);
 // GET /api/auth/me
 router.get('/me', authMiddleware.authMiddleware, authController.getCurrentUser);
 
-// GET /api/auth/logout
-router.get("/logout", authController.logoutUser);
+// POST /api/auth/logout
+router.post("/logout", authController.logoutUser);
 
 // GET /users/me/addresses 
 router.get('/users/me/addresses', authMiddleware.authMiddleware, authController.getUserAddresses);

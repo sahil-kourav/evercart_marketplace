@@ -17,7 +17,6 @@ describe("Auth User Addresses APIs", () => {
     user = await userModel.create({
       email: "address@test.com",
       password: "Test1234",
-      username: "addressuser",
       phone: "9999999999",
       fullName: { firstName: "Test", lastName: "User" },
       addresses: [],
@@ -25,9 +24,9 @@ describe("Auth User Addresses APIs", () => {
 
     token = jwt.sign(
       {
-        userId: user._id,
+        id: user._id,
         email: user.email,
-        role: "USER",
+        role: "user",
       },
       process.env.JWT_SECRET,
       { expiresIn: "1d" }
@@ -118,7 +117,7 @@ describe("Auth User Addresses APIs", () => {
 
     expect(res.statusCode).toBe(200);
     expect(res.body).toHaveProperty("message");
-    expect(res.body.message).toBe("Address removed successfully");
+    expect(res.body.message).toBe("Address deleted successfully");
 
     const updatedUser = await userModel.findById(user._id);
     expect(updatedUser.addresses.length).toBe(0);

@@ -5,66 +5,117 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "@/lib/features/auth/authSlice";
+
+
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
-  const [identifier, setIdentifier] = useState("");
+  const [email, setEmail] = useState("");
+  // const [phone, setPhone] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+
+  //   setError(null);
+  //   setLoading(true);
+
+  //   // show loading toast
+  //   const toastId = toast.loading("Logging you in...");
+
+  //   axios
+  //     .post(
+  //       "http://localhost:8080/api/auth/login",
+  //       {
+  //         email,
+  //         // phone,
+  //         password,
+  //       },
+  //       {
+  //         withCredentials: true,
+  //       },
+  //     )
+  //     .then(() => {
+  //       toast.success("Login successful!", {
+  //         id: toastId,
+  //       });
+
+  //       router.push("/");
+  //     })
+  //     .catch((err) => {
+  //       toast.error(
+  //         err?.response?.data?.message ||
+  //           "Invalid email or password please try again later",
+  //         {
+  //           id: toastId,
+  //         },
+  //       );
+
+  //       setError(
+  //         err?.message || "Invalid credentials provided please try again later",
+  //       );
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }
+
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
 
-    setError(null);
-    setLoading(true);
+  setError(null);
+  setLoading(true);
 
-    // show loading toast
-    const toastId = toast.loading("Logging you in...");
+  const toastId = toast.loading("Logging you in...");
 
-    axios
-      .post(
-        "http://localhost:8080/api/auth/login",
-        {
-          identifier,
-          password,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then(() => {
-        toast.success("Login successful!", {
-          id: toastId,
-        });
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/api/auth/login",
+      {
+        email,
+        password,
+      },
+      {
+        withCredentials: true,
+      }
+    );
 
-        router.push("/");
-      })
-      .catch((err) => {
-        toast.error(
-          err?.response?.data?.message || "Invalid email or password please try again later",
-          {
-            id: toastId,
-          }
-        );
+    dispatch(loginSuccess(response.data.user));
 
-        setError(err?.message || "Invalid credentials provided please try again later");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    toast.success("Login successful!", { id: toastId });
+    router.push("/");
+  } catch (err) {
+    toast.error(
+      err?.response?.data?.message ||
+        "Invalid email or password. Please try again.",
+      { id: toastId }
+    );
+
+    setError(
+      err?.message || "Invalid credentials provided"
+    );
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-200">
+    <div className="flex items-center justify-center py-4 sm:py-6 md:py-8">
       <div className="w-full max-w-4xl bg-white rounded-xl overflow-hidden flex flex-col md:flex-row">
         {/* Left Section */}
         <aside className="hidden md:flex md:w-2/5 flex-col gap-4 p-8 bg-gradient-to-br from-indigo-500 to-purple-500 text-white">
           <div className="w-28 h-28 rounded-lg bg-white/10 flex items-center justify-center" />
           <h3 className="text-lg font-semibold">Welcome back</h3>
           <p className="text-sm opacity-90">
-            Sign in to access your account, track orders, and continue shopping securely.
+            Sign in to access your account, track orders, and continue shopping
+            securely.
           </p>
         </aside>
 
@@ -83,12 +134,14 @@ export default function Login() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
-              <label className="block text-sm text-gray-700 mb-2">
-                Email or Phone Number*
-              </label>
+              <p className="text-sm text-gray-500 mb-4">
+                Mobile number login is currently unavailable. Please log in
+                using your email address.
+              </p>
+              <label className="block text-sm text-gray-700 mb-2">Email*</label>
               <input
-                value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 type="text"
                 placeholder="Enter your email or phone number"

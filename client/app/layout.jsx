@@ -24,12 +24,14 @@
 // }
 
 import { Toaster } from "react-hot-toast";
+// import StoreProvider from "@/app/StoreProvider";
 import StoreProvider from "@/app/StoreProvider";
 import "./globals.css";
+import AuthInitializer from "@/components/AuthInitializer";
 
 export const metadata = {
-  title: "VenDora. - Shop smarter",
-  description: "VenDora. - Shop smarter",
+  title: "evercart. - Shop smarter",
+  description: "evercart. - Shop smarter",
 };
 
 export default function RootLayout({ children }) {
@@ -54,6 +56,7 @@ export default function RootLayout({ children }) {
             }}
           />
 
+           <AuthInitializer />
           {children}
         </StoreProvider>
       </body>

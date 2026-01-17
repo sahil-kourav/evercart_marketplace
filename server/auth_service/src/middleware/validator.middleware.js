@@ -43,29 +43,29 @@ const registerUserValidation = [
 
   body("role")
     .optional()
-    .isIn(["user", "admin"])
-    .withMessage("Role must be either user or admin"),
+    .isIn(["user", "seller"])
+    .withMessage("Role must be either user or seller"),
 
   respondValidationErrors,
 ];
 
 const loginUserValidation = [
   // At least one of email, username, or phone is required
-  // (req, res, next) => {
-  //   const { email, phone } = req.body;
-  //   if (!email && !phone) {
-  //     return res.status(400).json({
-  //       errors: [
-  //         {
-  //           msg: "At least one of email or phone is required",
-  //           param: "identifier",
-  //           location: "body",
-  //         },
-  //       ],
-  //     });
-  //   }
-  //   next();
-  // },
+  (req, res, next) => {
+    const { email, phone } = req.body;
+    if (!email && !phone) {
+      return res.status(400).json({
+        errors: [
+          {
+            msg: "At least one of email or phone is required",
+            param: "identifier",
+            location: "body",
+          },
+        ],
+      });
+    }
+    next();
+  },
   
   body("email")
     .optional()

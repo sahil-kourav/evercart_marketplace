@@ -5,9 +5,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import axios from "axios";
 import { toast } from "react-hot-toast";
+import { useDispatch } from "react-redux";
+import { loginSuccess } from "@/lib/features/auth/authSlice";
+
+
 
 export default function Register() {
   const router = useRouter();
+  const dispatch = useDispatch();
 
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -17,62 +22,101 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  // async function handleSubmit(e) {
+  //   e.preventDefault();
+
+  //   setError(null);
+  //   setLoading(true);
+
+  //   // loading toast
+  //   const toastId = toast.loading("Creating your account...");
+
+  //   axios
+  //     .post(
+  //       "http://localhost:8080/api/auth/register",
+  //       {
+  //         fullName: {
+  //           firstName,
+  //           lastName,
+  //         },
+  //         email,
+  //         password,
+  //         phone,
+  //       },
+  //       {
+  //         withCredentials: true,
+  //       },
+  //     )
+  //     .then((response) => {
+  //       toast.success("Registration successful!", {
+  //         id: toastId,
+  //       });
+  //       dispatch(loginSuccess(response.data.user));
+
+  //       router.push("/");
+  //     })
+  //     .catch((error) => {
+  //       toast.error(
+  //         error?.response?.data?.message ||
+  //           "Registration failed, try again later",
+  //         {
+  //           id: toastId,
+  //         },
+  //       );
+
+  //       setError(error?.message || "Registration failed");
+  //     })
+  //     .finally(() => {
+  //       setLoading(false);
+  //     });
+  // }
+
   async function handleSubmit(e) {
-    e.preventDefault();
+  e.preventDefault();
+  setError(null);
+  setLoading(true);
 
-    setError(null);
-    setLoading(true);
+  const toastId = toast.loading("Creating your account...");
 
-    // loading toast
-    const toastId = toast.loading("Creating your account...");
+  try {
+    const response = await axios.post(
+      "http://localhost:8080/api/auth/register",
+      {
+        fullName: { firstName, lastName },
+        email,
+        password,
+        phone,
+      },
+      { withCredentials: true }
+    );
 
-    axios
-      .post(
-        "http://localhost:8080/api/auth/register",
-        {
-          fullName: {
-            firstName,
-            lastName,
-          },
-          email,
-          password,
-          phone,
-        },
-        {
-          withCredentials: true,
-        }
-      )
-      .then((response) => {
-        toast.success("Registration successful!", {
-          id: toastId,
-        });
-        router.push("/"); // redirect after success
-      })
-      .catch((error) => {
-        toast.error(
-          error?.response?.data?.message ||
-            "Registration failed, try again later",
-          {
-            id: toastId,
-          }
-        );
-
-        setError(error?.message || "Registration failed");
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+    dispatch(loginSuccess(response.data.user));
+   
+    toast.success("Registration successful!", { id: toastId });
+    router.push("/");
+  } catch (error) {
+    toast.error(
+      error?.response?.data?.message ||
+        "Registration failed, try again later",
+      { id: toastId }
+    );
+    setError(error?.message || "Registration failed");
+  } finally {
+    setLoading(false);
   }
+}
+
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="flex items-center justify-center py-4 sm:py-6 md:py-8">
       <div className="w-full max-w-4xl bg-white rounded-xl overflow-hidden flex flex-col md:flex-row">
         {/* Left Section */}
         <aside className="hidden md:flex md:w-2/5 flex-col gap-4 p-8 bg-gradient-to-br from-emerald-500 to-cyan-500 text-white">
           <div className="w-28 h-28 rounded-lg bg-white/10 flex items-center justify-center" />
           <h3 className="text-lg font-semibold">Welcome to Evercart</h3>
           <p className="text-sm opacity-90">
-           Sign up to manage your account, track orders, and enjoy a smooth shopping experience.
+            Sign up to manage your account, track orders, and enjoy a smooth
+            shopping experience.
           </p>
         </aside>
 

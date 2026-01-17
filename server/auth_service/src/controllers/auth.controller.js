@@ -1,4 +1,3 @@
-const express = require("express");
 const userModel = require("../models/user.model");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
@@ -10,17 +9,17 @@ async function registerUser(req, res) {
     password,
     phone,
     fullName: { firstName, lastName },
-    role
+    role,
   } = req.body;
 
-  const userAlredyExists = await userModel.findOne({
-    $or: [{ email }, { phone }],
-  });
+  const emailExists = await userModel.findOne({ email });
+  if (emailExists) {
+    return res.status(409).json({ message: "Email already exists" });
+  }
 
-  if (userAlredyExists) {
-    return res.status(409).json({
-      message: "User with given email or phone already exists",
-    });
+  const phoneExists = await userModel.findOne({ phone });
+  if (phoneExists) {
+    return res.status(409).json({ message: "Phone already exists" });
   }
 
   const hash = await bcrypt.hash(password, 10);
@@ -30,18 +29,18 @@ async function registerUser(req, res) {
     password: hash,
     phone,
     fullName: { firstName, lastName },
-    role: role || 'user',
+    role: role || "user",
   });
 
   const token = jwt.sign(
     {
-      userId: user._id,
+      id: user._id,
       email: user.email,
       phone: user.phone,
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "2d" }
+    { expiresIn: "2d" },
   );
 
   res.cookie("token", token, {
@@ -72,21 +71,21 @@ async function loginUser(req, res) {
     .select("+password");
 
   if (!user) {
-    return res.status(401).json({ message: "Invalid credential" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
   const isMatch = await bcrypt.compare(password, user.password);
   if (!isMatch) {
-    return res.status(401).json({ message: "Invalid credential" });
+    return res.status(401).json({ message: "Invalid email or password" });
   }
   const token = jwt.sign(
     {
-      userId: user._id,
+      id: user._id,
       email: user.email,
       phone: user.phone,
       role: user.role,
     },
     process.env.JWT_SECRET,
-    { expiresIn: "2d" }
+    { expiresIn: "2d" },
   );
 
   res.cookie("token", token, {
@@ -116,50 +115,73 @@ async function getCurrentUser(req, res) {
 }
 
 async function logoutUser(req, res) {
-  const token = req.cookies.token;
+  try {
+    const token = req.cookies.token;
 
-  if (token) {
-    // token blacklist and store in redis with expiry on 2 days
-    await redis.set(`blacklist_${token}`, "true", "EX", 2 * 24 * 60 * 60);
+    if (token) {
+      // blacklist token (JWT expiry ke barabar ya thoda kam)
+      await redis.set(
+        `blacklist_${token}`,
+        "true",
+        "EX",
+        2 * 24 * 60 * 60
+      );
+    }
+
+    res.clearCookie("token", {
+      httpOnly: true,
+      secure: 'true',
+    });
+    
+
+    return res.status(200).json({
+      success: true,
+      message: "Logged out successfully",
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Logout failed",
+    });
   }
-
-  res.clearCookie("token", {
-    httpOnly: true,
-    secure: true,
-  });
-
-  return res.status(200).json({ message: "Logged out successfully" });
 }
 
-async function getUserAddresses(req, res) {
-  const userId = req.user.userId;
 
-  const user = await userModel.findById(userId).select("addresses");
+async function getUserAddresses(req, res) {
+  const id = req.user.id;
+
+  const user = await userModel.findById(id).select("addresses");
+
   if (!user) {
     return res.status(404).json({ message: "User not found" });
   }
-  return res.status(200).json({ addresses: user.addresses });
+
+  return res.status(200).json({
+    message: "User addresses fetched successfully",
+    addresses: user.addresses,
+  });
 }
 
 async function addUserAddress(req, res) {
-  const userId = req.user.userId;
-  const { street, city, state, zip, country, isDefault } = req.body;
+  const id = req.user.id;
+
+  const { street, city, state, pincode, country, isDefault } = req.body;
 
   const user = await userModel.findOneAndUpdate(
-    { _id: userId },
+    { _id: id },
     {
       $push: {
         addresses: {
           street,
           city,
           state,
-          zip,
+          pincode,
           country,
-          isDefault: !!isDefault,
+          isDefault,
         },
       },
     },
-    { new: true }
+    { new: true },
   );
 
   if (!user) {
@@ -169,30 +191,30 @@ async function addUserAddress(req, res) {
   return res.status(201).json({
     message: "Address added successfully",
     address: user.addresses[user.addresses.length - 1],
-   });
+  });
 }
 
 async function deleteUserAddress(req, res) {
-  const userId = req.user.userId;
+  const id = req.user.id;
   const { addressId } = req.params;
 
-  const isAddressExist = await userModel.findOne({
-    _id: userId,
+  const isAddressExists = await userModel.findOne({
+    _id: id,
     "addresses._id": addressId,
   });
 
-  if (!isAddressExist) {
+  if (!isAddressExists) {
     return res.status(404).json({ message: "Address not found" });
   }
 
   const user = await userModel.findOneAndUpdate(
-    { _id: userId },
+    { _id: id },
     {
       $pull: {
         addresses: { _id: addressId },
       },
     },
-    { new: true }
+    { new: true },
   );
 
   if (!user) {
@@ -200,18 +222,16 @@ async function deleteUserAddress(req, res) {
   }
 
   const addressExists = user.addresses.some(
-    (address) => address._id.toString() === addressId
+    (addr) => addr._id.toString() === addressId,
   );
-
   if (addressExists) {
-    return res.status(404).json({ message: "Address not found" });
+    return res.status(500).json({ message: "Failed to delete address" });
   }
-  return res
-    .status(200)
-    .json({
-      message: "Address removed successfully",
-      addresses: user.addresses,
-    });
+
+  return res.status(200).json({
+    message: "Address deleted successfully",
+    addresses: user.addresses,
+  });
 }
 
 module.exports = {
