@@ -146,7 +146,6 @@ async function logoutUser(req, res) {
   }
 }
 
-
 async function getUserAddresses(req, res) {
   const id = req.user.id;
 
