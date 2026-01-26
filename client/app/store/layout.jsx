@@ -1,8 +1,8 @@
 import StoreLayout from "@/components/store/StoreLayout";
 
 export const metadata = {
-    title: "VenDora. - Store Dashboard",
-    description: "VenDora. - Store Dashboard",
+    title: "evercart. - Store Dashboard",
+    description: "evercart. - Store Dashboard",
 };
 
 export default function RootAdminLayout({ children }) {

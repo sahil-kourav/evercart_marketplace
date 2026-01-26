@@ -31,29 +31,16 @@ const DesktopUserDropdown = ({ onLogout }) => {
       {/* Dropdown Trigger */}
       <button
         onClick={() => setOpen(!open)}
-        className="flex items-center gap-2 px-3 py-2 rounded-full
-                   bg-slate-100 hover:bg-slate-200 transition"
+        className="flex items-center gap-2 px-3 py-2 transition"
       >
         {/* Avatar */}
-        <div
-          className="w-8 h-8 rounded-full bg-gradient-to-br
-                     from-indigo-500 to-green-500
-                     flex items-center justify-center
-                     text-white text-sm font-semibold"
-        >
-          U
+        <div>
+          <img
+            src="https://tse4.mm.bing.net/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?pid=ImgDet&w=191&h=191&c=7&o=7&rm=3"
+            alt="User Avatar"
+            className="w-10 h-10 rounded-full"
+          />
         </div>
-
-        {/* Text */}
-        <span className="hidden lg:block text-sm font-medium text-slate-700">
-          Account
-        </span>
-
-        {/* Arrow */}
-        <ChevronDown
-          size={16}
-          className={`transition ${open ? "rotate-180" : ""}`}
-        />
       </button>
 
       {/* Dropdown Menu */}
@@ -79,14 +66,6 @@ const DesktopUserDropdown = ({ onLogout }) => {
             My Orders
           </Link>
 
-          <Link
-            href="/settings"
-            className="block px-4 py-2 text-slate-700 hover:bg-slate-50"
-            onClick={() => setOpen(false)}
-          >
-            Settings
-          </Link>
-
           <div className="h-px bg-slate-100" />
 
           <button
@@ -101,7 +80,6 @@ const DesktopUserDropdown = ({ onLogout }) => {
     </div>
   );
 };
-
 
 /* =========================================================
    NAVBAR
@@ -120,7 +98,6 @@ const Navbar = () => {
   const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
 
- 
   useEffect(() => {
     const handleScroll = () => {
       const current = window.scrollY;
@@ -135,8 +112,6 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, [lastScrollY]);
-
-
 
   const handleLogout = async () => {
     try {
@@ -161,11 +136,11 @@ const Navbar = () => {
     e.preventDefault();
     router.push(`/shop?search=${search}`);
     setSearch("");
+    setIsMenuOpen(false); // Close menu after search
   };
 
   return (
     <>
-
       <nav
         className={`fixed top-0 w-full z-50 transition-transform duration-300
         ${showNavbar ? "translate-y-0" : "-translate-y-full"}
@@ -190,18 +165,35 @@ const Navbar = () => {
             ))}
 
             {/* Search */}
+
             <form
               onSubmit={handleSearch}
-              className="hidden xl:flex items-center gap-2
-                         bg-slate-100 px-4 py-2 rounded-full"
+              className="hidden xl:flex items-center gap-3 hover:bg-slate-50 focus-within:bg-white px-5 py-2.5 rounded-full border border-transparent focus-within:border-slate-300 transition-all duration-200 shadow-sm focus-within:shadow-md"
             >
-              <Search size={18} />
+              <Search size={18} className="text-slate-500" />
+
               <input
-                className="bg-transparent outline-none w-40"
+                className="
+      bg-transparent outline-none
+      w-40 focus:w-56
+      text-sm text-slate-900
+      placeholder:text-slate-400
+      transition-all duration-300
+    "
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
-                placeholder="Search"
+                placeholder="Search products..."
               />
+
+              {search && (
+                <button
+                  type="button"
+                  onClick={() => setSearch("")}
+                  className="text-slate-400 hover:text-slate-600"
+                >
+                  ✕
+                </button>
+              )}
             </form>
 
             {/* Cart */}
@@ -257,7 +249,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-
       {isMenuOpen && (
         <div
           className="fixed inset-0 bg-black/40 z-40"
@@ -274,11 +265,12 @@ const Navbar = () => {
         <div className="flex items-center justify-between px-6 py-4 border-b border-slate-200">
           <div className="flex items-center gap-4">
             {/* Avatar */}
-            <div
-              className="w-11 h-11 rounded-full bg-gradient-to-br from-indigo-500 to-green-500
-        flex items-center justify-center text-white font-semibold text-lg"
-            >
-              U
+            <div>
+              <img
+                src="https://tse4.mm.bing.net/th/id/OIP.dDKYQqVBsG1tIt2uJzEJHwHaHa?pid=ImgDet&w=191&h=191&c=7&o=7&rm=3"
+                alt="User Avatar"
+                className="w-10 h-10 rounded-full"
+              />
             </div>
 
             {/* User Info */}
@@ -305,9 +297,33 @@ const Navbar = () => {
 
         {/* ================= CONTENT ================= */}
         <div className="px-6 py-6 space-y-8 text-slate-700">
+          {/* -------- MOBILE SEARCH BAR -------- */}
+          <form
+            onSubmit={handleSearch}
+            className="flex items-center gap-3 bg-slate-100 focus-within:bg-white px-4 py-3 rounded-full border border-transparent focus-within:border-slate-300 transition-all duration-200 shadow-sm focus-within:shadow-md md:hidden mb-6"
+          >
+            <Search size={18} className="text-slate-500" />
+            <input
+              className="bg-transparent outline-none w-full text-sm text-slate-900 placeholder:text-slate-400"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search products..."
+              aria-label="Search products"
+            />
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="text-slate-400 hover:text-slate-600"
+                aria-label="Clear search"
+              >
+                ✕
+              </button>
+            )}
+          </form>
           {/* -------- NAVIGATION -------- */}
           <div>
-            <p className="mb-4 text-xs font-semibold tracking-wider text-slate-400 uppercase">
+            <p className="mb-4 text-sm font-semibold tracking-wider text-slate-400 uppercase">
               Navigation
             </p>
 
@@ -317,7 +333,7 @@ const Navbar = () => {
                   key={item}
                   href={`/${item === "Home" ? "" : item.toLowerCase()}`}
                   onClick={() => setIsMenuOpen(false)}
-                  className="block text-lg font-medium hover:text-indigo-600 transition"
+                  className="block text-md font-medium hover:text-indigo-600 transition"
                 >
                   {item}
                 </Link>
@@ -331,7 +347,7 @@ const Navbar = () => {
           {!loading &&
             (isAuthenticated ? (
               <div>
-                <p className="mb-4 text-xs font-semibold tracking-wider text-slate-400 uppercase">
+                <p className="mb-4 text-sm font-semibold tracking-wider text-slate-400 uppercase">
                   Account
                 </p>
 
@@ -339,7 +355,7 @@ const Navbar = () => {
                   <Link
                     href="/profile"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-lg font-medium hover:text-indigo-600 transition"
+                    className="block text-md font-medium hover:text-indigo-600 transition"
                   >
                     Profile
                   </Link>
@@ -347,7 +363,7 @@ const Navbar = () => {
                   <Link
                     href="/orders"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-lg font-medium hover:text-indigo-600 transition"
+                    className="block text-md font-medium hover:text-indigo-600 transition"
                   >
                     My Orders
                   </Link>
@@ -355,7 +371,7 @@ const Navbar = () => {
                   <Link
                     href="/settings"
                     onClick={() => setIsMenuOpen(false)}
-                    className="block text-lg font-medium hover:text-indigo-600 transition"
+                    className="block text-md font-medium hover:text-indigo-600 transition"
                   >
                     Settings
                   </Link>
