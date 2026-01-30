@@ -42,6 +42,7 @@ async function createProduct(req, res) {
       .status(201)
       .json({ message: "Product created successfully", data: newProduct });
   } catch (error) {
+    console.error("Error creating product:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 }

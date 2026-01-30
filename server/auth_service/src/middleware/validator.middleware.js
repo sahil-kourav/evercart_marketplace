@@ -18,6 +18,8 @@ const registerUserValidation = [
     .withMessage("Password must be at least 6 characters long"),
 
   body("phone")
+    .isMobilePhone()
+    .withMessage("Please provide a valid phone number")
     .isString()
     .withMessage("Phone number must be a string")
     .notEmpty()
