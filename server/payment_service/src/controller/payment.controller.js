@@ -19,10 +19,16 @@ async function createPayment(req, res) {
             },
         });
 
-        console.log('Order Response:', orderResponse.data.order.totalPrice);
+        // console.log('Order Response:', orderResponse.data.order.totalPrice);
 
         const price = orderResponse.data.order.totalPrice;
         const order = await razorpay.orders.create(price);
+
+        // const order = await razorpay.orders.create({
+        //     amount: price * 100,
+        //     currency: "INR",
+        //     receipt: orderId,
+        // });
 
 
         const payment = await paymentModel.create({

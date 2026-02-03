@@ -5,6 +5,13 @@ const paymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
+    
+    receipt: {
+      type: String,
+      required: true,
+      unique: true,
+    },
+
     paymentId: {
         type: String,
     },
