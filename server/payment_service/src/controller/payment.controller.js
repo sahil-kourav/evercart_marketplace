@@ -48,7 +48,6 @@ async function createPayment(req, res) {
         console.error('Error creating payment:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
-
 }
 
 async function verifyPayment(req, res) {
