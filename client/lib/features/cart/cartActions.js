@@ -6,7 +6,7 @@ import {
   cartCleared,
 } from "./cartSlice";
 
-const BASE_URL = "http://localhost:8080/api/cart";
+const BASE_URL = "http://localhost:8082/api/cart";
 
 // axios instance (recommended)
 const api = axios.create({
