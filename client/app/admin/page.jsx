@@ -6,7 +6,6 @@ import { CircleDollarSignIcon, ShoppingBasketIcon, StoreIcon, TagsIcon } from "l
 import { useEffect, useState } from "react"
 
 export default function AdminDashboard() {
-
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
 
     const [loading, setLoading] = useState(true)
