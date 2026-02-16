@@ -8,5 +8,5 @@ connectDB()
 const port = process.env.PORT || 3002;
 
 server.listen(port, () => {
-    console.log(`Server is running on port ${port}`)
+    console.log(`Cart Service is running on port ${port}`);
 })
