@@ -103,7 +103,7 @@ const userAddressValidation = [
     .withMessage("State must be a string")
     .notEmpty()
     .withMessage("State is required"),
-body("zip")
+body("pincode")
   .isString()
   .withMessage("ZIP/PIN code must be a string")
   .matches(/^\d{6}$/)

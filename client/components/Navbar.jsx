@@ -1,14 +1,11 @@
 "use client";
-
 import { Menu, X, Search, ShoppingCart, ChevronDown } from "lucide-react";
-
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
-
 import { logout } from "@/lib/features/auth/authSlice";
 
 const DesktopUserDropdown = ({ onLogout }) => {
@@ -44,11 +41,54 @@ const DesktopUserDropdown = ({ onLogout }) => {
       </button>
 
       {/* Dropdown Menu */}
-      {open && (
+      {/* {open && (
         <div
           className="absolute right-0 mt-4 w-56 rounded-xl
                      bg-white border border-slate-200
                      shadow-xl overflow-hidden z-50"
+        >
+          <Link
+            href="/profile"
+            className="block px-4 py-2 text-slate-700 hover:bg-slate-50"
+            onClick={() => setOpen(false)}
+          >
+            Profile
+            <Link
+              href={`/${item === "Home" ? "" : item.toLowerCase()}`}
+              className="px-4 py-2 hover:text-slate-900 transition"
+              key={item}
+            >
+              {item}
+            </Link>
+            {item === "Home" && (
+              <Link
+                href="/shop"
+                className="px-4 py-2 hover:text-slate-900 transition"
+                key="Shop"
+              >
+                Shop
+              </Link>
+            )}
+            My Orders
+          </Link>
+
+          <div className="h-px bg-slate-100" />
+
+          <button
+            onClick={onLogout}
+            className="w-full text-left px-4 py-2
+                       text-red-600 hover:bg-red-50"
+          >
+            Logout
+          </button>
+        </div>
+      )} */}
+
+      {open && (
+        <div
+          className="absolute right-0 mt-4 w-56 rounded-xl
+               bg-white border border-slate-200
+               shadow-xl overflow-hidden z-50"
         >
           <Link
             href="/profile"
@@ -71,7 +111,7 @@ const DesktopUserDropdown = ({ onLogout }) => {
           <button
             onClick={onLogout}
             className="w-full text-left px-4 py-2
-                       text-red-600 hover:bg-red-50"
+                 text-red-600 hover:bg-red-50"
           >
             Logout
           </button>
@@ -81,9 +121,6 @@ const DesktopUserDropdown = ({ onLogout }) => {
   );
 };
 
-/* =========================================================
-   NAVBAR
-========================================================= */
 const Navbar = () => {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -122,10 +159,10 @@ const Navbar = () => {
       );
 
       dispatch(logout());
-      toast.success("Logged out successfully");
+      toast.success("Logged out successfully.");
       router.replace("/");
-    } catch {
-      toast.error("Logout failed");
+    } catch (error) {
+      toast.error("Logout failed. Please try again.");
     } finally {
       setIsMenuOpen(false);
     }
