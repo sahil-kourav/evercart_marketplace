@@ -1,16 +1,13 @@
 const express = require('express');
-const cokieParser = require('cookie-parser');
-const connectDB = require('./database/db');
-const { connect } = require('./broker/broker');
-const listners = require('./broker/listners');
+const cookieParser = require('cookie-parser');
+// const sellerRoutes = require('./routes/seller.routes');
+
 const app = express();
 
-connectDB();
-connect().then(()=>{
-    listners();
-})
 
 app.use(express.json());
-app.use(cokieParser());
+app.use(cookieParser());
+
+
 
 module.exports = app;

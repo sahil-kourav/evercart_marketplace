@@ -42,12 +42,12 @@ module.exports = function () {
         </a>
       </div>
 
-      <p style="color:#6b7280; font-size:12px;">
+      <p style="color:#4b5563; font-size:13px; line-height:1.6;">
         If you have any questions or need assistance, feel free to reply to this email.
         We're here to help!
       </p>
 
-      <p style="margin-top:30px; font-size:13px; color:#374151;">
+      <p style="margin-top:10px; font-size:13px; color:#374151;">
         Best regards,<br />
         The EverCart Team
       </p>
@@ -69,7 +69,45 @@ Start exploring products and enjoy a seamless shopping experience.
     await sendEmail(data.email, subject, text, html);
   });
 
+  subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_INITIATED", async (data) => {
+    const subject = `Payment Initiated for Order ${data.orderId}`;
 
+    const text = `
+Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+We have received your payment initiation for order ${data.orderId} of amount ${data.currency} ${data.amount}.
+We are processing your payment and will notify you once it's completed.
+— Team EverCart
+`;
+
+    const html = `
+<!DOCTYPE html>
+<html>
+  <body>
+    <div>
+      <h2 style="margin-top:0; color:#111827;">
+        Payment Initiated 💳
+      </h2>
+      <p style="color:#374151; font-size:14px;">
+        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+      </p>
+      <p style="color:#4b5563; font-size:14px; line-height:1.6;">
+        We have received your payment initiation for order <strong>${data.orderId}</strong> of amount <strong>${data.currency} ${data.amount}</strong>.
+      </p>
+      <p style="color:#4b5563; font-size:14px; line-height:1.6;">
+        We are processing your payment and will notify you once it's completed.
+      </p>
+      <p style="margin-top:30px; font-size:13px; color:#374151;">
+        Best regards,<br />
+        The EverCart Team
+      </p>
+
+    </div>
+  </body>
+</html>
+`;
+
+    await sendEmail(data.email, subject, text, html);
+  });
 
   subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_COMPLETED", async (data) => {
     const subject = `Payment Successful for Order ${data.orderId}`;
@@ -152,5 +190,102 @@ Please try again or contact support if you need assistance.
 
     await sendEmail(data.email, subject, text, html);
   });
+
+ subscribeToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", async (data) => {
+  const subject = `New Product Just Dropped on EverCart! 🛍️`;
+
+const text = `
+Hi there,
+
+A new product has just been listed on EverCart!
+
+Product: ${data.title}
+Category: ${data.category}
+
+Be the first to explore it and grab the best deals.
+
+Visit EverCart now.
+
+Best regards,  
+Team EverCart
+`;
+
+  const html = `
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8" />
+  <title>New Product Listed</title>
+</head>
+<body style="margin:0; padding:0; font-family:Arial, sans-serif;">
+  <table width="100%" cellpadding="0" cellspacing="0" ">
+    <tr>
+      <td align="center">
+        <table width="600" cellpadding="0" cellspacing="0">
+
+        <tr>
+            <td style="font-size:15px; padding-bottom:10px;">
+              Hi there,
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:14px; padding-bottom:8px;">
+              We have some exciting news for you!
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:14px; line-height:1.6;">
+              We’re excited to let you know that a new product has just been added to EverCart.
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:14px; line-height:1.6; padding-top:5px;">
+              <strong>Product:</strong> ${data.title} <br />
+              <strong>Category:</strong> ${data.category}
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:14px; line-height:1.6; padding-top:5px;">
+              Don’t miss out — explore it now and grab the best deals before it’s gone!
+            </td>
+          </tr>
+
+          <tr>
+            <td style="padding:18px 0;">
+              <a href="${data.productUrl || "#"}"
+                 style="background-color:#111827; color:#ffffff; padding:12px 25px; 
+                 text-decoration:none; border-radius:6px; font-size:14px; display:inline-block;">
+                View Product →
+              </a>
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:12px; color:#9ca3af;">
+              You are receiving this email because you subscribed to product notifications on EverCart.
+            </td>
+          </tr>
+
+          <tr>
+            <td style="font-size:13px; color:#374151; padding-top:14px;">
+              Best regards,<br />
+              <strong>Team EverCart</strong>
+            </td>
+          </tr>
+
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>
+`;
+
+  await sendEmail(data.email, subject, text, html);
+});
 
 }

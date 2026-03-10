@@ -27,7 +27,6 @@ async function publishToQueue(queueName, data = {}) {
 
 }
 
-
 async function subscribeToQueue(queueName, callback) {
     if (!channel || !connection) await connect()
 
@@ -42,7 +41,6 @@ async function subscribeToQueue(queueName, callback) {
             channel.ack(msg)
         }
     })
-
 }
 
 module.exports = {

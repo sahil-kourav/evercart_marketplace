@@ -5,6 +5,7 @@ const redis = require("../db/redis");
 const { publishToQueue } = require("../broker/broker");
 
 async function registerUser(req, res) {
+try {
   const {
     email,
     password,
@@ -33,13 +34,22 @@ async function registerUser(req, res) {
     role: role || "user",
   });
 
+
+  
   // publish user registration event to RabbitMQ 
-  await publishToQueue("AUTH_NOTIFICATION.USER_REGISTERED", {
-    id: user._id,
-    email: user.email,
-    phone: user.phone,
-    fullName: user.fullName,
-  })
+  await Promise.all([
+    publishToQueue("AUTH_NOTIFICATION.USER_REGISTERED", {
+      id: user._id,
+      email: user.email,
+      phone: user.phone,
+    fullName: {
+        firstName: user.fullName.firstName,
+        lastName: user.fullName.lastName,
+      },
+      role: user.role,
+    }),
+    publishToQueue("AUTH_SELLER_DASHBOARD.USER_REGISTERED", user)
+  ])
 
   const token = jwt.sign(
     {
@@ -69,9 +79,14 @@ async function registerUser(req, res) {
       addresses: user.addresses,
     },
   });
+} catch (error) {
+  console.error("Error registering user:", error);
+  res.status(500).json({ message: "Internal server error" });
+}
 }
 
 async function loginUser(req, res) {
+  try {
   const { phone, email, password } = req.body;
   const user = await userModel
     .findOne({
@@ -114,6 +129,10 @@ async function loginUser(req, res) {
       addresses: user.addresses,
     },
   });
+} catch (error) {
+  console.error("Error logging in user:", error);
+  res.status(500).json({ message: "Internal server error" });
+}
 }
 
 async function getCurrentUser(req, res) {
@@ -124,7 +143,6 @@ async function getCurrentUser(req, res) {
 }
 
 async function logoutUser(req, res) {
-  try {
     const token = req.cookies.token;
 
     if (token) {
@@ -147,12 +165,6 @@ async function logoutUser(req, res) {
       success: true,
       message: "Logged out successfully",
     });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: "Logout failed",
-    });
-  }
 }
 
 async function getUserAddresses(req, res) {

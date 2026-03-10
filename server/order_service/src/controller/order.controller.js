@@ -1,5 +1,6 @@
 const orderModel = require("../models/order.model");
 const axios = require("axios");
+const { publishToQueue } = require("../broker/broker");
 
 async function createOrder(req, res) {
   try {
@@ -79,6 +80,8 @@ async function createOrder(req, res) {
         phone: req.body.shippingAddress.phone,
       },
     });
+
+ await publishToQueue("ORDER_SELLER_DASHBOARD_ORDER_CREATED", newOrder) 
 
     return res
       .status(201)

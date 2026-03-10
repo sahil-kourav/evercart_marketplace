@@ -1,13 +1,11 @@
 const express = require("express");
-const connectDB = require('./db/database')
-const cookieParser = require("cookie-parser");
 const authRoutes = require("./routes/auth.route");
-const { connect } = require("./broker/broker");
-const app = express();
 const cors = require("cors");
+const cookieParser = require('cookie-parser');
+const app = express();
 
-connectDB()
-connect()
+app.use(express.json());
+app.use(cookieParser());
 
 // Middleware
 app.use(
@@ -19,10 +17,13 @@ app.use(
   })
 );
 
-// Parse JSON and cookies
-app.use(express.json());
-app.use(cookieParser());
+app.get('/', (req, res) => {
+    res.status(200).json({
+        message: "Auth service is running"
+    });
+})
 
-app.use("/api/auth", authRoutes);
+app.use('/api/auth', authRoutes);
+
 
 module.exports = app;
