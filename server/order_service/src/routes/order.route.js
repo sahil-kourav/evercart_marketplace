@@ -19,9 +19,10 @@ route.post(
   orderController.cancelOrder,
 );
 
+// GET /api/orders/:id
 route.get(
   "/:id",
-  createAuthMiddleware(["user", "admin"]),
+  createAuthMiddleware(["user", "seller"]),
   orderController.getOrderById,
-);
+); // this will return the order details of the order with the given id, if the logged in user is a buyer then it will check if the order belongs to the user and if the logged in user is a seller then it will check if the order belongs to any of the products of the seller
 module.exports = route;

@@ -15,6 +15,10 @@ app.use(cors(
     }
 ));
 
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'Product Service is running.' });
+});
+
 // Routes setup
 app.use("/api/products", productRoutes);
 

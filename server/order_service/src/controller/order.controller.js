@@ -123,6 +123,7 @@ async function getMyOrders(req, res) {
   }
 }
 
+
 async function getOrderById(req, res) {
   const user = req.user;
   const orderId = req.params.id;
@@ -131,7 +132,7 @@ async function getOrderById(req, res) {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-    if (order.user.toString() !== user.id && user.role !== "admin") {
+      if (order.user.toString() !== user.id && user.role !== "seller") {
       return res.status(403).json({
         message: "Forbidden: You do not have access to this order",
       });
