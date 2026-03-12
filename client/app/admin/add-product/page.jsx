@@ -105,7 +105,7 @@ export default function StoreAddProduct() {
       <h1 className="text-2xl">
         Add New <span className="text-slate-800 font-medium">Products</span>
       </h1>
-      <p className="mt-7">Product Images</p>
+      <p className="mt-7">Product Images</p>  
 
       <div htmlFor="" className="flex gap-3 mt-4">
         {Object.keys(images).map((key) => (
