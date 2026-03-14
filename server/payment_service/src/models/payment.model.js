@@ -5,7 +5,12 @@ const paymentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         required: true,
     },
-    
+
+      user: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+    },
+
     receipt: {
       type: String,
       required: true,
@@ -15,13 +20,19 @@ const paymentSchema = new mongoose.Schema({
     paymentId: {
         type: String,
     },
+
     razorpayOrderId: {
         type: String,
-        required: true,
     },
 
     signature: {
         type: String,
+    },
+
+    paymentMethod: {
+        type: String,
+        enum: ['RAZORPAY', 'COD'],
+        default: 'COD',
     },
 
     price: {
@@ -42,10 +53,6 @@ const paymentSchema = new mongoose.Schema({
         default: 'PENDING',
     },
 
-    user: {
-        type: mongoose.Schema.Types.ObjectId,
-        required: true,
-    },
 }, { timestamps: true });
 
 const paymentModel = mongoose.model('payment', paymentSchema);

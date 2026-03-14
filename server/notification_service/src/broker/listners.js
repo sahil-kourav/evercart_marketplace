@@ -191,10 +191,10 @@ Please try again or contact support if you need assistance.
     await sendEmail(data.email, subject, text, html);
   });
 
- subscribeToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", async (data) => {
-  const subject = `New Product Just Dropped on EverCart! 🛍️`;
+  subscribeToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", async (data) => {
+    const subject = `New Product Just Dropped on EverCart! 🛍️`;
 
-const text = `
+    const text = `
 Hi there,
 
 A new product has just been listed on EverCart!
@@ -210,7 +210,7 @@ Best regards,
 Team EverCart
 `;
 
-  const html = `
+    const html = `
 <!DOCTYPE html>
 <html>
 <head>
@@ -285,7 +285,87 @@ Team EverCart
 </html>
 `;
 
-  await sendEmail(data.email, subject, text, html);
-});
+    await sendEmail(data.email, subject, text, html);
+  });
 
-}
+  subscribeToQueue("PAYMENT_NOTIFICATION.COD_ORDER_PLACED", async (data) => {
+    const subject = `Your Order has Been Placed! 🛍️`;
+
+    const text = `Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+
+Your order ${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method. 
+We will process your order and keep you updated on the status.  
+Thank you for shopping with us!
+— Team EverCart
+`;
+
+    const html = `<!DOCTYPE html>
+<html>
+  <body>
+    <div>
+      <h2 style="margin-top:0; color:#111827;">
+        Order Placed Successfully! 🛍️
+      </h2>
+      <p>
+        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+      </p>
+      <p>
+        Your order ${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method.
+      </p>
+      <p>
+        We will process your order and keep you updated on the status.
+      </p>
+      <p>
+        Thank you for shopping with us!
+      </p>
+      <p>
+        — Team EverCart
+      </p>
+    </div>
+  </body>
+</html>
+`;
+
+    await sendEmail(data.email, subject, text, html);
+  });
+
+  subscribeToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", async (data) => {
+    const subject = `Your Order has been Delivered! 🎉`;
+
+    const text = `Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+
+We are thrilled to inform you that your order ${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
+
+Thank you for shopping with us!
+— Team EverCart
+`;
+
+    const html = `<!DOCTYPE html>
+<html>
+  <body>
+    <div>
+      <h2 style="margin-top:0; color:#111827;"> 
+        Order Delivered! 🎉
+      </h2>
+      <p>
+        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+      </p>
+      <p>
+        We are thrilled to inform you that your order ${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
+      </p>
+      <p>
+        Thank you for shopping with us!
+      </p>
+      <p>
+        — Team EverCart
+      </p>
+    </div>
+  </body>
+</html>
+`;
+
+    await sendEmail(data.email, subject, text, html);
+
+  });
+
+};

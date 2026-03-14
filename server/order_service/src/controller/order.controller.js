@@ -123,7 +123,6 @@ async function getMyOrders(req, res) {
   }
 }
 
-
 async function getOrderById(req, res) {
   const user = req.user;
   const orderId = req.params.id;
@@ -176,9 +175,53 @@ async function cancelOrder(req, res) {
   }
 }
 
+async function updateOrderStatus(req, res) {
+  const user = req.user;
+  const orderId = req.params.id;
+  const { status } = req.body;
+
+  try {
+    const order = await orderModel.findByIdAndUpdate(orderId, { status }, { new: true });
+    if (!order) {
+      return res.status(404).json({ message: "Order not found" });
+    }
+    if (user.role !== "seller") {
+      return res.status(403).json({
+        message: "Forbidden: You do not have access to update this order",
+      });
+    }
+    order.status = status;
+    await order.save();
+
+    await publishToQueue('ORDER_SELLER_DASHBOARD_ORDER_UPDATED', order);
+    
+    if (status === "DELIVERED") {
+
+      await publishToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", {
+        orderId: order._id,
+        userId: order.user,
+        email: req.user.email,
+        fullName: {
+          firstName: req.user.firstName,
+          lastName: req.user.lastName,
+        }
+      });
+    }
+
+    return res
+      .status(200)
+      .json({ message: "Order status updated successfully", order });
+  } catch (error) {
+    return res
+      .status(500)
+      .json({ message: "Internal Server Error", error: error.message });
+  }
+}
+
 module.exports = {
   createOrder,
   getOrderById,
   getMyOrders,
   cancelOrder,
+  updateOrderStatus,
 };
