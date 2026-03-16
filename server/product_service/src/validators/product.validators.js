@@ -30,6 +30,13 @@ const createProductValidators = [
         .notEmpty()
         .withMessage('category is required'),
 
+    body('stock')
+        .notEmpty()
+        .withMessage('stock is required')
+        .bail()
+        .isInt({ min: 0 })
+        .withMessage('stock must be an integer greater than or equal to 0'),
+
     body('priceAmount')
         .notEmpty()
         .withMessage('priceAmount is required')

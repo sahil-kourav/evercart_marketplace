@@ -26,7 +26,11 @@ const productSchema = new mongoose.Schema({
     required: true,
   },
 
-
+  stock: {
+    type: Number,
+    default: 0,
+    required: true,
+  },
 
   seller: {
     type: mongoose.Schema.Types.ObjectId,

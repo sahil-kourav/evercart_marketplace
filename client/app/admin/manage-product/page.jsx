@@ -1,70 +1,183 @@
-'use client'
-import { useEffect, useState } from "react"
-import { toast } from "react-hot-toast"
-import Image from "next/image"
-import Loading from "@/components/Loading"
-import { productDummyData } from "@/assets/assets"
+"use client";
+import { useEffect, useState } from "react";
+import { toast } from "react-hot-toast";
+import Image from "next/image";
+import Loading from "@/components/Loading";
+import axios from "axios";
+import { Pencil, Trash2 } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Router } from "next/router";
 
 export default function StoreManageProducts() {
+  const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
 
-    const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
+  const [loading, setLoading] = useState(true);
+  const [products, setProducts] = useState([]);
+  const router = useRouter();
 
-    const [loading, setLoading] = useState(true)
-    const [products, setProducts] = useState([])
-
-    const fetchProducts = async () => {
-        setProducts(productDummyData)
-        setLoading(false)
+  // Fetch products from backend API (using axios)
+  const fetchProducts = async () => {
+    setLoading(true);
+    try {
+      const res = await axios.get(
+        "http://localhost:8081/api/products/sellers",
+        {
+          withCredentials: true,
+        },
+      );
+      setProducts(res.data.data || []);
+      console.log(res.data);
+    } catch (error) {
+      toast.error(error.message || "Error fetching products");
+    } finally {
+      setLoading(false);
     }
-
-    const toggleStock = async (productId) => {
-        // Logic to toggle the stock of a product
+  };
 
 
+    // Update product content
+  const updateProduct = async (productId, updateData) => {
+    try {
+      const res = await axios.patch(
+        `http://localhost:8081/api/products/sellers/${productId}`,
+        updateData,
+        { withCredentials: true }
+      );
+      if (res.status === 200) {
+        toast.success("Product updated successfully!");
+        fetchProducts();
+      } else {
+        throw new Error(res.data.message || "Failed to update product");
+      }
+    } catch (error) {
+      toast.error(error.message || "Error updating product");
     }
+  } 
 
-    useEffect(() => {
-            fetchProducts()
-    }, [])
+  const deleteProduct = async (productId) => {
+    try {
+        if (!confirm("Are you sure you want to delete this product?")) return;
 
-    if (loading) return <Loading />
+      const res = await axios.delete(
+        `http://localhost:8081/api/products/${productId}`,
+        {
+          withCredentials: true,
+        },
+      );
+      if (res.status === 200) {
+        toast.success("Product deleted successfully!");
+        fetchProducts();
+      } else {
+        throw new Error(res.data.message || "Failed to delete product");
+      }
+    }
+    catch (error) {
+      toast.error(error.message || "Error deleting product");
+    }
+  }
 
-    return (
-        <>
-            <h1 className="text-2xl text-slate-500 mb-5">Manage <span className="text-slate-800 font-medium">Products</span></h1>
-            <table className="w-full max-w-4xl text-left  ring ring-slate-200  rounded overflow-hidden text-sm">
-                <thead className="bg-slate-50 text-gray-700 uppercase tracking-wider">
-                    <tr>
-                        <th className="px-4 py-3">Name</th>
-                        <th className="px-4 py-3 hidden md:table-cell">Description</th>
-                        <th className="px-4 py-3 hidden md:table-cell">MRP</th>
-                        <th className="px-4 py-3">Price</th>
-                        <th className="px-4 py-3">Actions</th>
-                    </tr>
-                </thead>
-                <tbody className="text-slate-700">
-                    {products.map((product) => (
-                        <tr key={product.id} className="border-t border-gray-200 hover:bg-gray-50">
-                            <td className="px-4 py-3">
-                                <div className="flex gap-2 items-center">
-                                    <Image width={40} height={40} className='p-1 shadow rounded cursor-pointer' src={product.images[0]} alt="" />
-                                    {product.name}
-                                </div>
-                            </td>
-                            <td className="px-4 py-3 max-w-md text-slate-600 hidden md:table-cell truncate">{product.description}</td>
-                            <td className="px-4 py-3 hidden md:table-cell">{currency} {product.mrp.toLocaleString()}</td>
-                            <td className="px-4 py-3">{currency} {product.price.toLocaleString()}</td>
-                            <td className="px-4 py-3 text-center">
-                                <label className="relative inline-flex items-center cursor-pointer text-gray-900 gap-3">
-                                    <input type="checkbox" className="sr-only peer" onChange={() => toast.promise(toggleStock(product.id), { loading: "Updating data..." })} checked={product.inStock} />
-                                    <div className="w-9 h-5 bg-slate-300 rounded-full peer peer-checked:bg-green-600 transition-colors duration-200"></div>
-                                    <span className="dot absolute left-1 top-1 w-3 h-3 bg-white rounded-full transition-transform duration-200 ease-in-out peer-checked:translate-x-4"></span>
-                                </label>
-                            </td>
-                        </tr>
-                    ))}
-                </tbody>
-            </table>
-        </>
-    )
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  if (loading) return <Loading />;
+
+  return (
+    <>
+      <h1 className="text-2xl text-slate-500 mb-5">
+        Manage <span className="text-slate-800 font-medium">Products</span>
+      </h1>
+      <div className="bg-white border border-slate-200 rounded-xl overflow-hidden">
+        <table className="w-full text-sm table-fixed">
+          {/* Header */}
+          <thead className="bg-slate-50 text-slate-600 text-xs uppercase tracking-wider">
+            <tr>
+              <th className="px-4 py-4 text-left w-[260px]">Product</th>
+              <th className="px-6 py-4 text-left hidden lg:table-cell">
+                Description
+              </th>
+              <th className="px-6 py-4 text-left w-[140px] hidden md:table-cell">
+                Category
+              </th>
+              <th className="px-6 py-4 text-left w-[120px] hidden md:table-cell">
+                Stock
+              </th>
+              <th className="px-6 py-4 text-left w-[120px]">Price</th>
+              <th className="px-6 py-4 text-center w-[120px]">Actions</th>
+            </tr>
+          </thead>
+
+          {/* Body */}
+          <tbody className="divide-y divide-slate-100">
+            {products.map((product) => (
+              <tr key={product._id} className="hover:bg-slate-50 transition">
+                {/* Product */}
+                <td className="px-6 py-4">
+                  <div className="flex items-center gap-3">
+                    <Image
+                      src={product.images?.[0]?.url}
+                      width={44}
+                      height={44}
+                      alt={product.title}
+                      className="rounded-md border border-slate-200"
+                    />
+
+                    <p className="font-medium text-slate-800 leading-tight line-clamp-2">
+                      {product.title}
+                    </p>
+                  </div>
+                </td>
+
+                {/* Description */}
+                <td className="px-6 py-4 text-slate-500 hidden lg:table-cell">
+                  <p className="line-clamp-2 max-w-md">{product.description}</p>
+                </td>
+
+                {/* Category */}
+                <td className="px-6 py-4 hidden md:table-cell">
+                  <span className="px-2 py-1 text-xs font-medium rounded-md bg-slate-100 text-slate-700 capitalize whitespace-nowrap">
+                    {product.category}
+                  </span>
+                </td>
+
+                {/* Stock */}
+                <td className="px-6 py-4 hidden md:table-cell">
+                  <span
+                    className={`px-2 py-1 text-xs font-medium rounded-md whitespace-nowrap ${
+                      product.stock > 0
+                        ? "bg-green-100 text-green-700"
+                        : "bg-red-100 text-red-600"
+                    }`}
+                  >
+                    {product.stock > 0
+                      ? `${product.stock} in stock`
+                      : "Out of stock"}
+                  </span>
+                </td>
+
+                {/* Price */}
+                <td className="px-6 py-4 font-semibold text-slate-800 whitespace-nowrap">
+                  {currency} {product.price?.amount?.toLocaleString()}
+                </td>
+
+                {/* Toggle */}
+                <td className="px-6 py-4 flex justify-center gap-2">
+                    <button
+                      onClick={() =>
+                        toast.promise(deleteProduct(product._id), {
+                          loading: "Deleting...",
+                        })
+                      }
+                      className="p-2 rounded-md hover:bg-red-50 text-red-600"
+                    >
+                      <Trash2 size={16} />
+                    </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </>
+  );
 }

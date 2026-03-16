@@ -10,17 +10,18 @@ const router = express.Router();
 // POST /api/products
 router.post("/", upload.array("images", 5), createAuthMiddleware(["admin", "seller"]), productValidators.createProductValidators, productController.createProduct);
 
-// GET /api/products
-router.get("/", productController.getProducts)
+// GET /api/products 
+router.get("/", productController.getProducts) // Done 
 
 // PATCH /api/products/:id
 router.patch("/:id", createAuthMiddleware(["seller"]), productController.updateProduct);
 
+
 // DELETE /api/products/:id
-router.delete('/:id', createAuthMiddleware(['seller']), productController.deleteProduct);
+router.delete('/:id', createAuthMiddleware(['seller']), productController.deleteProduct); // Done
 
 // GET /api/products/sellers
-router.get('/sellers', createAuthMiddleware(['seller']), productController.getProductsBySeller);
+router.get('/sellers', createAuthMiddleware(['seller']), productController.getProductsBySeller); // Done
 
 // GET /api/products/:id
 router.get('/:id', productController.getProductById)

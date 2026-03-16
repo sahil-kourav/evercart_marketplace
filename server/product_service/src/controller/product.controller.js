@@ -10,13 +10,14 @@ async function createProduct(req, res) {
       description,
       priceAmount,
       priceCurrency = "INR",
+      stock,
       category,
     } = req.body;
 
-    if (!title || !priceAmount || !category) {
+    if (!title || !priceAmount || !category || !stock) {
       return res
         .status(400)
-        .json({ message: "Title, Price Amount, and Category are required." });
+        .json({ message: "Title, Price Amount, Category, and Stock are required." });
     }
 
     const seller = req.user.id;
@@ -36,6 +37,7 @@ async function createProduct(req, res) {
       price,
       category,
       seller,
+      stock,
       images,
     });
 
@@ -139,7 +141,7 @@ async function updateProduct(req, res) {
       });
     }
 
-    const allowedUpdates = ["title", "description", "price"];
+    const allowedUpdates = ["title", "description", "price", "stock", "category"];
     for (const key of Object.keys(req.body)) {
       if (allowedUpdates.includes(key)) {
         if (key === "price" && typeof req.body.price === "object") {

@@ -25,6 +25,7 @@ export default function StoreAddProduct() {
     description: "",
     priceAmount: 0,
     category: "",
+    stock: 0,
   });
 
   const [loading, setLoading] = useState(false);
@@ -54,6 +55,7 @@ export default function StoreAddProduct() {
       formData.append("description", productInfo.description);
       formData.append("priceAmount", productInfo.priceAmount);
       formData.append("category", productInfo.category);
+      formData.append("stock", productInfo.stock);
 
       // Append images
       // Object.entries(images).forEach(([key, image]) => {
@@ -74,6 +76,8 @@ export default function StoreAddProduct() {
         },
       );
 
+      console.log(response);
+
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(response.data.message || "Failed to add product");
       }
@@ -84,6 +88,7 @@ export default function StoreAddProduct() {
         description: "",
         priceAmount: 0,
         category: "",
+        stock: 0,
       });
       setImages({ 1: null, 2: null, 3: null, 4: null });
 
@@ -105,7 +110,7 @@ export default function StoreAddProduct() {
       <h1 className="text-2xl">
         Add New <span className="text-slate-800 font-medium">Products</span>
       </h1>
-      <p className="mt-7">Product Images</p>  
+      <p className="mt-7">Product Images</p>
 
       <div htmlFor="" className="flex gap-3 mt-4">
         {Object.keys(images).map((key) => (
@@ -160,19 +165,35 @@ export default function StoreAddProduct() {
         />
       </label>
 
-      <label htmlFor="" className="flex flex-col gap-2 my-6">
-        Price ($)
-        <input
-          type="number"
-          name="priceAmount"
-          onChange={onChangeHandler}
-          value={productInfo.priceAmount}
-          placeholder="0"
-          rows={5}
-          className="w-full max-w-lg p-2 px-4 outline-none border border-slate-200 rounded resize-none"
-          required
-        />
-      </label>
+      <div className="flex flex-row gap-4">
+        <label htmlFor="" className="flex flex-col gap-2">
+          Price ($)
+          <input
+            type="number"
+            name="priceAmount"
+            onChange={onChangeHandler}
+            value={productInfo.priceAmount}
+            placeholder="0"
+            rows={5}
+            className="w-full max-w-lg p-2 px-4 outline-none border border-slate-200 rounded resize-none"
+            required
+          />
+        </label>
+
+        <label htmlFor="" className="flex flex-col gap-2">
+          Stock
+          <input
+            type="number"
+            name="stock"
+            onChange={onChangeHandler}
+            value={productInfo.stock}
+            placeholder="0"
+            rows={5}
+            className="w-full max-w-lg p-2 px-4 outline-none border border-slate-200 rounded resize-none"
+            required
+          />
+        </label>
+      </div>
 
       <select
         onChange={(e) =>

@@ -5,12 +5,12 @@ export default function ContactUs() {
   return (
     <main className="bg-white">
       {/* HERO */}
-      <section className="max-w-7xl mx-auto px-6 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+      <section className="max-w-7xl mx-auto px-6 lg:px-16 py-24 grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
         {/* Left Content */}
         <div>
           <h1 className="text-5xl font-bold text-slate-800 leading-tight">
             We’re here to <br />
-            <span className="text-green-600">help you shop smarter</span>
+            <span className="text-green-600 ">help you shop smarter</span>
           </h1>
 
           <p className="mt-6 text-lg text-slate-600 leading-relaxed">
