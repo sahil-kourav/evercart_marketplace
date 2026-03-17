@@ -1,18 +1,44 @@
-import { addressDummyData } from '@/assets/assets'
-import { createSlice } from '@reduxjs/toolkit'
+import { createSlice } from "@reduxjs/toolkit";
 
 const addressSlice = createSlice({
-    name: 'address',
-    initialState: {
-        list: [addressDummyData],
+  name: "address",
+  initialState: {
+    list: [],
+    loading: false,
+    error: null,
+  },
+
+  reducers: {
+    setAddresses: (state, action) => {
+      state.list = action.payload;
     },
-    reducers: {
-        addAddress: (state, action) => {
-            state.list.push(action.payload)
-        },
-    }
-})
 
-export const { addAddress } = addressSlice.actions
+    addAddress: (state, action) => {
+      state.list.push(action.payload);
+    },
 
-export default addressSlice.reducer
+    removeAddress: (state, action) => {
+      state.list = state.list.filter(
+        (addr) => addr._id !== action.payload
+      );
+    },
+
+    setLoading: (state, action) => {
+      state.loading = action.payload;
+    },
+
+    setError: (state, action) => {
+      state.error = action.payload;
+    },
+  },
+});
+
+export const {
+  setAddresses,
+  addAddress,
+  removeAddress,
+  setLoading,
+  setError,
+} = addressSlice.actions;
+
+export default addressSlice.reducer;

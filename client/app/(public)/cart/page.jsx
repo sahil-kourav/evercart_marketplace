@@ -13,6 +13,7 @@ import {
   fetchCart,
   removeItemFromCart,
 } from "@/lib/features/cart/cartActions";
+import Loading from "@/components/Loading";
 
 export default function Cart() {
   const dispatch = useDispatch();
@@ -77,7 +78,7 @@ export default function Cart() {
   }, [cart]);
 
   if (loading) {
-    return <p className="text-center mt-20">Loading cart...</p>;
+    return <Loading />;
   }
 
   if (!cartArray.length) {

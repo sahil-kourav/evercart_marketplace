@@ -2,7 +2,7 @@ const request = require('supertest');
 require('dotenv').config();
 const mongoose = require('mongoose');
 const app = require('../src/app');
-const connectDB = require('../src/db/database');
+const connectDB = require('../src/db/db');
 const userModel = require('../src/models/user.model');
 
 describe('POST /api/auth/login', () => {

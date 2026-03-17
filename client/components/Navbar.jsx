@@ -126,7 +126,11 @@ const Navbar = () => {
   const dispatch = useDispatch();
 
   /* Redux State */
-  const cartCount = useSelector((state) => state.cart.total);
+const { cart } = useSelector((state) => state.cart);
+
+const cartCount =
+  cart?.items?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+  
   const { isAuthenticated, loading } = useSelector((state) => state.auth);
 
   /* Local State */

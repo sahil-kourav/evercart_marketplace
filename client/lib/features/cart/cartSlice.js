@@ -17,6 +17,7 @@ const cartSlice = createSlice({
       state.error = null;
     },
 
+
     cartLoaded: (state, action) => {
       state.loading = false;
 

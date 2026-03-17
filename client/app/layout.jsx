@@ -30,8 +30,8 @@ import "./globals.css";
 import AuthInitializer from "@/components/AuthInitializer";
 
 export const metadata = {
-  title: "evercart. - Shop smarter",
-  description: "evercart. - Shop smarter",
+  title: "evercart - Shop smarter",
+  description: "evercart - Shop smarter",
 };
 
 export default function RootLayout({ children }) {

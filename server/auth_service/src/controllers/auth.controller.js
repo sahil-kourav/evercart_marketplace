@@ -167,6 +167,33 @@ async function logoutUser(req, res) {
     });
 }
 
+
+const adminLogin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validate admin credentials (stored securely in environment variables)
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      const token = jwt.sign(
+        {
+          email,
+          role: "admin",
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "2d" },
+      );
+      res.json({ success: true, token });
+    } else {
+      res.status(401).json({ success: false, message: "Invalid credentials" });
+    }
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Server error" });
+  }
+};
+
+
+
 async function getUserAddresses(req, res) {
   const id = req.user.id;
 
@@ -185,13 +212,16 @@ async function getUserAddresses(req, res) {
 async function addUserAddress(req, res) {
   const id = req.user.id;
 
-  const { street, city, state, pincode, country, isDefault } = req.body;
+  const { name, email, phone, street, city, state, pincode, country, isDefault } = req.body;
 
   const user = await userModel.findOneAndUpdate(
     { _id: id },
     {
       $push: {
         addresses: {
+          name,
+          email,
+          phone,
           street,
           city,
           state,
@@ -259,6 +289,7 @@ module.exports = {
   loginUser,
   getCurrentUser,
   logoutUser,
+  adminLogin,
   getUserAddresses,
   addUserAddress,
   deleteUserAddress,

@@ -88,21 +88,42 @@ const loginUserValidation = [
 ];
 
 const userAddressValidation = [
+  body("name")
+    .isString()
+    .withMessage("Name must be a string")
+    .notEmpty()
+    .withMessage("Name is required"),
+  body("email") 
+    .isEmail()
+    .withMessage("Please provide a valid email address"),
+  body("phone") 
+    .isMobilePhone()
+    .withMessage("Please provide a valid phone number")
+    .isString()
+    .withMessage("Phone number must be a string")
+    .notEmpty()
+    .withMessage("Phone number is required")
+    .isLength({ min: 10 })
+    .withMessage("Phone number must be at least 10 digits long"),
+
   body("street")
     .isString()
     .withMessage("Street must be a string")
     .notEmpty()
     .withMessage("Street is required"),
+
   body("city")
     .isString()
     .withMessage("City must be a string")
     .notEmpty()
     .withMessage("City is required"),
+
   body("state")
     .isString()
     .withMessage("State must be a string")
     .notEmpty()
     .withMessage("State is required"),
+    
 body("pincode")
   .isString()
   .withMessage("ZIP/PIN code must be a string")
@@ -119,8 +140,20 @@ body("pincode")
   respondValidationErrors,
 ];
 
+
+const adminLoginValidation = [
+  body("email")
+    .isEmail()
+    .withMessage("Please provide a valid email address"), 
+  body("password")
+    .isLength({ min: 6 })
+    .withMessage("Password must be at least 6 characters long"),
+  respondValidationErrors,
+];
+
 module.exports = {
   registerUserValidation,
   loginUserValidation,
   userAddressValidation,
+  adminLoginValidation,
 };

@@ -63,10 +63,13 @@ describe("Auth User Addresses APIs", () => {
       .post("/api/auth/users/me/addresses")
       .set("Cookie", `token=${token}`)
       .send({
+        name: "Home",
+        email: "home@test.com",
+        phone: "9999999999",
         street: "MG Road",
         city: "Indore",
         state: "MP",
-        zip: "452001",
+        pincode: "452001",
         country: "India",
       });
 
@@ -80,10 +83,13 @@ describe("Auth User Addresses APIs", () => {
 
   it("should return user addresses after adding address", async () => {
     user.addresses.push({
+      name: "Home",
+      email: "home@test.com",
+      phone: "9999999999",
       street: "Ring Road",
       city: "Indore",
       state: "MP",
-      zip: "452010",
+      pincode: "452010",
       country: "India",
     });
     await user.save();
@@ -101,10 +107,13 @@ describe("Auth User Addresses APIs", () => {
 
   it("should delete an address by addressId", async () => {
     user.addresses.push({
+      name: "Office",
+      email: "office@test.com",
+      phone: "8888888888",
       street: "Old Road",
       city: "Bhopal",
       state: "MP",
-      zip: "462001",
+      pincode: "462001",
       country: "India",
     });
     await user.save();
@@ -130,18 +139,24 @@ describe("Auth User Addresses APIs", () => {
     // Seed multiple addresses, one marked as default
     user.addresses.push(
       {
+        name: "Home",
+        email: "home@test.com",
+        phone: "9999999999",
         street: "Main Road",
         city: "Indore",
         state: "MP",
-        zip: "452001",
+        pincode: "452001",
         country: "India",
         isDefault: true,
       },
       {
+        name: "Office",
+        email: "office@test.com",
+        phone: "8888888888",
         street: "Ring Road",
         city: "Bhopal",
         state: "MP",
-        zip: "462001",
+        pincode: "462001",
         country: "India",
         isDefault: false,
       }

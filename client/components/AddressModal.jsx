@@ -3,7 +3,7 @@ import { XIcon } from "lucide-react"
 import { useState } from "react"
 import { toast } from "react-hot-toast"
 
-const AddressModal = ({ setShowAddressModal }) => {
+const AddressModal = ({ setShowAddressModal, onSave }) => {
 
     const [address, setAddress] = useState({
         name: '',
@@ -11,7 +11,7 @@ const AddressModal = ({ setShowAddressModal }) => {
         street: '',
         city: '',
         state: '',
-        zip: '',
+        pincode: '',
         country: '',
         phone: ''
     })
@@ -24,9 +24,11 @@ const AddressModal = ({ setShowAddressModal }) => {
     }
 
     const handleSubmit = async (e) => {
-        e.preventDefault()
-
-        setShowAddressModal(false)
+        e.preventDefault();
+        if (onSave) {
+            await onSave(address);
+        }
+        setShowAddressModal(false);
     }
 
     return (
@@ -41,7 +43,7 @@ const AddressModal = ({ setShowAddressModal }) => {
                     <input name="state" onChange={handleAddressChange} value={address.state} className="p-2 px-4 outline-none border border-slate-200 rounded w-full" type="text" placeholder="State" required />
                 </div>
                 <div className="flex gap-4">
-                    <input name="zip" onChange={handleAddressChange} value={address.zip} className="p-2 px-4 outline-none border border-slate-200 rounded w-full" type="number" placeholder="Zip code" required />
+                    <input name="pincode" onChange={handleAddressChange} value={address.pincode} className="p-2 px-4 outline-none border border-slate-200 rounded w-full" type="text" placeholder="ZIP/PIN code" required />
                     <input name="country" onChange={handleAddressChange} value={address.country} className="p-2 px-4 outline-none border border-slate-200 rounded w-full" type="text" placeholder="Country" required />
                 </div>
                 <input name="phone" onChange={handleAddressChange} value={address.phone} className="p-2 px-4 outline-none border border-slate-200 rounded w-full" type="text" placeholder="Phone" required />
