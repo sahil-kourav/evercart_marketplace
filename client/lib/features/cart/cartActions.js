@@ -8,21 +8,21 @@ import {
 
 const BASE_URL = "http://localhost:8082/api/cart";
 
-// axios instance (recommended)
 const api = axios.create({
   baseURL: BASE_URL,
-  withCredentials: true, // cookies (httpOnly refresh token)
+  withCredentials: true,
 });
 
 /**
- * Fetch full cart from backend
+ * Fetch full cart
  */
 export const fetchCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    const res = await api.get("/"); // GET /api/cart
+    const res = await api.get("/");
     dispatch(cartLoaded(res.data));
+
   } catch (error) {
     dispatch(
       cartError(
@@ -33,36 +33,46 @@ export const fetchCart = () => async (dispatch) => {
 };
 
 /**
- * Add item to cart
+ * Add item to cart (increment by qty)
  */
-export const addItemToCart = (productId) => async (dispatch) => {
+export const addItemToCart = ({ productId, qty = 1 }) => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await api.post("/items", { productId }); // POST /api/cart/items
+    // ✅ ensure string id
+    const id =
+      typeof productId === "object" ? productId._id : productId;
 
-    // reload cart
+    await api.post("/items", {
+      productId: id,
+      qty,
+    });
+
     dispatch(fetchCart());
+
   } catch (error) {
     dispatch(
       cartError(
-        error.response?.data?.message || "Failed to add item to cart"
+        error.response?.data?.message || "Failed to add item"
       )
     );
   }
 };
 
 /**
- * Update item quantity
+ * Update quantity (SET qty, not increment)
  */
-export const updateCartQuantity = (productId, quantity) => async (dispatch) => {
+export const updateCartQuantity = ({ productId, qty }) => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await api.patch(`/items/${productId}`, { quantity }); 
-    // PATCH /api/cart/items/:productId
+    const id =
+      typeof productId === "object" ? productId._id : productId;
+
+    await api.patch(`/items/${id}`, { qty });
 
     dispatch(fetchCart());
+
   } catch (error) {
     dispatch(
       cartError(
@@ -73,16 +83,19 @@ export const updateCartQuantity = (productId, quantity) => async (dispatch) => {
 };
 
 /**
- * Remove item from cart
+ * Remove item
  */
 export const removeItemFromCart = (productId) => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await api.delete(`/items/${productId}`); 
-    // DELETE /api/cart/items/:productId
+    const id =
+      typeof productId === "object" ? productId._id : productId;
+
+    await api.delete(`/items/${id}`);
 
     dispatch(fetchCart());
+
   } catch (error) {
     dispatch(
       cartError(
@@ -93,15 +106,16 @@ export const removeItemFromCart = (productId) => async (dispatch) => {
 };
 
 /**
- * Clear entire cart
+ * Clear cart
  */
 export const clearCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await api.delete("/"); // DELETE /api/cart
+    await api.delete("/");
 
     dispatch(cartCleared());
+
   } catch (error) {
     dispatch(
       cartError(

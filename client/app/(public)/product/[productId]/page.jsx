@@ -77,9 +77,6 @@ export default function Product() {
       );
 
       setProduct(res.data.product || null);
-      console.log("Data: ", res.data);
-      console.log("Product: ", productId);
-      
     } catch (error) {
       console.error(error);
       setProduct(null);

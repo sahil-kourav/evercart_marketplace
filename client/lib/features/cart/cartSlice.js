@@ -1,57 +1,9 @@
-// import { createSlice } from '@reduxjs/toolkit'
-
-// const cartSlice = createSlice({
-//     name: 'cart',
-//     initialState: {
-//         total: 0,
-//         cartItems: {},
-//     },
-//     reducers: {
-//         addToCart: (state, action) => {
-//             const { productId } = action.payload
-//             if (state.cartItems[productId]) {
-//                 state.cartItems[productId]++
-//             } else {
-//                 state.cartItems[productId] = 1
-//             }
-//             state.total += 1
-//         },
-//         removeFromCart: (state, action) => {
-//             const { productId } = action.payload
-//             if (state.cartItems[productId]) {
-//                 state.cartItems[productId]--
-//                 if (state.cartItems[productId] === 0) {
-//                     delete state.cartItems[productId]
-//                 }
-//             }
-//             state.total -= 1
-//         },
-//         deleteItemFromCart: (state, action) => {
-//             const { productId } = action.payload
-//             state.total -= state.cartItems[productId] ? state.cartItems[productId] : 0
-//             delete state.cartItems[productId]
-//         },
-//         clearCart: (state) => {
-//             state.cartItems = {}
-//             state.total = 0
-//         },
-//     }
-// })
-
-// export const { addToCart, removeFromCart, clearCart, deleteItemFromCart } = cartSlice.actions
-
-// export default cartSlice.reducer
-
-
-
-
-
-
-
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  cart: null,       // backend cart
+  cart: null,        // backend cart (source of truth)
+  cartItems: {},     // quick lookup { productId: qty }
+  totalQuantity: 0,  // total items count
   loading: false,
   error: null,
 };
@@ -62,12 +14,30 @@ const cartSlice = createSlice({
   reducers: {
     cartLoading: (state) => {
       state.loading = true;
+      state.error = null;
     },
 
     cartLoaded: (state, action) => {
-      state.cart = action.payload;   // full backend cart
       state.loading = false;
-      state.error = null;
+
+      const cartData = action.payload.cart;
+      state.cart = cartData;
+
+      const itemsMap = {};
+      let totalQty = 0;
+
+      cartData?.items?.forEach((item) => {
+        const id =
+          typeof item.productId === "object"
+            ? item.productId._id
+            : item.productId;
+
+        itemsMap[id] = item.quantity;
+        totalQty += item.quantity;
+      });
+
+      state.cartItems = itemsMap;
+      state.totalQuantity = totalQty;
     },
 
     cartError: (state, action) => {
@@ -77,8 +47,28 @@ const cartSlice = createSlice({
 
     cartCleared: (state) => {
       state.cart = null;
+      state.cartItems = {};
+      state.totalQuantity = 0;
       state.loading = false;
-      state.error = null;
+    },
+
+    /**
+     * 🔥 Optimistic update (fast UI)
+     */
+    updateCartItem: (state, action) => {
+      const { productId, qty } = action.payload;
+
+      if (qty <= 0) {
+        delete state.cartItems[productId];
+      } else {
+        state.cartItems[productId] = qty;
+      }
+
+      // recalc total
+      state.totalQuantity = Object.values(state.cartItems).reduce(
+        (acc, val) => acc + val,
+        0
+      );
     },
   },
 });
@@ -88,6 +78,7 @@ export const {
   cartLoaded,
   cartError,
   cartCleared,
+  updateCartItem,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

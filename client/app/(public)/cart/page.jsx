@@ -1,133 +1,3 @@
-// 'use client'
-// import Counter from "@/components/Counter";
-// import OrderSummary from "@/components/OrderSummary";
-// import PageTitle from "@/components/PageTitle";
-// import { deleteItemFromCart } from "@/lib/features/cart/cartSlice";
-// import { Trash2Icon } from "lucide-react";
-// import Image from "next/image";
-// import { useEffect, useState } from "react";
-// import { useDispatch, useSelector } from "react-redux";
-
-
-// import {
-//   cartLoading,
-//   cartLoaded,
-//   cartError,
-// } from "@/lib/features/cart/cartSlice";
-
-// import {
-//   fetchCartApi,
-//   addItemToCartApi,
-//   removeItemFromCartApi,
-//   clearCartApi,
-//   updateCartItemApi,
-// } from "@/lib/features/cart/cartActions";
-
-// export default function Cart() {
-
-//     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$';
-    
-//     const { cartItems } = useSelector(state => state.cart);
-//     const products = useSelector(state => state.product.list);
-
-//     const dispatch = useDispatch();
-
-//     const [cartArray, setCartArray] = useState([]);
-//     const [totalPrice, setTotalPrice] = useState(0);
-
-//     const createCartArray = () => {
-//         setTotalPrice(0);
-//         const cartArray = [];
-//         for (const [key, value] of Object.entries(cartItems)) {
-//             const product = products.find(product => product.id === key);
-//             if (product) {
-//                 cartArray.push({
-//                     ...product,
-//                     quantity: value,
-//                 });
-//                 setTotalPrice(prev => prev + product.price * value);
-//             }
-//         }
-//         setCartArray(cartArray);
-//     }
-
-//     const handleDeleteItemFromCart = (productId) => {
-//         dispatch(deleteItemFromCart({ productId }))
-//     }
-
-//     useEffect(() => {
-//         if (products.length > 0) {
-//             createCartArray();
-//         }
-//     }, [cartItems, products]);
-
-//     return cartArray.length > 0 ? (
-//         <div className="min-h-screen mx-6 text-slate-800">
-
-//             <div className="max-w-7xl mx-auto ">
-//                 {/* Title */}
-//                 <PageTitle heading="My Cart" text="items in your cart" linkText="Add more" />
-
-//                 <div className="flex items-start justify-between gap-5 max-lg:flex-col">
-
-//                     <table className="w-full max-w-4xl text-slate-600 table-auto">
-//                         <thead>
-//                             <tr className="max-sm:text-sm">
-//                                 <th className="text-left">Product</th>
-//                                 <th>Quantity</th>
-//                                 <th>Total Price</th>
-//                                 <th className="max-md:hidden">Remove</th>
-//                             </tr>
-//                         </thead>
-//                         <tbody>
-//                             {
-//                                 cartArray.map((item, index) => (
-//                                     <tr key={index} className="space-x-2">
-//                                         <td className="flex gap-3 my-4">
-//                                             <div className="flex gap-3 items-center justify-center bg-slate-100 size-18 rounded-md">
-//                                                 <Image src={item.images[0]} className="h-14 w-auto" alt="" width={45} height={45} />
-//                                             </div>
-//                                             <div>
-//                                                 <p className="max-sm:text-sm">{item.name}</p>
-//                                                 <p className="text-xs text-slate-500">{item.category}</p>
-//                                                 <p>{currency}{item.price}</p>
-//                                             </div>
-//                                         </td>
-//                                         <td className="text-center">
-//                                             <Counter productId={item.id} />
-//                                         </td>
-//                                         <td className="text-center">{currency}{(item.price * item.quantity).toLocaleString()}</td>
-//                                         <td className="text-center max-md:hidden">
-//                                             <button onClick={() => handleDeleteItemFromCart(item.id)} className=" text-red-500 hover:bg-red-50 p-2.5 rounded-full active:scale-95 transition-all">
-//                                                 <Trash2Icon size={18} />
-//                                             </button>
-//                                         </td>
-//                                     </tr>
-//                                 ))
-//                             }
-//                         </tbody>
-//                     </table>
-//                     <OrderSummary totalPrice={totalPrice} items={cartArray} />
-//                 </div>
-//             </div>
-//         </div>
-//     ) : (
-//         <div className="min-h-[80vh] mx-6 flex items-center justify-center text-slate-400">
-//             <h1 className="text-2xl sm:text-4xl font-semibold">Your cart is empty</h1>
-//         </div>
-//     )
-// }
-
-
-
-
-
-
-
-
-
-
-
 'use client';
 
 import Counter from "@/components/Counter";
@@ -135,7 +5,8 @@ import OrderSummary from "@/components/OrderSummary";
 import PageTitle from "@/components/PageTitle";
 import { Trash2Icon } from "lucide-react";
 import Image from "next/image";
-import { useEffect } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
 import {
@@ -149,16 +20,67 @@ export default function Cart() {
 
   const { cart, loading } = useSelector((state) => state.cart);
 
-  // load cart on page load
+  const [cartArray, setCartArray] = useState([]);
+  const [totalPrice, setTotalPrice] = useState(0);
+
+  // ✅ fetch cart once
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
+
+  // ✅ enrich cart with product service
+  useEffect(() => {
+    if (!cart?.items?.length) {
+      setCartArray([]);
+      return;
+    }
+
+    const fetchProducts = async () => {
+      try {
+        const responses = await Promise.all(
+          cart.items.map((item) =>
+            axios.get(
+              `http://localhost:8081/api/products/${item.productId}`
+            )
+          )
+        );
+
+        const enriched = responses.map((res, index) => {
+          const product = res.data.product;
+          const item = cart.items[index];
+
+          return {
+            productId: item.productId, // ✅ always string
+            quantity: item.quantity,
+            name: product.title,
+            category: product.category,
+            price: product.price?.amount || 0,
+            images: product.images?.map((img) => img.url) || [],
+          };
+        });
+
+        setCartArray(enriched);
+
+        // ✅ calculate total
+        const total = enriched.reduce(
+          (acc, item) => acc + item.price * item.quantity,
+          0
+        );
+
+        setTotalPrice(total);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
+  }, [cart]);
 
   if (loading) {
     return <p className="text-center mt-20">Loading cart...</p>;
   }
 
-  if (!cart || cart.items.length === 0) {
+  if (!cartArray.length) {
     return (
       <div className="min-h-[80vh] mx-6 flex items-center justify-center text-slate-400">
         <h1 className="text-2xl sm:text-4xl font-semibold">
@@ -174,6 +96,8 @@ export default function Cart() {
         <PageTitle heading="My Cart" text="items in your cart" />
 
         <div className="flex items-start justify-between gap-5 max-lg:flex-col">
+
+          {/* TABLE */}
           <table className="w-full max-w-4xl text-slate-600 table-auto">
             <thead>
               <tr className="max-sm:text-sm">
@@ -185,17 +109,18 @@ export default function Cart() {
             </thead>
 
             <tbody>
-              {cart.items.map((item) => (
+              {cartArray.map((item) => (
                 <tr key={item.productId}>
                   <td className="flex gap-3 my-4">
                     <div className="flex items-center justify-center bg-slate-100 size-18 rounded-md">
                       <Image
-                        src={item.images[0]}
-                        alt=""
+                        src={item.images?.[0] || "/no-image.png"}
+                        alt={item.name}
                         width={45}
                         height={45}
                       />
                     </div>
+
                     <div>
                       <p>{item.name}</p>
                       <p className="text-xs text-slate-500">
@@ -217,7 +142,7 @@ export default function Cart() {
 
                   <td className="text-center">
                     {currency}
-                    {item.totalPrice.toLocaleString()}
+                    {(item.price * item.quantity).toLocaleString()}
                   </td>
 
                   <td className="text-center max-md:hidden">
@@ -235,10 +160,8 @@ export default function Cart() {
             </tbody>
           </table>
 
-          <OrderSummary
-            totalPrice={cart.totalAmount}
-            items={cart.items}
-          />
+          {/* SUMMARY */}
+          <OrderSummary totalPrice={totalPrice} items={cartArray} />
         </div>
       </div>
     </div>
