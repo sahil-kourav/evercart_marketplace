@@ -1,7 +1,6 @@
 const express = require('express');
 const paymentController = require('../controller/payment.controller');
 const createAuthMiddleware = require('../middlewares/auth.middleware');
-const { router } = require('../app');
 const route = express.Router();
 
 // POST /api/payments/create/:orderId // this will create a new payment for the order with the given id, the payment status will be set to "pending" and the payment will be associated with the logged in user, only the buyer who created the order can create the payment

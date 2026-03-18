@@ -1,6 +1,8 @@
 const paymentModel = require('../models/payment.model');
 const axios = require('axios');
 const Razorpay = require('razorpay');
+const crypto = require('crypto');
+
 const { publishToQueue } = require('../broker/broker');
 
 const razorpay = new Razorpay({
@@ -31,7 +33,8 @@ async function placeOrderRazorpay(req, res) {
 
         const payment = await paymentModel.create({
             order: orderId,
-            razorpayOrderId: orderId,
+            razorpayOrderId: order.id,
+            receipt: `rcpt_${orderId}_${Date.now()}`,
             user: req.user.id,
             status: 'PENDING',
             paymentMethod: 'RAZORPAY',
@@ -44,11 +47,10 @@ async function placeOrderRazorpay(req, res) {
         await publishToQueue('PAYMENT_SELLER_DASHBOARD.PAYMENT_CREATED', payment);
         await publishToQueue('PAYMENT_NOTIFICATION.PAYMENT_INITIATED', {
             email: req.user.email,
-            orderId: orderId,
+            orderId: order.id,
             paymentId: payment._id,
             amount: payment.price.amount / 100,
             currency: payment.price.currency,
-            fullName: req.user.fullName,
         });
 
         res.status(201).json({ message: 'Payment initiated successfully', payment });
@@ -75,6 +77,7 @@ async function placeOrderCOD(req, res) {
 
         const payment = await paymentModel.create({
             order: orderId,
+            receipt: `rcpt_${orderId}_${Date.now()}`,
             user: req.user.id,
             status: 'PENDING',
             paymentMethod: 'COD',
@@ -90,10 +93,6 @@ async function placeOrderCOD(req, res) {
             orderId: orderId,
             amount: payment.price.amount,
             currency: payment.price.currency,
-            fullName: {
-                firstName: req.user.firstName,
-                lastName: req.user.lastName,
-            },
         });
 
         res.status(201).json({ message: 'Payment initiated successfully', payment });
@@ -109,51 +108,61 @@ async function verifyPayment(req, res) {
     const secret = process.env.RAZORPAY_KEY_SECRET;
 
     try {
-        const { validatePaymentVerification } = require('../../node_modules/razorpay/dist/utils/razorpay-utils.js')
-        const isValid = validatePaymentVerification({
-            order_id: razorpayOrderId,
-            payment_id: paymentId,
-        }, signature, secret);
+        // ✅ Generate expected signature
+        const body = razorpayOrderId + "|" + paymentId;
 
-        if (!isValid) {
-            return res.status(400).json({ message: 'Invalid payment signature' });
+        const expectedSignature = crypto
+            .createHmac("sha256", secret)
+            .update(body.toString())
+            .digest("hex");
+
+        if (expectedSignature !== signature) {
+            return res.status(400).json({ message: "Invalid payment signature" });
         }
 
-        const payment = await paymentModel.findOne({ razorpayOrderId, status: 'PENDING' });
+        const payment = await paymentModel.findOne({
+            razorpayOrderId,
+            status: "PENDING",
+        });
 
         if (!payment) {
-            return res.status(404).json({ message: 'Payment not found' });
+            return res.status(404).json({ message: "Payment not found" });
         }
 
         payment.paymentId = paymentId;
         payment.signature = signature;
-        payment.status = 'COMPLETED';
+        payment.status = "COMPLETED";
+
         await payment.save();
 
-
-        await publishToQueue('PAYMENT_NOTIFICATION.PAYMENT_COMPLETED', {
+        await publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_COMPLETED", {
             email: req.user.email,
             orderId: payment.order,
             paymentId: payment.paymentId,
             amount: payment.price.amount / 100,
             currency: payment.price.currency,
-            fullName: req.user.fullName,
         });
 
-        await publishToQueue('PAYMENT_SELLER_DASHBOARD.PAYMENT_UPDATE', payment);
+        await publishToQueue(
+            "PAYMENT_SELLER_DASHBOARD.PAYMENT_UPDATE",
+            payment
+        );
 
-        res.status(200).json({ message: 'Payment verified successfully', payment });
+        return res
+            .status(200)
+            .json({ message: "Payment verified successfully", payment });
 
     } catch (error) {
-        console.error('Error verifying payment:', error);
-        await publishToQueue('PAYMENT_NOTIFICATION.PAYMENT_FAILED', {
+        console.error("Error verifying payment:", error);
+
+        await publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILED", {
             email: req.user.email,
             paymentId: paymentId,
             orderId: razorpayOrderId,
-            fullName: req.user.fullName,
         });
+
+        return res.status(500).json({ message: "Internal server error" });
     }
-    res.status(500).json({ message: 'Internal server error' });
 }
 
 async function updatePaymentStatus(req, res) {

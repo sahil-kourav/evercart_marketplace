@@ -73,7 +73,7 @@ Start exploring products and enjoy a seamless shopping experience.
     const subject = `Payment Initiated for Order ${data.orderId}`;
 
     const text = `
-Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+Hi Dear,
 We have received your payment initiation for order ${data.orderId} of amount ${data.currency} ${data.amount}.
 We are processing your payment and will notify you once it's completed.
 — Team EverCart
@@ -88,7 +88,7 @@ We are processing your payment and will notify you once it's completed.
         Payment Initiated 💳
       </h2>
       <p style="color:#374151; font-size:14px;">
-        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+        Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         We have received your payment initiation for order <strong>${data.orderId}</strong> of amount <strong>${data.currency} ${data.amount}</strong>.
@@ -113,7 +113,7 @@ We are processing your payment and will notify you once it's completed.
     const subject = `Payment Successful for Order ${data.orderId}`;
 
     const text = `
-Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+Hi Dear,
 
 We received your payment of ${data.currency} ${data.amount} for order ${data.orderId} and it has been successfully processed. 
 Thank you for shopping with us!
@@ -131,7 +131,7 @@ Thank you for shopping with us!
         Payment Successful! 🎉
       </h2>
       <p style="color:#374151; font-size:14px;">
-        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+        Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         Your payment for order <strong>${data.orderId}</strong> has been successfully processed.
@@ -154,7 +154,7 @@ Thank you for shopping with us!
   subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILED", async (data) => {
     const subject = `Payment Failed for Order ${data.orderId}`;
 
-    const text = `Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+    const text = `Hi Dear,
 
 Unfortunately, your payment for order ${data.orderId} could not be processed. 
 Please try again or contact support if you need assistance.
@@ -168,10 +168,10 @@ Please try again or contact support if you need assistance.
       
     <div>
       <h2 style="margin-top:0; color:#111827;">
-        Payment Failed ❌
+        Payment Failed
       </h2>
       <p style="color:#374151; font-size:14px;">
-        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+        Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         Unfortunately, your payment for order <strong>${data.orderId}</strong> could not be processed.

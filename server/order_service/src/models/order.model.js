@@ -1,10 +1,12 @@
 const mongoose = require("mongoose");
 
 const addressSchema = new mongoose.Schema({
+  name: String,
+  email: String,
   street: String,
   city: String,
   state: String,
-  zip: String,
+  pincode: String,
   country: String,
   phone: String,
 });

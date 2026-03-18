@@ -9,22 +9,37 @@ const respondValidationErrors = (req, res, next) => {
 };
 
 const orderValidation = [
+  body("shippingAddress.name")
+    .isString()
+    .withMessage("Name must be a string")
+    .notEmpty()
+    .withMessage("Name is required"),
+    
+  body("shippingAddress.email")
+    .isEmail()
+    .withMessage("Please provide a valid email address")
+    .notEmpty()
+    .withMessage("Email is required"),
+
   body("shippingAddress.street")
     .isString()
     .withMessage("Street must be a string")
     .notEmpty()
     .withMessage("Street is required"),
+
   body("shippingAddress.city")
     .isString()
     .withMessage("City must be a string")
     .notEmpty()
     .withMessage("City is required"),
+
   body("shippingAddress.state")
     .isString()
     .withMessage("State must be a string")
     .notEmpty()
     .withMessage("State is required"),
-  body("shippingAddress.zip")
+
+  body("shippingAddress.pincode")
     .isString()
     .withMessage("ZIP/PIN code must be a string")
     .matches(/^\d{6}$/)

@@ -5,6 +5,7 @@ import OrderSummary from "@/components/OrderSummary";
 import PageTitle from "@/components/PageTitle";
 import { Trash2Icon } from "lucide-react";
 import Image from "next/image";
+
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
@@ -29,7 +30,7 @@ export default function Cart() {
     dispatch(fetchCart());
   }, [dispatch]);
 
-  // ✅ enrich cart with product service
+  
   useEffect(() => {
     if (!cart?.items?.length) {
       setCartArray([]);
@@ -92,14 +93,14 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-screen mx-6 text-slate-800">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen mx-8 my-10 text-slate-800">
+      <div className="max-w-7xl  px-6 lg:px-8 mx-auto">
         <PageTitle heading="My Cart" text="items in your cart" />
 
         <div className="flex items-start justify-between gap-5 max-lg:flex-col">
 
           {/* TABLE */}
-          <table className="w-full max-w-4xl text-slate-600 table-auto">
+          <table className="w-full max-w-6xl text-slate-600 table-auto">
             <thead>
               <tr className="max-sm:text-sm">
                 <th className="text-left">Product</th>
@@ -161,9 +162,11 @@ export default function Cart() {
             </tbody>
           </table>
 
+
           {/* SUMMARY */}
           <OrderSummary totalPrice={totalPrice} items={cartArray} />
         </div>
+
       </div>
     </div>
   );

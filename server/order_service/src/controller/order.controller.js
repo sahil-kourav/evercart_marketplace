@@ -72,10 +72,12 @@ async function createOrder(req, res) {
         currency: "INR",
       },
       shippingAddress: {
+        name: req.body.shippingAddress.name,
+        email: req.body.shippingAddress.email,
         street: req.body.shippingAddress.street,
         city: req.body.shippingAddress.city,
         state: req.body.shippingAddress.state,
-        zip: req.body.shippingAddress.zip,
+        pincode: req.body.shippingAddress.pincode,
         country: req.body.shippingAddress.country,
         phone: req.body.shippingAddress.phone,
       },

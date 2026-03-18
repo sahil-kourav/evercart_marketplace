@@ -19,3 +19,5 @@ route.get("/:id", createAuthMiddleware(["user", "seller"]), orderController.getO
 
 route.post('/status/:id', createAuthMiddleware(['seller']), orderController.updateOrderStatus);
 module.exports = route;
+
+// localhost:8083/api/orders/me
