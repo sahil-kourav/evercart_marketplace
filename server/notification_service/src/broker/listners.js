@@ -70,11 +70,11 @@ Start exploring products and enjoy a seamless shopping experience.
   });
 
   subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_INITIATED", async (data) => {
-    const subject = `Payment Initiated for Order ${data.orderId}`;
+    const subject = `Payment Initiated for Order #${data.orderId}`;
 
     const text = `
 Hi Dear,
-We have received your payment initiation for order ${data.orderId} of amount ${data.currency} ${data.amount}.
+We have received your payment initiation for order #${data.orderId} of amount ${data.currency} ${data.amount}.
 We are processing your payment and will notify you once it's completed.
 — Team EverCart
 `;
@@ -91,7 +91,7 @@ We are processing your payment and will notify you once it's completed.
         Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
-        We have received your payment initiation for order <strong>${data.orderId}</strong> of amount <strong>${data.currency} ${data.amount}</strong>.
+        We have received your payment initiation for order <strong>#${data.orderId}</strong> of amount <strong>${data.currency} ${data.amount}</strong>.
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         We are processing your payment and will notify you once it's completed.
@@ -110,12 +110,12 @@ We are processing your payment and will notify you once it's completed.
   });
 
   subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_COMPLETED", async (data) => {
-    const subject = `Payment Successful for Order ${data.orderId}`;
+    const subject = `Payment Successful for Order #${data.orderId}`;
 
     const text = `
 Hi Dear,
 
-We received your payment of ${data.currency} ${data.amount} for order ${data.orderId} and it has been successfully processed. 
+We received your payment of ${data.currency} ${data.amount} for order #${data.orderId} and it has been successfully processed. 
 Thank you for shopping with us!
 
 — Team EverCart
@@ -134,7 +134,7 @@ Thank you for shopping with us!
         Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
-        Your payment for order <strong>${data.orderId}</strong> has been successfully processed.
+        Your payment for order <strong>#${data.orderId}</strong> has been successfully processed.
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         Thank you for shopping with us!
@@ -152,11 +152,11 @@ Thank you for shopping with us!
   });
 
   subscribeToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILED", async (data) => {
-    const subject = `Payment Failed for Order ${data.orderId}`;
+    const subject = `Payment Failed for Order #${data.orderId}`;
 
     const text = `Hi Dear,
 
-Unfortunately, your payment for order ${data.orderId} could not be processed. 
+Unfortunately, your payment for order #${data.orderId} could not be processed. 
 Please try again or contact support if you need assistance.
 — Team EverCart
 `;
@@ -174,7 +174,7 @@ Please try again or contact support if you need assistance.
         Hi Dear,
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
-        Unfortunately, your payment for order <strong>${data.orderId}</strong> could not be processed.
+        Unfortunately, your payment for order <strong>#${data.orderId}</strong> could not be processed.
       </p>
       <p style="color:#4b5563; font-size:14px; line-height:1.6;">
         Please try again or contact support if you need assistance.
@@ -291,9 +291,9 @@ Team EverCart
   subscribeToQueue("PAYMENT_NOTIFICATION.COD_ORDER_PLACED", async (data) => {
     const subject = `Your Order has Been Placed! 🛍️`;
 
-    const text = `Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+    const text = `Hi Dear,
 
-Your order ${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method. 
+Your order #${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method. 
 We will process your order and keep you updated on the status.  
 Thank you for shopping with us!
 — Team EverCart
@@ -307,10 +307,10 @@ Thank you for shopping with us!
         Order Placed Successfully! 🛍️
       </h2>
       <p>
-        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+        Hi Dear,
       </p>
       <p>
-        Your order ${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method.
+        Your order #${data.orderId} has been placed successfully with Cash on Delivery (COD) as the payment method.
       </p>
       <p>
         We will process your order and keep you updated on the status.
@@ -332,9 +332,9 @@ Thank you for shopping with us!
   subscribeToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", async (data) => {
     const subject = `Your Order has been Delivered! 🎉`;
 
-    const text = `Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+    const text = `Hi Dear,
 
-We are thrilled to inform you that your order ${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
+We are thrilled to inform you that your order #${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
 
 Thank you for shopping with us!
 — Team EverCart
@@ -348,10 +348,10 @@ Thank you for shopping with us!
         Order Delivered! 🎉
       </h2>
       <p>
-        Hi, ${data.fullName.firstName} ${data.fullName.lastName},
+        Hi Dear,
       </p>
       <p>
-        We are thrilled to inform you that your order ${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
+        We are thrilled to inform you that your order #${data.orderId} has been delivered successfully! We hope you enjoy your purchase. If you have any questions or need assistance, feel free to reach out to our support team.
       </p>
       <p>
         Thank you for shopping with us!

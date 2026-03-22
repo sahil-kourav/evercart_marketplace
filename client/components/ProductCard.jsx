@@ -18,12 +18,11 @@ const ProductCard = ({ product }) => {
           alt={product?.title || "Product Image"}
         />
       </div>
-      <div className="flex justify-between gap-3 text-sm text-slate-800 pt-2">
+      <div className="flex justify-between px-1 gap-3 text-sm text-slate-800 pt-2">
         <div>
           <p className="truncate text-sm text-neutral-800 max-w-[200px]">
             {product.title}
           </p>
-
         </div>
         <p>
           {" "}

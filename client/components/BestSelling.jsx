@@ -1,23 +1,42 @@
-'use client'
-import Title from './Title'
-import ProductCard from './ProductCard'
-import { useSelector } from 'react-redux'
+"use client";
+import Title from "./Title";
+import ProductCard from "./ProductCard";
+import { useSelector } from "react-redux";
 
 const BestSelling = () => {
+  const displayQuantity = 8;
+  const products = useSelector((state) => state.product.list);
 
-    const displayQuantity = 8
-    const products = useSelector(state => state.product.list)
-
-    return (
-        <div className='px-6 my-30 max-w-6xl mx-auto'>
-            <Title title='Best Selling' description={`Showing ${products.length < displayQuantity ? products.length : displayQuantity} of ${products.length} products`} href='/shop' />
-            <div className='mt-12  grid grid-cols-2 sm:flex flex-wrap gap-6 xl:gap-12'>
-                {products.slice().sort((a, b) => b.rating.length - a.rating.length).slice(0, displayQuantity).map((product, index) => (
-                    <ProductCard key={index} product={product} />
-                ))}
+  const bestSeller = products.filter((item) => item.bestSeller === true);
+  return (
+    <div className="my-30 max-w-7xl mx-auto px-6 lg:px-10">
+      <Title
+        title="Best Selling"
+        description={`Showing ${bestSeller.length < displayQuantity ? bestSeller.length : displayQuantity} of ${bestSeller.length} products`}
+        href="/shop"
+      />
+      <div className="mt-12 grid gap-6 grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
+        {bestSeller.length === 0 ? (
+          <div className="col-span-full text-center text-slate-400">
+            <p className="text-md font-medium">
+              No best selling products available at the moment.
+            </p>
+          </div>
+        ) : (
+          bestSeller.slice(0, displayQuantity).map((product) => (
+             <div
+              key={product._id}
+              className="group transition duration-300 ease-in-out"
+            >
+              <div className="transform transition duration-300 group-hover:-translate-y-1">
+                <ProductCard key={product._id} product={product} />
+              </div>
             </div>
-        </div>
-    )
-}
+          ))
+        )}
+      </div>
+    </div>
+  );
+};
 
-export default BestSelling
+export default BestSelling;

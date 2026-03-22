@@ -20,8 +20,9 @@ try {
   }
 
   const phoneExists = await userModel.findOne({ phone });
+ 
   if (phoneExists) {
-    return res.status(409).json({ message: "Phone already exists" });
+    return res.status(409).json({ message: "User already exists with this phone number" });
   }
 
   const hash = await bcrypt.hash(password, 10);

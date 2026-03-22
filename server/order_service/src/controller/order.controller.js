@@ -203,10 +203,6 @@ async function updateOrderStatus(req, res) {
         orderId: order._id,
         userId: order.user,
         email: req.user.email,
-        fullName: {
-          firstName: req.user.firstName,
-          lastName: req.user.lastName,
-        }
       });
     }
 

@@ -26,6 +26,7 @@ export default function StoreAddProduct() {
     priceAmount: 0,
     category: "",
     stock: 0,
+    bestSeller: false,
   });
 
   const [loading, setLoading] = useState(false);
@@ -55,6 +56,7 @@ export default function StoreAddProduct() {
       formData.append("description", productInfo.description);
       formData.append("priceAmount", productInfo.priceAmount);
       formData.append("category", productInfo.category);
+      formData.append("bestSeller", productInfo.bestSeller);
       formData.append("stock", productInfo.stock);
 
       // Append images
@@ -88,6 +90,7 @@ export default function StoreAddProduct() {
         description: "",
         priceAmount: 0,
         category: "",
+        bestSeller: false,
         stock: 0,
       });
       setImages({ 1: null, 2: null, 3: null, 4: null });
@@ -213,8 +216,20 @@ export default function StoreAddProduct() {
 
       <br />
 
+
+      <div className="flex gap-2 mt-2">
+        <input
+          onChange={() => setProductInfo({ ...productInfo, bestSeller: !productInfo.bestSeller })}
+          checked={productInfo.bestSeller}
+          type="checkbox"
+          id="bestseller"
+        />
+        <label className="cursor-pointer" htmlFor="bestseller">
+          Add to bestseller
+        </label>
+      </div>
+
       <button
-        disabled={loading}
         className="bg-slate-800 text-white px-6 mt-7 py-2 hover:bg-slate-900 rounded transition"
       >
         Add Product

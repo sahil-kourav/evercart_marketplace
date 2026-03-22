@@ -12,6 +12,7 @@ async function createProduct(req, res) {
       priceCurrency = "INR",
       stock,
       category,
+      bestSeller
     } = req.body;
 
     if (!title || !priceAmount || !category || !stock) {
@@ -38,6 +39,7 @@ async function createProduct(req, res) {
       category,
       seller,
       stock,
+      bestSeller: bestSeller === true || bestSeller === "true",
       images,
     });
 

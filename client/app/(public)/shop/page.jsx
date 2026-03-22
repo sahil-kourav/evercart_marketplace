@@ -61,12 +61,9 @@ export default function ShopPage() {
       <CategoriesMarquee />
 
          {products.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-24 border border-dashed border-neutral-300 rounded-xl">
-            <h2 className="text-lg font-medium text-neutral-700">
-              No products available
-            </h2>
-            <p className="text-sm text-neutral-500 mt-2">
-              Please check back later.
+         <div className="col-span-full text-center text-slate-400 pt-20">
+            <p className="text-lg font-medium">
+              No products available at the moment.
             </p>
           </div>
         ) : (

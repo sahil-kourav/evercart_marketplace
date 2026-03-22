@@ -9,8 +9,8 @@ const Hero = () => {
     const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || '$'
 
     return (
-        <div className='mx-6'>
-            <div className='flex max-xl:flex-col gap-8 max-w-7xl mx-auto my-10'>
+        <div className='mx-auto max-w-7xl px-6 lg:px-10 my-10'>
+            <div className='flex max-xl:flex-col gap-8'>
                 <div className='relative flex-1 flex flex-col bg-gradient-to-br from-green-200 via-emerald-100 to-white rounded-3xl xl:min-h-100 group shadow-lg'>
                     <div className='p-5 sm:p-16'>
                         <div className='inline-flex items-center gap-3 bg-gradient-to-r from-green-300 via-green-100 to-white text-green-700 pr-4 p-1 rounded-full text-xs sm:text-sm shadow'>
