@@ -1,488 +1,351 @@
-// // "use client";
-// // import React, { useEffect, useState } from "react";
-// // import axios from "axios";
+"use client";
 
-// // const AVATAR = "https://randomuser.me/api/portraits/men/32.jpg";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { assets } from "@/assets/assets";
+import Image from "next/image";
+import { useSelector, useDispatch } from "react-redux";
+import { loginSuccess, authChecked } from "@/lib/features/auth/authSlice";
+import AddressModal from "@/components/AddressModal";
+import { Trash2Icon, CheckCircle, PlusIcon, PackageIcon } from "lucide-react";
+import { useRouter } from "next/navigation";
 
-// // export default function ProfilePage() {
-// //   const [user, setUser] = useState(null);
-// //   const [addresses, setAddresses] = useState([]);
-// //   const [loading, setLoading] = useState(true);
+const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "₹";
 
-// //   useEffect(() => {
-// //     async function fetchData() {
-// //       setLoading(true);
-// //       try {
-// //         // Fetch user profile
-// //         const userRes = await axios.get("/api/auth/me", { withCredentials: true });
-// //         const userData = userRes.data;
+const statusConfig = {
+  PENDING:    { label: "Pending",    cls: "bg-amber-50 text-amber-800"  },
+  PROCESSING: { label: "Processing", cls: "bg-blue-50 text-blue-800"    },
+  SHIPPED:    { label: "Shipped",    cls: "bg-purple-50 text-purple-800" },
+  DELIVERED:  { label: "Delivered",  cls: "bg-green-50 text-green-800"  },
+  CANCELLED:  { label: "Cancelled",  cls: "bg-red-50 text-red-800"      },
+};
 
-// //         // Fetch addresses
-// //         const addrRes = await axios.get("/api/auth/users/me/addresses", { withCredentials: true });
-// //         const addrData = addrRes.data;
+export default function ProfilePage() {
+  const user = useSelector((state) => state.auth.user);
+  const authLoading = useSelector((state) => state.auth.loading);
+  const dispatch = useDispatch();
+  const router = useRouter();
 
-// //         setUser(userData);
-// //         setAddresses(Array.isArray(addrData) ? addrData : []);
-// //       } catch (err) {
-// //         setUser(null);
-// //         setAddresses([]);
-// //       }
-// //       setLoading(false);
-// //     }
-// //     fetchData();
-// //   }, []);
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [addressLoading, setAddressLoading] = useState(false);
+  const [showAddressModal, setShowAddressModal] = useState(false);
+  const [orders, setOrders] = useState([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
-// //   // if (loading) {
-// //   //   return (
-// //   //     <div className="min-h-screen flex items-center justify-center bg-[#f6f8fa]">
-// //   //       <div className="text-gray-500 text-lg">Loading...</div>
-// //   //     </div>
-// //   //   );
-// //   // }
+  // ── fetch user ───────────────────────────────────────────
+  useEffect(() => {
+    if (user) return;
+    async function fetchUser() {
+      try {
+        const res = await axios.get("http://localhost:8080/api/auth/me", {
+          withCredentials: true,
+        });
+        dispatch(loginSuccess(res.data.user));
+      } catch (err) {
+        console.error("User fetch failed", err);
+        dispatch(authChecked());
+      }
+    }
+    fetchUser();
+  }, [user, dispatch]);
 
-// //   if (!user) {
-// //     return (
-// //       <div className="min-h-screen flex items-center justify-center bg-[#f6f8fa]">
-// //         <div className="text-red-500 text-lg">User not found or not authenticated.</div>
-// //       </div>
-// //     );
-// //   }
+  // ── fetch addresses ──────────────────────────────────────
+  useEffect(() => {
+    if (!user) return;
+    async function fetchAddresses() {
+      setAddressLoading(true);
+      try {
+        const res = await axios.get(
+          "http://localhost:8080/api/auth/users/me/addresses",
+          { withCredentials: true },
+        );
+        const data = res.data;
+        const addrArray = Array.isArray(data)
+          ? data
+          : Array.isArray(data.addresses)
+            ? data.addresses
+            : [];
+        setAddresses(addrArray);
+        setSelectedAddress(addrArray[0] || null);
+      } catch (err) {
+        console.error(err);
+        setAddresses([]);
+      }
+      setAddressLoading(false);
+    }
+    fetchAddresses();
+  }, [user]);
 
-// //   return (
-// //     <div className="bg-[#f6f8fa] min-h-screen py-6 px-2 flex flex-col items-center">
-// //       <div className="w-full max-w-2xl flex flex-col gap-5">
-// //         {/* Profile Header */}
-// //         <section className="bg-white rounded-xl shadow border border-[#e5e7eb] px-6 py-5 flex flex-col sm:flex-row items-center sm:items-start gap-4 sm:gap-6">
-// //           <img
-// //             src={AVATAR}
-// //             className="w-16 h-16 rounded-full object-cover border border-[#e5e7eb] shadow-sm"
-// //           />
-// //           <div className="flex-1 w-full">
-// //             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between">
-// //               <div>
-// //                 {/* <h2 className="text-lg font-semibold text-gray-900">{user.name || "No Name"}</h2> */}
-// //                 <h2 className="text-lg font-semibold text-gray-900">Alex Johnson</h2>
-// //                 <p className="text-sm text-gray-500 mt-0.5">
-// //                   {/* Member since {user.memberSince || "N/A"} · {user.role || "User"} */}
-// //                   Member since Jan 2022 · Customer
-// //                 </p>
-// //               </div>
-// //             </div>
-// //           </div>
-// //         </section>
+  // ── fetch orders ─────────────────────────────────────────
+  useEffect(() => {
+    if (!user) return;
+    async function fetchOrders() {
+      setOrdersLoading(true);
+      try {
+        const res = await axios.get("http://localhost:8083/api/orders/me", {
+          withCredentials: true,
+        });
+        const rawOrders = res.data.orders;
 
-// //         {/* Personal Details */}
-// //         <section className="bg-white rounded-xl shadow border border-[#e5e7eb] px-6 py-5">
-// //           <div className="flex items-center justify-between mb-4">
-// //             <h3 className="text-base font-semibold text-gray-900">Personal Details</h3>
-// //           </div>
-// //           <div className="divide-y divide-gray-100">
-// //             <div className="flex items-center justify-between py-2">
-// //               <span className="text-gray-500 text-sm">Full Name</span>
-// //               {/* <span className="text-gray-900 text-sm font-medium">{user.name || "No Name"}</span> */}
-// //               <span className="text-gray-900 text-sm font-medium">Alex Johnson</span>
-// //             </div>
-// //             <div className="flex items-center justify-between py-2">
-// //               <span className="text-gray-500 text-sm">Email Address</span>
-// //               {/* <span className="text-gray-900 text-sm font-medium">{user.email || "No Email"}</span> */}
-// //               <span className="text-gray-900 text-sm font-medium">user@example.com</span>
-// //             </div>
-// //             <div className="flex items-center justify-between py-2">
-// //               <span className="text-gray-500 text-sm">Phone Number</span>
-// //               {/* <span className="text-gray-900 text-sm font-medium">{user.phone || "N/A"}</span> */}
-// //               <span className="text-gray-900 text-sm font-medium">+91 2343566</span>
+        const enrichedOrders = await Promise.all(
+          rawOrders.map(async (order) => {
+            const itemsWithProducts = await Promise.all(
+              order.items.map(async (item) => {
+                try {
+                  const r = await axios.get(
+                    `http://localhost:8081/api/products/${item.productId}`,
+                  );
+                  return { ...item, product: r.data.product };
+                } catch {
+                  return item;
+                }
+              }),
+            );
+            return { ...order, items: itemsWithProducts };
+          }),
+        );
 
-// //             </div>
-// //           </div>
-// //         </section>
+        setOrders(enrichedOrders);
+      } catch (err) {
+        console.error("Error fetching orders:", err);
+      } finally {
+        setOrdersLoading(false);
+      }
+    }
+    fetchOrders();
+  }, [user]);
 
-// //         {/* Security & Privacy */}
-// //         <section className="bg-white rounded-xl shadow border border-[#e5e7eb] px-6 py-4 flex items-center justify-between">
-// //           <div className="flex items-center gap-3">
-// //             <div className="w-6 h-6 flex items-center justify-center rounded bg-blue-50 text-blue-600">
-// //               <svg width="20" height="20" fill="none" viewBox="0 0 24 24">
-// //                 <path fill="currentColor" d="M12 2C7.03 2 3 6.03 3 11v5c0 1.1.9 2 2 2h2v2c0 .55.45 1 1 1h8c.55 0 1-.45 1-1v-2h2c1.1 0 2-.9 2-2v-5c0-4.97-4.03-9-9-9Zm0 2c3.87 0 7 3.13 7 7v5H5v-5c0-3.87 3.13-7 7-7Zm-1 13h2v2h-2v-2Z"/>
-// //               </svg>
-// //             </div>
-// //             <div>
-// //               <p className="text-gray-900 text-sm font-medium">Security & Privacy</p>
-// //               <p className="text-gray-500 text-xs">Manage your password and security settings</p>
-// //             </div>
-// //           </div>
-// //           <span className="text-blue-600 text-sm font-medium flex items-center gap-1 cursor-default select-none">
-// //             Change Password
-// //             <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-// //               <path stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 18l6-6-6-6"/>
-// //             </svg>
-// //           </span>
-// //         </section>
+  // ── address handlers ─────────────────────────────────────
+  const handleSaveAddress = async (data) => {
+    try {
+      const res = await axios.post(
+        "http://localhost:8080/api/auth/users/me/addresses",
+        data,
+        { withCredentials: true },
+      );
+      const newAddress = res.data.address;
+      setAddresses((prev) => [...prev, newAddress]);
+      setSelectedAddress(newAddress);
+      setShowAddressModal(false);
+    } catch (err) {
+      console.error("Failed to save address:", err);
+    }
+  };
 
-// //         {/* Saved Addresses */}
-// //         <section className="bg-white rounded-xl shadow border border-[#e5e7eb] px-6 py-5">
-// //           <div className="mb-4">
-// //             <h3 className="text-base font-semibold text-gray-900">Saved Addresses</h3>
-// //           </div>
-// //           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-// //             {addresses.length === 0 && (
-// //               <div className="col-span-2 text-gray-400 text-sm text-center py-4">No addresses found.</div>
-// //             )}
-// //             {addresses.map((addr, idx) => (
-// //               <div key={addr.id || idx} className="border border-gray-200 rounded-lg p-4">
-// //                 <div className="flex items-center gap-2 mb-1">
-// //                   <span className="w-5 h-5 flex items-center justify-center rounded bg-blue-50 text-blue-600">
-// //                     <svg width="18" height="18" fill="none" viewBox="0 0 24 24">
-// //                       <path fill="currentColor" d="M12 3l9 9-1.41 1.41L18 12.83V20a1 1 0 0 1-1 1h-4v-5H9v5H5a1 1 0 0 1-1-1v-7.17l-1.59 1.58L3 12l9-9Z"/>
-// //                     </svg>
-// //                   </span>
-// //                   <span className="font-medium text-gray-900 text-sm">{addr.type || "Address"}</span>
-// //                 </div>
-// //                 <p className="text-xs text-gray-500 leading-relaxed mb-2">
-// //                   {addr.line1}<br />
-// //                   {addr.line2 && <>{addr.line2}<br /></>}
-// //                   {addr.city}, {addr.state} {addr.zip}<br />
-// //                   {addr.country}
-// //                 </p>
-// //               </div>
-// //             ))}
-// //           </div>
-// //         </section>
+  const handleDeleteAddress = async (id) => {
+    try {
+      await axios.delete(
+        `http://localhost:8080/api/auth/users/me/addresses/${id}`,
+        { withCredentials: true },
+      );
+      setAddresses((prev) => prev.filter((a) => a._id !== id));
+      if (selectedAddress?._id === id) setSelectedAddress(null);
+    } catch (err) {
+      console.error("Failed to delete address:", err);
+    }
+  };
 
-// //         {/* Recent Orders (static for now) */}
-// //         <section className="bg-white rounded-xl shadow border border-[#e5e7eb] px-6 py-5">
-// //           <div className="mb-4">
-// //             <h3 className="text-base font-semibold text-gray-900">Recent Orders</h3>
-// //           </div>
-// //           <div className="overflow-x-auto">
-// //             <table className="w-full text-left">
-// //               <thead>
-// //                 <tr>
-// //                   <th className="py-2 text-xs font-semibold text-gray-500">ORDER ID</th>
-// //                   <th className="py-2 text-xs font-semibold text-gray-500">DATE</th>
-// //                   <th className="py-2 text-xs font-semibold text-gray-500">STATUS</th>
-// //                   <th className="py-2 text-xs font-semibold text-gray-500">TOTAL</th>
-// //                   <th className="py-2 text-xs font-semibold text-gray-500 text-right">ACTION</th>
-// //                 </tr>
-// //               </thead>
-// //               <tbody className="divide-y divide-gray-100">
-// //                 <tr>
-// //                   <td className="py-2 text-sm font-medium text-gray-900">#ORD-8821</td>
-// //                   <td className="py-2 text-sm text-gray-500">Oct 24, 2023</td>
-// //                   <td className="py-2">
-// //                     <span className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-green-100 text-green-700">Delivered</span>
-// //                   </td>
-// //                   <td className="py-2 text-sm text-gray-900">$124.50</td>
-// //                   <td className="py-2 text-right">
-// //                     <span className="text-blue-600 text-xs font-semibold cursor-default select-none">Details</span>
-// //                   </td>
-// //                 </tr>
-// //                 <tr>
-// //                   <td className="py-2 text-sm font-medium text-gray-900">#ORD-9104</td>
-// //                   <td className="py-2 text-sm text-gray-500">Nov 02, 2023</td>
-// //                   <td className="py-2">
-// //                     <span className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-yellow-100 text-yellow-700">Pending</span>
-// //                   </td>
-// //                   <td className="py-2 text-sm text-gray-900">$45.00</td>
-// //                   <td className="py-2 text-right">
-// //                     <span className="text-blue-600 text-xs font-semibold cursor-default select-none">Details</span>
-// //                   </td>
-// //                 </tr>
-// //                 <tr>
-// //                   <td className="py-2 text-sm font-medium text-gray-900">#ORD-7762</td>
-// //                   <td className="py-2 text-sm text-gray-500">Sep 15, 2023</td>
-// //                   <td className="py-2">
-// //                     <span className="inline-block px-2 py-0.5 rounded-full text-xs font-semibold bg-red-100 text-red-700">Cancelled</span>
-// //                   </td>
-// //                   <td className="py-2 text-sm text-gray-900">$210.99</td>
-// //                   <td className="py-2 text-right">
-// //                     <span className="text-blue-600 text-xs font-semibold cursor-default select-none">Details</span>
-// //                   </td>
-// //                 </tr>
-// //               </tbody>
-// //             </table>
-// //           </div>
-// //         </section>
-// //       </div>
-// //     </div>
-// //   );
-// // }
+  // ── guards ────────────────────────────────────────────────
+  if (authLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-gray-500">Loading...</p>
+      </div>
+    );
+  }
 
-// "use client";
-// import React, { useEffect, useState } from "react";
-// import axios from "axios";
-// import { useSelector } from "react-redux";
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <p className="text-red-500">User not found. Please log in again.</p>
+      </div>
+    );
+  }
 
-// const AVATAR = "https://randomuser.me/api/portraits/men/32.jpg";
+  // ── render ────────────────────────────────────────────────
+  return (
+    <div className="min-h-screen bg-gray-50 px-4 py-8 flex justify-center">
+      <div className="w-full max-w-3xl space-y-8">
 
-// export default function ProfilePage() {
-//   // Get user from Redux store (set by AuthInitializer)
-//   const user = useSelector((state) => state.auth.user);
-//   const [addresses, setAddresses] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [showModal, setShowModal] = useState(false);
-//   const [form, setForm] = useState({
-//     street: "",
-//     city: "",
-//     state: "",
-//     pincode: "",
-//     country: "",
-//     isDefault: false,
-//   });
-//   const [submitting, setSubmitting] = useState(false);
-//   const [error, setError] = useState("");
+        {/* ── PROFILE HEADER ── */}
+        <section className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6">
+          <Image
+            src={assets.AVATAR}
+            alt="User Avatar"
+            className="w-20 h-20 rounded-full border-2 border-white object-cover shadow-sm"
+          />
+          <div>
+            <h2 className="text-2xl font-bold text-slate-900">
+              {user?.fullName
+                ? `${user.fullName.firstName} ${user.fullName.lastName}`
+                : "No Name"}
+            </h2>
+            <p className="text-sm text-slate-600 mt-1">
+              {user.email || "user@example.com"}
+            </p>
+            <p className="text-sm text-slate-500 mt-0.5">
+              {user?.phone || "N/A"}
+            </p>
+          </div>
+        </section>
 
-//   useEffect(() => {
-//     async function fetchAddresses() {
-//       setLoading(true);
-//       try {
-//         // Only fetch addresses if user is authenticated
-//         if (user) {
-//           const addrRes = await axios.get("http://localhost:8080/api/auth/users/me/addresses", {
-//             withCredentials: true,
-//           });
-//           const addrData = addrRes.data;
-//           setAddresses(Array.isArray(addrData) ? addrData : []);
-//         } else {
-//           setAddresses([]);
-//         }
-//       } catch (err) {
-//         setAddresses([]);
-//       }
-//       setLoading(false);
-//     }
-//     fetchAddresses();
-//   }, [user]);
+        {/* ── ORDERS ── */}
+        <section className="bg-white rounded-2xl shadow-lg overflow-hidden">
 
-//   const handleAddAddress = async (e) => {
-//     e.preventDefault();
-//     setSubmitting(true);
-//     setError("");
-//     try {
-//       await axios.post("http://localhost:8080/api/auth/users/me/addresses", form, {
-//         withCredentials: true,
-//       });
-//       setShowModal(false);
-//       setForm({
-//         street: "",
-//         city: "",
-//         state: "",
-//         pincode: "",
-//         country: "",
-//         isDefault: false,
-//       });
-//       // Refetch addresses from backend to ensure latest
-//       if (user) {
-//         const addrRes = await axios.get("http://localhost:8080/api/auth/users/me/addresses", {
-//           withCredentials: true,
-//         });
-//         const addrData = addrRes.data;
-//         setAddresses(Array.isArray(addrData) ? addrData : []);
-//       }
-//     } catch (err) {
-//       setError("Failed to add address. Please try again.");
-//     }
-//     setSubmitting(false);
-//   };
+          {/* header */}
+          <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+            <div className="flex items-center gap-2">
+              <PackageIcon size={16} className="text-gray-400" />
+              <h3 className="text-[15px] font-semibold text-slate-800">My orders</h3>
+            </div>
+            {orders.length > 0 && (
+              <span className="text-xs text-gray-400">{orders.length} orders</span>
+            )}
+          </div>
 
-//   if (loading) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-[#f6f8fa]">
-//         <div className="text-gray-500 text-lg">Loading...</div>
-//       </div>
-//     );
-//   }
+          {ordersLoading ? (
+            <p className="text-sm text-gray-400 px-5 py-6">Loading orders...</p>
+          ) : orders.length === 0 ? (
+            <p className="text-sm text-gray-400 px-5 py-6">No orders yet.</p>
+          ) : (
+            <>
+              {/* column headers */}
+              <div className="grid grid-cols-[1fr_56px_96px_88px_90px] px-5 py-2 bg-gray-50 border-b border-gray-100">
+                {["Product(s)", "Items", "Date", "Total", "Status"].map((h, i) => (
+                  <span
+                    key={h}
+                    className={`text-[11px] font-medium text-gray-400 uppercase tracking-wide ${
+                      i === 0 ? "text-left" : i <= 2 ? "text-center" : "text-right"
+                    }`}
+                  >
+                    {h}
+                  </span>
+                ))}
+              </div>
 
-//   if (!user) {
-//     return (
-//       <div className="min-h-screen flex items-center justify-center bg-[#f6f8fa]">
-//         <div className="text-red-500 text-lg">
-//           User not found or not authenticated.
-//         </div>
-//       </div>
-//     );
-//   }
+              {/* order rows */}
+              {orders.map((order) => {
+                const productNames = order.items
+                  ?.map((item) => item.product?.title || "Product")
+                  .join(", ");
 
-//   return (
-//     <div className="min-h-screen bg-[#f6f8fa] px-3 py-6 flex justify-center">
-//       <div className="w-full max-w-2xl space-y-6">
-//         {/* ================= PROFILE HEADER ================= */}
-//         <section className="bg-white rounded-xl border shadow-sm px-6 py-5 flex items-center gap-4">
-//           <img
-//             src={AVATAR}
-//             alt="User Avatar"
-//             className="w-16 h-16 rounded-full object-cover border"
-//           />
-//           <div>
-//             <h2 className="text-lg font-semibold text-slate-900">
-//               {user?.name || "Alex Johnson"}
-//             </h2>
-//             <p className="text-sm text-slate-500">
-//               {user?.email || "alex.johnson@example.com"}
-//             </p>
-//           </div>
-//         </section>
+                const s = statusConfig[order.status] ?? {
+                  label: order.status,
+                  cls: "bg-gray-100 text-gray-600",
+                };
 
-//         {/* ================= PERSONAL DETAILS (READ ONLY) ================= */}
-//         <section className="bg-white rounded-xl border shadow-sm px-6 py-5">
-//           <h3 className="text-sm font-semibold text-slate-800 mb-4">
-//             Personal Information
-//           </h3>
-//           <div className="space-y-3">
-//             <DetailRow label="Full Name" value={user?.name || "No Name"} />
-//             <DetailRow label="Email" value={user?.email || "No Email"} />
-//             <DetailRow label="Phone" value={user?.phone || "N/A"} />
-//           </div>
-//         </section>
+                return (
+                  <div
+                    key={order._id}
+                    onClick={() => router.push(`/orders/${order._id}`)}
+                    className="grid grid-cols-[1fr_56px_96px_88px_90px] items-center px-5 py-[13px] border-b border-gray-50 hover:bg-gray-50 transition-colors cursor-pointer last:border-b-0"
+                  >
+                    <p className="text-[13px] text-gray-800 truncate pr-3">
+                      {productNames}
+                    </p>
+                    <p className="text-[13px] text-gray-500 text-center">
+                      {order.items?.length ?? 0}
+                    </p>
+                    <p className="text-[12px] text-gray-400 text-center">
+                      {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}
+                    </p>
+                    <p className="text-[13px] font-medium text-gray-900 text-right">
+                      {currency}
+                      {order.totalPrice?.amount?.toLocaleString()}
+                    </p>
+                    <div className="flex justify-end">
+                      <span className={`text-[11px] font-medium px-2.5 py-1 rounded-full ${s.cls}`}>
+                        {s.label}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </>
+          )}
+        </section>
 
-//         {/* ================= ADDRESSES (ONLY EDITABLE SECTION) ================= */}
-//         <section className="bg-white rounded-xl border shadow-sm px-6 py-5">
-//           <div className="flex items-center justify-between mb-4">
-//             <h3 className="text-sm font-semibold text-slate-800">
-//               Saved Addresses
-//             </h3>
-//             <button
-//               className="text-sm font-medium text-indigo-600 hover:underline"
-//               onClick={() => setShowModal(true)}
-//             >
-//               + Add Address
-//             </button>
-//           </div>
-//           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-//             {addresses.length === 0 && (
-//               <div className="col-span-2 text-gray-400 text-sm text-center py-4">
-//                 No addresses found.
-//               </div>
-//             )}
-//             {addresses.map((addr, idx) => (
-//               <AddressCard
-//                 key={addr.id || idx}
-//                 title={addr.type || "Address"}
-//                 address={`${addr.street || ""}${addr.city ? `, ${addr.city}` : ""}${addr.state ? `, ${addr.state}` : ""} ${addr.pincode || ""}\n${addr.country || ""}`}
-//               />
-//             ))}
-//           </div>
-//         </section>
+        {/* ── ADDRESSES ── */}
+        <section className="bg-white rounded-2xl shadow-lg p-6">
+          <div className="flex justify-between items-center mb-4">
+            <h3 className="text-lg font-semibold text-slate-800">Saved Addresses</h3>
+            <button
+              onClick={() => setShowAddressModal(true)}
+              className="flex items-center gap-1 text-sm text-blue-600 hover:text-blue-800 transition"
+            >
+              <PlusIcon size={16} /> Add New
+            </button>
+          </div>
 
-//         {/* Address Modal */}
-//         {showModal && (
-//           <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-30">
-//             <div className="bg-white rounded-lg shadow-lg p-6 w-full max-w-md relative">
-//               <button
-//                 className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-//                 onClick={() => setShowModal(false)}
-//                 aria-label="Close"
-//               >
-//                 &times;
-//               </button>
-//               <h4 className="text-lg font-semibold mb-4">Add New Address</h4>
-//               {error && (
-//                 <div className="text-red-500 text-sm mb-2">{error}</div>
-//               )}
-//               <form onSubmit={handleAddAddress} className="space-y-3">
-               
-//                 <div>
-//                   <label className="block text-sm font-medium mb-1">
-//                     Street Address*
-//                   </label>
-//                   <input
-//                     className="w-full border rounded px-2 py-1"
-//                     value={form.street}
-//                     onChange={(e) =>
-//                       setForm((f) => ({ ...f, street: e.target.value }))
-//                     }
-//                   />
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <div className="flex-1">
-//                     <label className="block text-sm font-medium mb-1">
-//                       City*
-//                     </label>
-//                     <input
-//                       className="w-full border rounded px-2 py-1"
-//                       value={form.city}
-//                       onChange={(e) =>
-//                         setForm((f) => ({ ...f, city: e.target.value }))
-//                       }
-//                       required
-//                     />
-//                   </div>
-//                   <div className="flex-1">
-//                     <label className="block text-sm font-medium mb-1">
-//                       State*
-//                     </label>
-//                     <input
-//                       className="w-full border rounded px-2 py-1"
-//                       value={form.state}
-//                       onChange={(e) =>
-//                         setForm((f) => ({ ...f, state: e.target.value }))
-//                       }
-//                       required
-//                     />
-//                   </div>
-//                 </div>
-//                 <div className="flex gap-2">
-//                   <div className="flex-1">
-//                     <label className="block text-sm font-medium mb-1">
-//                       PinCode*
-//                     </label>
-//                     <input
-//                       className="w-full border rounded px-2 py-1"
-//                       value={form.pincode}
-//                       onChange={(e) =>
-//                         setForm((f) => ({ ...f, pincode: e.target.value }))
-//                       }
-//                       required
-//                     />
-//                   </div>
-//                   <div className="flex-1">
-//                     <label className="block text-sm font-medium mb-1">
-//                       Country*
-//                     </label>
-//                     <input
-//                       className="w-full border rounded px-2 py-1"
-//                       value={form.country}
-//                       onChange={(e) =>
-//                         setForm((f) => ({ ...f, country: e.target.value }))
-//                       }
-//                       required
-//                     />
-//                   </div>
-//                 </div>
-//                 <button
-//                   type="submit"
-//                   className="w-full bg-indigo-600 text-white rounded py-2 font-semibold mt-2 disabled:opacity-60"
-//                   disabled={submitting}
-//                 >
-//                   {submitting ? "Adding..." : "Add Address"}
-//                 </button>
-//               </form>
-//             </div>
-//           </div>
-//         )}
-//       </div>
-//     </div>
-//   );
-// }
+          {addressLoading ? (
+            <p className="text-sm text-gray-400">Loading addresses...</p>
+          ) : addresses.length === 0 ? (
+            <p className="text-sm text-gray-400">No address found. Add one now!</p>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {addresses.map((addr) => (
+                <div
+                  key={addr._id}
+                  onClick={() => setSelectedAddress(addr)}
+                  className={`p-4 border rounded-xl cursor-pointer transition-shadow hover:shadow-md ${
+                    selectedAddress?._id === addr._id
+                      ? "border-green-400 bg-green-50"
+                      : "border-gray-200"
+                  }`}
+                >
+                  <div className="flex justify-between items-start">
+                    <div className="flex flex-col gap-1 w-full">
+                      <div className="flex justify-between items-center">
+                        <p className="text-sm font-semibold text-slate-700">
+                          {addr.name || "User"}
+                        </p>
+                        {addr.isDefault && (
+                          <span className="text-[10px] px-2 py-0.5 bg-green-100 text-green-700 rounded-full">
+                            Default
+                          </span>
+                        )}
+                      </div>
+                      <p className="text-sm text-slate-600">
+                        {addr.phone || "N/A"}
+                        {addr.email ? `, ${addr.email}` : ""}
+                      </p>
+                      <p className="text-sm text-slate-500 leading-5">
+                        {addr.street}, {addr.city}, {addr.state}, {addr.country} -{" "}
+                        {addr.pincode}
+                      </p>
+                    </div>
+                    <Trash2Icon
+                      size={18}
+                      className="cursor-pointer text-red-500 hover:text-red-600 transition flex-shrink-0 ml-2"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteAddress(addr._id);
+                      }}
+                    />
+                  </div>
+                  {selectedAddress?._id === addr._id && (
+                    <CheckCircle size={18} className="text-green-600 mt-2" />
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </section>
 
-// /* ================= REUSABLE COMPONENTS ================= */
+        {/* ── ADDRESS MODAL ── */}
+        {showAddressModal && (
+          <AddressModal
+            setShowAddressModal={setShowAddressModal}
+            onSave={handleSaveAddress}
+          />
+        )}
 
-// const DetailRow = ({ label, value }) => (
-//   <div className="flex justify-between text-sm">
-//     <span className="text-slate-500">{label}</span>
-//     <span className="text-slate-900 font-medium">{value}</span>
-//   </div>
-// );
-
-// const AddressCard = ({ title, address }) => (
-//   <div className="border rounded-lg p-4 text-sm">
-//     <div className="flex items-center justify-between mb-1">
-//       <span className="font-medium text-slate-900">{title}</span>
-//       <div className="flex gap-3 text-xs">
-
-//         <button className="text-red-500 hover:underline">Delete</button>
-//       </div>
-//     </div>
-//     <p className="text-slate-500 whitespace-pre-line leading-relaxed">
-//       {address}
-//     </p>
-//   </div>
-// );
+      </div>
+    </div>
+  );
+}

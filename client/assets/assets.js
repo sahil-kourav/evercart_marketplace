@@ -1,4 +1,5 @@
 import logo from './Logo.png'
+import AVATAR from './AVATAR.png'
 import logo1 from './Logo1.png'
 import menublack from "./menu-black.png"
 import gs_logo from "./gs_logo.jpg"
@@ -32,6 +33,7 @@ import profile_pic8 from "./profile_pic8.jpg"
 
 export const assets = {
     logo,
+    AVATAR,
     logo1,
     menublack,
     upload_area, hero_model_img,

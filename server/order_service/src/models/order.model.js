@@ -61,6 +61,12 @@ const orderSchema = new mongoose.Schema(
       },
     },
 
+    paymentMethod: {
+      type: String,
+      enum: ["COD", "RAZORPAY"],
+      default: "COD",
+    },
+
     shippingAddress: {
       type: addressSchema,
       required: true,

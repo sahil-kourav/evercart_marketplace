@@ -178,7 +178,7 @@ async function updatePaymentStatus(req, res) {
         payment.status = status;
         await payment.save();
 
-        await publishToQueue('PAYMENT_SELLER_DASHBOARD.PAYMENT_UPDATE', payment);
+        await publishToQueue('PAYMENT_SELLER_DASHBOARD.PAYMENT_STATUS_UPDATE', payment);
         await publishToQueue('ORDER_NOTIFICATION.ORDER_STATUS_DELIVERED', {
             email: req.user.email,
             orderId: payment.order,

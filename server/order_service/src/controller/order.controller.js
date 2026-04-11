@@ -67,6 +67,7 @@ async function createOrder(req, res) {
       user: user.id,
       items: orderItems,
       status: "PENDING",
+      paymentMethod: req.body.paymentMethod || "COD",
       totalPrice: {
         amount: totalPrice,
         currency: "INR",
@@ -105,6 +106,7 @@ async function getMyOrders(req, res) {
   try {
     const orders = await orderModel
       .find({ user: user.id })
+      .sort({ createdAt: -1 })
       .skip(skip)
       .limit(limit)
       .exec();

@@ -88,6 +88,7 @@ async function getProducts(req, res) {
 
     const product = await productModel
       .find(filter)
+      .sort({ createdAt: -1 })
       .skip(Number(skip))
       .limit(Math.min(Number(limit), 20));
 

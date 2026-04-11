@@ -31,6 +31,7 @@ export default function Cart() {
   }, [dispatch]);
 
   
+  
   useEffect(() => {
     if (!cart?.items?.length) {
       setCartArray([]);
@@ -42,7 +43,8 @@ export default function Cart() {
         const responses = await Promise.all(
           cart.items.map((item) =>
             axios.get(
-              `http://localhost:8081/api/products/${item.productId}`
+              `http://localhost:8081/api/products/${item.productId}`,
+              { withCredentials: true }
             )
           )
         );

@@ -22,7 +22,6 @@ export const fetchCart = () => async (dispatch) => {
 
     const res = await api.get("/");
     dispatch(cartLoaded(res.data));
-
   } catch (error) {
     dispatch(
       cartError(

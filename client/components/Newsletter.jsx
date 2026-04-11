@@ -1,16 +1,31 @@
-import React from 'react'
-import Title from './Title'
+import React from "react";
+import Title from "./Title";
 
 const Newsletter = () => {
-    return (
-        <div className='flex flex-col items-center mx-4 my-36'>
-            <Title title="Join Newsletter" description="Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week." visibleButton={false} />
-            <div className='flex bg-slate-100 text-sm p-1 rounded-full w-full max-w-xl my-10 border-2 border-white ring ring-slate-200'>
-                <input className='flex-1 pl-5 outline-none' type="text" placeholder='Enter your email address' />
-                <button className='font-medium bg-green-500 text-white px-7 py-3 rounded-full hover:scale-103 active:scale-95 transition'>Get Updates</button>
-            </div>
-        </div>
-    )
-}
+  return (
+    <div className="flex flex-col items-center mx-4 my-36">
+      <Title
+        title="Join Newsletter"
+        description="Subscribe to get exclusive deals, new arrivals, and insider updates delivered straight to your inbox every week."
+        visibleButton={false}
+      />
+      <form className="flex flex-col sm:flex-row w-full max-w-2xl items-center gap-4 mt-15 relative z-10 bg-white border border-gray-200 rounded-2xl shadow-sm p-3">
+        <input
+          type="text"
+          className="w-full py-3 px-4 rounded-lg border border-gray-300 focus:ring-1 focus:ring-blue-400 focus:outline-none placeholder-gray-400"
+          placeholder="Enter your email address"
+        />
+        <button
+          type="submit"
+          className="w-full sm:w-auto px-8 py-3.5 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-700 transition-all shadow"
+        >
+          Submit
+        </button>
+      </form>
 
-export default Newsletter
+      {/* </div> */}
+    </div>
+  );
+};
+
+export default Newsletter;

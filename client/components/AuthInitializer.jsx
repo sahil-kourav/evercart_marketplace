@@ -15,7 +15,6 @@ export default function AuthInitializer() {
           "http://localhost:8080/api/auth/me",
           { withCredentials: true }
         );
-
         dispatch(loginSuccess(res.data.user));
       } catch (error) {
         dispatch(logout());
