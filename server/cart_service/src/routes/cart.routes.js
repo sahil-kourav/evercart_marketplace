@@ -11,7 +11,7 @@ router.post(
   cartValidator.addItemToCartValidation,
   createAuthMiddleware(["user"]),
   cartController.addItemToCart,
-);
+); // Done
 
 
 router.patch(
@@ -19,18 +19,18 @@ router.patch(
   cartValidator.validateUpdateCartItem,
   createAuthMiddleware(["user"]),
   cartController.updateCartItem,
-);
+); // Done
 
 router.delete(
   "/items/:productId",
   createAuthMiddleware(["user"]),
   cartController.deleteCartItem,
-);
+); // Done
 
 router.delete(
   "/",
   createAuthMiddleware(["user"]),
   cartController.clearCart,
-);
+); // Done
 
 module.exports = router;

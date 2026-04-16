@@ -127,6 +127,31 @@ async function getMyOrders(req, res) {
   }
 }
 
+
+async function getAllOrders(req, res) {
+  const page  = parseInt(req.query.page)  || 1;
+  const limit = parseInt(req.query.limit) || 20;
+  const skip  = (page - 1) * limit;
+
+  try {
+    const orders = await orderModel
+      .find({})
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit)
+      .exec();
+
+    const total = await orderModel.countDocuments({});
+
+    return res.status(200).json({
+      orders,
+      meta: { total, page, limit },
+    });
+  } catch (err) {
+    return res.status(500).json({ message: "Internal server error", error: err.message });
+  }
+}
+
 async function getOrderById(req, res) {
   const user = req.user;
   const orderId = req.params.id;
@@ -162,7 +187,7 @@ async function cancelOrder(req, res) {
       });
     }
     // order only calcel when status is PENDING
-    if (order.status !== "PENDING" && order.status !== "CONFIRMED") {
+    if (order.status !== "PENDING" && order.status !== "PROCESSING") {
       return res
         .status(400)
         .json({ message: "Cannot cancel order at this stage" });
@@ -177,6 +202,39 @@ async function cancelOrder(req, res) {
       .status(500)
       .json({ message: "Internal Server Error", error: error.message });
   }
+}
+
+async function getMetrics(req, res) {
+    try {
+        const totalOrders = await orderModel.countDocuments();
+        const ordersByStatus = await orderModel.aggregate([
+            { $group: { _id: "$status", count: { $sum: 1 } } }
+        ]);
+        const topProducts = await orderModel.aggregate([
+            { $unwind: "$items" },
+            { $group: { _id: "$items.productId", totalQuantity: { $sum: "$items.quantity" } } },
+            { $sort: { totalQuantity: -1 } },
+            { $limit: 5 },
+            { $lookup: {
+                from: "products",
+                localField: "_id",
+                foreignField: "_id",
+                as: "product"
+            }},
+            { $unwind: "$product" },
+            { $project: { _id: 0, productId: "$_id", title: "$product.title", totalQuantity: 1 } }
+        ]);
+
+        return res.status(200).json({
+            totalOrders,
+            ordersByStatus,
+            topProducts
+        });
+    } catch (error) {
+        return res
+            .status(500)
+            .json({ message: "Internal Server Error", error: error.message });
+    }
 }
 
 async function updateOrderStatus(req, res) {
@@ -218,10 +276,12 @@ async function updateOrderStatus(req, res) {
   }
 }
 
+
 module.exports = {
   createOrder,
   getOrderById,
   getMyOrders,
   cancelOrder,
   updateOrderStatus,
+  getAllOrders,
 };

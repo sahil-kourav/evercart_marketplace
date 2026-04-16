@@ -3,7 +3,7 @@ const createAuthMiddleware = require('../middlewares/auth.middleware');
 const controller = require('../controller/seller.controller');
 const router = express.Router();
 
-router.get('/metrix', createAuthMiddleware(['seller']), controller.getMetrics) 
+router.get('/metrics', createAuthMiddleware(['seller']), controller.getMetrics)
 router.get('/orders', createAuthMiddleware(['seller']), controller.getOrders)
 router.get('/products', createAuthMiddleware(['seller']), controller.getProducts)
 

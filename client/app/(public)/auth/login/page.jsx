@@ -98,7 +98,7 @@ export default function Login() {
     );
 
     setError(
-      err?.message || "Invalid credentials provided"
+      err?.message || "Invalid email or password. Please try again."
     );
   } finally {
     setLoading(false);
@@ -135,8 +135,7 @@ export default function Login() {
             {/* Email */}
             <div>
               <p className="text-sm text-gray-500 mb-4">
-                Mobile number login is currently unavailable. Please log in
-                using your email address.
+                Use email <span className="text-gray-400">or</span> phone number
               </p>
               <label className="block text-sm text-gray-700 mb-2">Email*</label>
               <input

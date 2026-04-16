@@ -20,21 +20,13 @@ const AdminSidebar = () => {
     { name: "Add Product", href: "/admin/add-product", icon: SquarePlusIcon },
     { name: "Manage Product", href: "/admin/manage-product", icon: SquarePenIcon},
     { name: "Orders", href: "/admin/orders", icon: LayoutListIcon },
+    { name: "Users", href: "/admin/users", icon: ShieldCheckIcon },
     { name: "Reviews", href: "/admin/reviews", icon: ShieldCheckIcon },
   ];
 
   return (
     <div className="inline-flex h-full flex-col gap-5 border-r border-slate-200 sm:min-w-60">
-      <div className="flex flex-col gap-3 justify-center items-center pt-8 max-sm:hidden">
-        <Image
-          className="w-14 h-14 rounded-full"
-          src={assets.gs_logo}
-          alt=""
-          width={80}
-          height={80}
-        />
-        <p className="text-slate-700">Hi, Admin</p>
-      </div>
+
 
       <div className="max-sm:mt-6">
         {sidebarLinks.map((link, index) => (

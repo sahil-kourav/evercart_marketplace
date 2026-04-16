@@ -8,6 +8,7 @@ const statusStyles = {
   PROCESSING: "bg-blue-50 text-blue-700",
   SHIPPED: "bg-purple-50 text-purple-700",
   DELIVERED: "bg-green-50 text-green-700",
+  CANCELLED: "bg-red-50 text-red-700",
 };
 
 const OrderItem = ({ order }) => {

@@ -1,6 +1,6 @@
 "use client";
 
-const steps = ["PENDING", "CONFIRMED", "SHIPPED", "DELIVERED"];
+const steps = ["PENDING", "PROCESSING", "SHIPPED", "DELIVERED", "CANCELLED"];
 
 const OrderTimeline = ({ status }) => {
   const currentStep = steps.indexOf(status);

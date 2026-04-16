@@ -7,82 +7,189 @@ import { useSelector, useDispatch } from "react-redux";
 import axios from "axios";
 import { toast } from "react-hot-toast";
 import { logout } from "@/lib/features/auth/authSlice";
-import { assets } from "@/assets/assets";
-import Image from "next/image";
 
 const NAV_LINKS = [
-  { label: "Home",    href: "/"        },
-  { label: "Shop",    href: "/shop"    },
-  { label: "About",   href: "/about"   },
+  { label: "Home", href: "/" },
+  { label: "Shop", href: "/shop" },
+  { label: "About", href: "/about" },
   { label: "Contact", href: "/contact" },
 ];
 
-// ── Desktop user dropdown ────────────────────────────────────
-const DesktopUserDropdown = ({ onLogout }) => {
+const ACCOUNT_LINKS = [
+  {
+    label: "Profile",
+    href: "/profile",
+    iconBg: "bg-violet-50",
+    icon: (
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#6d28d9"
+        strokeWidth="2"
+      >
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+  },
+  {
+    label: "My Orders",
+    href: "/orders",
+    iconBg: "bg-purple-50",
+    icon: (
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="#7c3aed"
+        strokeWidth="2"
+      >
+        <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z" />
+      </svg>
+    ),
+  },
+];
+
+// ── Initials Avatar ──────────────────────────────────────────
+const Avatar = ({ name = "U", size = 32 }) => {
+  const initials = name
+    .trim()
+    .split(" ")
+    .map((w) => w[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+  return (
+    <div
+      style={{
+        width: size,
+        height: size,
+        fontSize: size * 0.36,
+        background: "linear-gradient(135deg, #4f46e5, #7c3aed)",
+      }}
+      className="rounded-full flex items-center justify-center text-white font-semibold shrink-0 select-none"
+    >
+      {initials}
+    </div>
+  );
+};
+
+// ── Desktop Dropdown ─────────────────────────────────────────
+const DesktopUserDropdown = ({ user, onLogout }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef(null);
 
   useEffect(() => {
-    const handler = (e) => {
+    const h = (e) => {
       if (ref.current && !ref.current.contains(e.target)) setOpen(false);
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
+    document.addEventListener("mousedown", h);
+    return () => document.removeEventListener("mousedown", h);
   }, []);
+
+  const displayName = user?.fullName
+    ? `${user.fullName.firstName} ${user.fullName.lastName}`
+    : user?.email?.split("@")[0] || "Account";
 
   return (
     <div className="relative" ref={ref}>
+      {/* Trigger */}
       <button
         onClick={() => setOpen((p) => !p)}
-        className="flex items-center gap-2 p-1 rounded-full ring-2 ring-transparent hover:ring-indigo-200 transition"
+        className={`flex items-center gap-2 pl-1 pr-2.5 py-1 rounded-xl border transition-all duration-200
+          ${
+            open
+              ? "bg-slate-100 border-slate-200"
+              : "border-transparent hover:bg-slate-50 hover:border-slate-200"
+          }`}
       >
-        <Image
-          src={assets.AVATAR}
-          alt="Avatar"
-          width={36}
-          height={36}
-          className="rounded-full object-cover"
-        />
+        <Avatar name={displayName} size={28} />
+        <span className="hidden lg:block text-[13px] font-medium text-slate-700 max-w-[80px] truncate">
+          {displayName.split(" ")[0]}
+        </span>
+        <svg
+          width="12"
+          height="12"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2.5"
+          className={`text-slate-400 transition-transform duration-200 ${open ? "rotate-180" : ""}`}
+        >
+          <polyline points="6 9 12 15 18 9" />
+        </svg>
       </button>
 
-      {/* Dropdown panel */}
+      {/* Panel */}
       <div
-        className={`absolute right-0 mt-3 w-52 rounded-2xl bg-white border border-slate-100
-          shadow-2xl shadow-slate-200/60 overflow-hidden z-50
+        className={`absolute right-0 mt-2.5 w-60 rounded-2xl bg-white z-50
+          border border-slate-100 shadow-xl shadow-black/[0.08] overflow-hidden
           transition-all duration-200 origin-top-right
           ${open ? "opacity-100 scale-100 pointer-events-auto" : "opacity-0 scale-95 pointer-events-none"}`}
       >
-        {/* Top accent */}
-        <div className="h-1 bg-gradient-to-r from-indigo-500 to-violet-500" />
-
-        <div className="py-1.5">
-          <Link
-            href="/profile"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
-          >
-            <span className="w-7 h-7 rounded-lg bg-indigo-50 flex items-center justify-center text-indigo-600 text-xs">👤</span>
-            Profile
-          </Link>
-          <Link
-            href="/orders"
-            onClick={() => setOpen(false)}
-            className="flex items-center gap-3 px-4 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition"
-          >
-            <span className="w-7 h-7 rounded-lg bg-violet-50 flex items-center justify-center text-violet-600 text-xs">📦</span>
-            My Orders
-          </Link>
+        {/* Links */}
+        <div className="p-2">
+          {ACCOUNT_LINKS.map(({ label, href, icon, iconBg }) => (
+            <Link
+              key={label}
+              href={href}
+              onClick={() => setOpen(false)}
+              className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-slate-50 transition-colors group"
+            >
+              <span
+                className={`w-8 h-8 ${iconBg} rounded-lg flex items-center justify-center shrink-0`}
+              >
+                {icon}
+              </span>
+              <span className="text-[13px] font-medium text-slate-600 group-hover:text-indigo-600 transition-colors">
+                {label}
+              </span>
+              <svg
+                width="12"
+                height="12"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                className="ml-auto text-slate-300 group-hover:text-indigo-400 transition-colors"
+              >
+                <polyline points="9 18 15 12 9 6" />
+              </svg>
+            </Link>
+          ))}
         </div>
 
-        <div className="h-px bg-slate-100 mx-3" />
+        <div className="h-px bg-slate-100" />
 
-        <div className="py-1.5">
+        {/* Logout */}
+        <div className="p-2">
           <button
-            onClick={onLogout}
-            className="flex items-center gap-3 w-full px-4 py-2.5 text-sm text-red-500 hover:bg-red-50 transition"
+            onClick={() => {
+              setOpen(false);
+              onLogout();
+            }}
+            className="flex items-center gap-3 w-full px-3 py-1.5 rounded-xl hover:bg-red-50 transition-colors group"
           >
-            <span className="w-7 h-7 rounded-lg bg-red-50 flex items-center justify-center text-red-400 text-xs">🚪</span>
-            Logout
+            <span className="w-8 h-8 bg-red-50 rounded-lg flex items-center justify-center shrink-0 group-hover:bg-red-100 transition-colors">
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="#ef4444"
+                strokeWidth="2"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+            </span>
+            <span className="text-[13px] font-medium text-red-500">
+              Sign out
+            </span>
           </button>
         </div>
       </div>
@@ -90,43 +197,49 @@ const DesktopUserDropdown = ({ onLogout }) => {
   );
 };
 
-// ── Main navbar ──────────────────────────────────────────────
+// ── Main Navbar ───────────────────────────────────────────────
 const Navbar = () => {
-  const router   = useRouter();
+  const router = useRouter();
   const dispatch = useDispatch();
 
-  const { cart }                        = useSelector((s) => s.cart);
-  const { isAuthenticated, loading }    = useSelector((s) => s.auth);
+  const { cart } = useSelector((s) => s.cart);
+  const { isAuthenticated, loading, user } = useSelector((s) => s.auth);
   const cartCount = cart?.items?.reduce((a, i) => a + i.quantity, 0) || 0;
 
-  const [search,      setSearch]      = useState("");
-  const [menuOpen,    setMenuOpen]    = useState(false);
-  const [showNavbar,  setShowNavbar]  = useState(true);
+  const [search, setSearch] = useState("");
+  const [menuOpen, setMenuOpen] = useState(false);
+  const [showNavbar, setShowNavbar] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
-  const [mounted,     setMounted]     = useState(false);
+  const [mounted, setMounted] = useState(false);
 
-  useEffect(() => { setMounted(true); }, []);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
-  // hide-on-scroll
   useEffect(() => {
     const onScroll = () => {
       const y = window.scrollY;
       setShowNavbar(y < lastScrollY || y < 80);
       setLastScrollY(y);
     };
-    window.addEventListener("scroll", onScroll);
+    window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, [lastScrollY]);
 
-  // lock body scroll when mobile menu open
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
-    return () => { document.body.style.overflow = ""; };
+    return () => {
+      document.body.style.overflow = "";
+    };
   }, [menuOpen]);
 
   const handleLogout = async () => {
     try {
-      await axios.post("http://localhost:8080/api/auth/logout", {}, { withCredentials: true });
+      await axios.post(
+        "http://localhost:8080/api/auth/logout",
+        {},
+        { withCredentials: true },
+      );
       dispatch(logout());
       toast.success("Logged out successfully.");
       router.replace("/");
@@ -145,84 +258,108 @@ const Navbar = () => {
     setMenuOpen(false);
   };
 
+  const displayName = user?.fullName
+    ? `${user.fullName.firstName} ${user.fullName.lastName}`
+    : user?.email?.split("@")[0] || "Account";
+
   if (!mounted) return null;
 
   return (
     <>
-      {/* ── DESKTOP / TABLET NAV ── */}
+      {/* ── NAVBAR ── */}
       <nav
         className={`fixed top-0 w-full z-50 transition-transform duration-300
-          ${showNavbar ? "translate-y-0" : "-translate-y-full"}
-          bg-white/80 backdrop-blur-xl border-b border-slate-100`}
+        ${showNavbar ? "translate-y-0" : "-translate-y-full"}
+        bg-white/85 backdrop-blur-xl border-b border-slate-100/80`}
       >
-        <div className="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between gap-6">
-
+        <div className="max-w-7xl mx-auto px-5 h-[62px] flex items-center gap-4">
           {/* Logo */}
-          <Link href="/" className="text-2xl font-bold text-slate-800 shrink-0">
+          <Link
+            href="/"
+            className="text-3xl font-bold text-slate-800 shrink-0 tracking-tight"
+          >
             <span className="text-green-500">ever</span>cart.
           </Link>
 
-          {/* Nav links — hidden on mobile */}
-          <div className="hidden md:flex items-center gap-6">
+
+          <div className="flex-1" />
+
+          {/* Nav links — now on the RIGHT */}
+          <div className="hidden md:flex items-center gap-2">
             {NAV_LINKS.map(({ label, href }) => (
               <Link
                 key={label}
                 href={href}
-                className="text-sm text-slate-600 hover:text-indigo-600 transition font-medium"
+                className="text-[15px] font-medium text-slate-500 hover:text-slate-900
+        hover:bg-slate-50 px-3.5 py-2 rounded-lg transition-all duration-150"
               >
                 {label}
               </Link>
             ))}
           </div>
 
-          {/* Search — desktop only */}
           <form
             onSubmit={handleSearch}
-            className="hidden xl:flex items-center gap-2 bg-slate-50 hover:bg-white focus-within:bg-white
-              px-4 py-2 rounded-full border border-transparent focus-within:border-slate-200
-              transition-all duration-200 shadow-sm focus-within:shadow-md flex-1 max-w-xs"
+            className="hidden xl:flex mx-2 items-center gap-2 bg-slate-50 focus-within:bg-white
+    px-3.5 py-2 rounded-xl border border-slate-100 focus-within:border-slate-300
+    transition-all duration-200 focus-within:shadow-sm flex-1 max-w-[260px]"
           >
-            <Search size={15} className="text-slate-400 shrink-0" />
+            <Search size={14} className="text-slate-400 shrink-0" />
             <input
-              className="bg-transparent outline-none flex-1 text-sm text-slate-900 placeholder:text-slate-400"
+              className="bg-transparent outline-none flex-1 text-[13px] text-slate-800 placeholder:text-slate-400"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…"
             />
             {search && (
-              <button type="button" onClick={() => setSearch("")} className="text-slate-400 hover:text-slate-600 text-xs">✕</button>
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="text-slate-400 hover:text-slate-600 text-xs leading-none"
+              >
+                ✕
+              </button>
             )}
           </form>
 
           {/* Right actions */}
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1">
             {/* Cart */}
-            <Link href="/cart" className="relative p-2 rounded-full hover:bg-slate-100 transition">
-              <ShoppingCart size={20} className="text-slate-700" />
+            <Link
+              href="/cart"
+              className="relative w-9 h-9 flex items-center justify-center rounded-xl
+      hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-slate-600"
+            >
+              <ShoppingCart size={18} />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 min-w-[18px] h-[18px] flex items-center justify-center
-                  text-[10px] font-bold bg-indigo-600 text-white rounded-full px-1">
+                <span
+                  className="absolute -top-1 -right-1 min-w-[18px] h-[18px] flex items-center justify-center
+        text-[9px] font-bold bg-indigo-600 text-white rounded-full px-1 border-2 border-white"
+                >
                   {cartCount}
                 </span>
               )}
             </Link>
 
-            {/* Auth — desktop */}
+            {/* Desktop auth */}
             {!loading && (
               <div className="hidden md:flex items-center gap-2">
+                <div className="w-px h-5 bg-slate-200 mx-2" />
                 {isAuthenticated ? (
-                  <DesktopUserDropdown onLogout={handleLogout} />
+                  <DesktopUserDropdown user={user} onLogout={handleLogout} />
                 ) : (
                   <>
                     <Link
                       href="/auth/login"
-                      className="text-sm font-medium text-slate-600 hover:text-indigo-600 px-3 py-1.5 transition"
+                      className="text-[13px] font-medium text-slate-600 hover:text-slate-900
+              px-3.5 py-2 rounded-lg hover:bg-slate-50 transition"
                     >
                       Login
                     </Link>
                     <Link
                       href="/auth/register"
-                      className="text-sm font-medium px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-full transition"
+                      className="text-[13px] font-medium px-4 py-2 bg-indigo-600
+              hover:bg-indigo-700 text-white rounded-lg transition"
                     >
                       Register
                     </Link>
@@ -231,136 +368,185 @@ const Navbar = () => {
               </div>
             )}
 
-            {/* Hamburger — mobile only */}
+            {/* Hamburger */}
             <button
               onClick={() => setMenuOpen(true)}
-              className="md:hidden p-2 rounded-full hover:bg-slate-100 transition"
+              className="md:hidden w-9 h-9 flex items-center justify-center rounded-xl
+      hover:bg-slate-50 border border-transparent hover:border-slate-200 transition-all text-slate-600"
             >
-              <Menu size={22} className="text-slate-700" />
+              <Menu size={20} />
             </button>
           </div>
         </div>
       </nav>
 
-      {/* ── MOBILE MENU BACKDROP ── */}
+      {/* ── BACKDROP ── */}
       <div
         onClick={() => setMenuOpen(false)}
-        className={`fixed inset-0 bg-black/40 backdrop-blur-sm z-40 md:hidden transition-opacity duration-300
+        className={`fixed inset-0 bg-black/30 backdrop-blur-[2px] z-40 md:hidden transition-opacity duration-300
           ${menuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
       />
 
       {/* ── MOBILE DRAWER ── */}
       <div
-        className={`fixed top-0 right-0 h-full w-[85%] max-w-sm bg-white z-50 md:hidden
-          flex flex-col shadow-2xl
-          transform transition-transform duration-300 ease-out
-          ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
+        className={`fixed top-0 right-0 h-full w-[82%] max-w-[340px] bg-white z-50 md:hidden
+        flex flex-col transition-transform duration-300 ease-out shadow-2xl shadow-black/10
+        ${menuOpen ? "translate-x-0" : "translate-x-full"}`}
       >
-        {/* Drawer header */}
-        <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
+        {/* Header */}
+        <div className="flex items-center justify-between px-4 py-3.5 border-b border-slate-100">
           <div className="flex items-center gap-3">
-            <Image
-              src={assets.AVATAR}
-              alt="Avatar"
-              width={40}
-              height={40}
-              className="rounded-full object-cover ring-2 ring-indigo-100"
-            />
-            <div>
-              <p className="text-sm font-semibold text-slate-800">
-                {isAuthenticated ? "My Account" : "Welcome"}
-              </p>
-              <p className="text-xs text-slate-400">
-                {isAuthenticated ? "Manage your account" : "Sign in to continue"}
-              </p>
-            </div>
+            {isAuthenticated ? (
+              <>
+                <Avatar name={displayName} size={40} />
+                <div className="min-w-0">
+                  <p className="text-[13px] font-semibold text-slate-800 truncate leading-tight">
+                    {displayName}
+                  </p>
+                  <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                    {user?.email}
+                  </p>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center shrink-0">
+                  <svg
+                    width="18"
+                    height="18"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="#94a3b8"
+                    strokeWidth="1.8"
+                  >
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                    <circle cx="12" cy="7" r="4" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-[13px] font-semibold text-slate-800">
+                    Welcome
+                  </p>
+                  <p className="text-[11px] text-slate-400">
+                    Sign in to continue
+                  </p>
+                </div>
+              </>
+            )}
           </div>
           <button
             onClick={() => setMenuOpen(false)}
-            className="p-2 rounded-full hover:bg-slate-100 transition"
+            className="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center transition shrink-0"
           >
-            <X size={18} className="text-slate-500" />
+            <X size={16} className="text-slate-500" />
           </button>
         </div>
 
-        {/* Drawer body — scrollable */}
-        <div className="flex-1 overflow-y-auto px-5 py-5 space-y-6">
-
-          {/* Mobile search */}
+        {/* Body */}
+        <div className="flex-1 overflow-y-auto px-4 py-4 space-y-5">
+          {/* Search */}
           <form
             onSubmit={handleSearch}
-            className="flex items-center gap-2 bg-slate-50 focus-within:bg-white px-4 py-2.5 rounded-xl
-              border border-transparent focus-within:border-slate-200 transition shadow-sm"
+            className="flex items-center gap-2 bg-slate-50 focus-within:bg-white px-3.5 py-2.5
+              rounded-xl border border-slate-100 focus-within:border-slate-300 transition-all shadow-sm"
           >
-            <Search size={15} className="text-slate-400 shrink-0" />
+            <Search size={14} className="text-slate-400 shrink-0" />
             <input
-              className="bg-transparent outline-none flex-1 text-sm text-slate-900 placeholder:text-slate-400"
+              className="bg-transparent outline-none flex-1 text-[13px] text-slate-800 placeholder:text-slate-400"
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search products…"
             />
             {search && (
-              <button type="button" onClick={() => setSearch("")} className="text-slate-400 text-xs">✕</button>
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                className="text-slate-400 text-xs"
+              >
+                ✕
+              </button>
             )}
           </form>
 
-          {/* Nav links */}
+          {/* Nav */}
           <div>
-            <p className="text-[11px] font-semibold tracking-widest text-slate-400 uppercase mb-3">
+            <p className="text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-2 px-1">
               Navigation
             </p>
-            <div className="space-y-1">
+            <div className="space-y-0.5">
               {NAV_LINKS.map(({ label, href }) => (
                 <Link
                   key={label}
                   href={href}
                   onClick={() => setMenuOpen(false)}
-                  className="flex items-center justify-between px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition"
+                  className="flex items-center justify-between px-3 py-2.5 rounded-xl
+                    text-[13px] font-medium text-slate-700 hover:bg-slate-50 hover:text-indigo-600 transition-colors"
                 >
                   {label}
-                  <span className="text-slate-300 text-xs">›</span>
+                  <svg
+                    width="12"
+                    height="12"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="2.5"
+                    className="text-slate-300"
+                  >
+                    <polyline points="9 18 15 12 9 6" />
+                  </svg>
                 </Link>
               ))}
             </div>
           </div>
 
-          {/* Account section */}
+          {/* Account */}
           {!loading && (
             <>
               <div className="h-px bg-slate-100" />
-
               {isAuthenticated ? (
                 <div>
-                  <p className="text-[11px] font-semibold tracking-widest text-slate-400 uppercase mb-3">
+                  <p className="text-[10px] font-semibold tracking-widest text-slate-400 uppercase mb-2 px-1">
                     Account
                   </p>
-                  <div className="space-y-1">
-                    {[
-                      { label: "Profile",    href: "/profile",  icon: "👤", color: "bg-indigo-50 text-indigo-500" },
-                      { label: "My Orders",  href: "/orders",   icon: "📦", color: "bg-violet-50 text-violet-500" },
-                    ].map(({ label, href, icon, color }) => (
+                  <div className="space-y-0.5">
+                    {ACCOUNT_LINKS.map(({ label, href, icon, iconBg }) => (
                       <Link
                         key={label}
                         href={href}
                         onClick={() => setMenuOpen(false)}
-                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                        className="flex items-center gap-3 px-3 py-2.5 rounded-xl
+                          text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition-colors group"
                       >
-                        <span className={`w-7 h-7 rounded-lg ${color} flex items-center justify-center text-xs shrink-0`}>
+                        <span
+                          className={`w-7 h-7 ${iconBg} rounded-lg flex items-center justify-center shrink-0`}
+                        >
                           {icon}
                         </span>
-                        {label}
-                        <span className="ml-auto text-slate-300 text-xs">›</span>
+                        <span className="group-hover:text-indigo-600 transition-colors">
+                          {label}
+                        </span>
+                        <svg
+                          width="12"
+                          height="12"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          stroke="currentColor"
+                          strokeWidth="2.5"
+                          className="ml-auto text-slate-300"
+                        >
+                          <polyline points="9 18 15 12 9 6" />
+                        </svg>
                       </Link>
                     ))}
                   </div>
                 </div>
               ) : (
-                <div className="space-y-3">
+                <div className="space-y-2.5">
                   <Link
                     href="/auth/login"
                     onClick={() => setMenuOpen(false)}
                     className="block text-center py-2.5 rounded-xl border border-slate-200
-                      text-sm font-medium text-slate-700 hover:bg-slate-50 transition"
+                      text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition"
                   >
                     Login
                   </Link>
@@ -368,7 +554,7 @@ const Navbar = () => {
                     href="/auth/register"
                     onClick={() => setMenuOpen(false)}
                     className="block text-center py-2.5 rounded-xl bg-indigo-600
-                      text-sm font-medium text-white hover:bg-indigo-700 transition"
+                      text-[13px] font-medium text-white hover:bg-indigo-700 transition"
                   >
                     Register
                   </Link>
@@ -378,22 +564,33 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Logout pinned at bottom */}
+        {/* Logout pinned bottom */}
         {isAuthenticated && (
-          <div className="px-5 py-4 border-t border-slate-100">
+          <div className="px-4 py-3.5 border-t border-slate-100">
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl
-                border border-red-100 text-sm font-medium text-red-500 hover:bg-red-50 transition"
+                border border-red-100 text-[13px] font-medium text-red-500 hover:bg-red-50 transition"
             >
-              <span>🚪</span> Logout
+              <svg
+                width="14"
+                height="14"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+              >
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+                <polyline points="16 17 21 12 16 7" />
+                <line x1="21" y1="12" x2="9" y2="12" />
+              </svg>
+              Sign out
             </button>
           </div>
         )}
       </div>
 
-      {/* Spacer */}
-      <div className="h-16" />
+      <div className="h-[62px]" />
     </>
   );
 };
