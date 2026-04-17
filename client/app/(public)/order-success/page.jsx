@@ -11,7 +11,7 @@ const OrderSuccess = () => {
   useEffect(() => {
     const timer = setTimeout(() => {
       router.push("/orders");
-    }, 3000); // ⏱ 3 sec animation
+    }, 3000);
 
     return () => clearTimeout(timer);
   }, []);

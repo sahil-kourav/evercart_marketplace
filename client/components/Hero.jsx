@@ -21,7 +21,7 @@ const Hero = () => {
                         </h2>
                         <div className='text-slate-800 text-sm font-medium mt-4 sm:mt-8'>
                             <p>Starts from</p>
-                            <p className='text-3xl'>{currency}4.90</p>
+                            <p className='text-3xl'>{currency}499</p>
                         </div>
                         <button className='bg-gradient-to-r from-emerald-600 to-lime-500 text-white text-sm py-2.5 px-7 sm:py-5 sm:px-12 mt-4 sm:mt-10 rounded-md hover:from-emerald-700 hover:to-lime-600 hover:scale-103 active:scale-95 transition shadow'>LEARN MORE</button>
                     </div>

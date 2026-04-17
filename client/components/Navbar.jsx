@@ -509,7 +509,7 @@ const Navbar = () => {
                     Account
                   </p>
                   <div className="space-y-0.5">
-                    {ACCOUNT_LINKS.map(({ label, href, icon, iconBg }) => (
+                    {ACCOUNT_LINKS.map(({ label, href, iconBg }) => (
                       <Link
                         key={label}
                         href={href}
@@ -517,11 +517,6 @@ const Navbar = () => {
                         className="flex items-center gap-3 px-3 py-2.5 rounded-xl
                           text-[13px] font-medium text-slate-700 hover:bg-slate-50 transition-colors group"
                       >
-                        <span
-                          className={`w-7 h-7 ${iconBg} rounded-lg flex items-center justify-center shrink-0`}
-                        >
-                          {icon}
-                        </span>
                         <span className="group-hover:text-indigo-600 transition-colors">
                           {label}
                         </span>
@@ -570,7 +565,7 @@ const Navbar = () => {
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl
-                border border-red-100 text-[13px] font-medium text-red-500 hover:bg-red-50 transition"
+                border-8 border-red-800 text-[13px] font-medium text-red-500 hover:bg-red-50 transition"
             >
               <svg
                 width="14"
