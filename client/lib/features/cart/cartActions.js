@@ -6,7 +6,7 @@ import {
   cartCleared,
 } from "./cartSlice";
 
-const BASE_URL = "http://localhost:8082/api/cart";
+const BASE_URL = `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`;
 
 const api = axios.create({
   baseURL: BASE_URL,
@@ -20,7 +20,10 @@ export const fetchCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    const res = await api.get("/");
+    const res = await axios.get(
+      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`,
+      { withCredentials: true }
+    );
     dispatch(cartLoaded(res.data));
   } catch (error) {
     dispatch(
@@ -42,7 +45,10 @@ export const addItemToCart = ({ productId, qty = 1 }) => async (dispatch) => {
     const id =
       typeof productId === "object" ? productId._id : productId;
 
-    await api.post("/items", {
+    // await api.post("/items",
+    await axios.post(
+      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items`, 
+      {
       productId: id,
       qty,
     });
@@ -68,7 +74,11 @@ export const updateCartQuantity = ({ productId, qty }) => async (dispatch) => {
     const id =
       typeof productId === "object" ? productId._id : productId;
 
-    await api.patch(`/items/${id}`, { qty });
+    await axios.patch(
+      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items/${id}`,
+      { qty },
+      { withCredentials: true }
+    );
 
     dispatch(fetchCart());
 
@@ -91,7 +101,10 @@ export const removeItemFromCart = (productId) => async (dispatch) => {
     const id =
       typeof productId === "object" ? productId._id : productId;
 
-    await api.delete(`/items/${id}`);
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items/${id}`,
+      { withCredentials: true }
+    );
 
     dispatch(fetchCart());
 
@@ -111,7 +124,10 @@ export const clearCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await api.delete("/");
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`,
+      { withCredentials: true }
+    );
 
     dispatch(cartCleared());
 

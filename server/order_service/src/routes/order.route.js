@@ -4,7 +4,6 @@ const createAuthMiddleware = require("../middlewares/auth.middleware");
 const validation = require("../middlewares/validation.middleware");
 const route = express.Router();
 
-
 route.post("/", createAuthMiddleware(["user"]), validation.orderValidation, orderController.createOrder); // Done
 
 route.get("/me", createAuthMiddleware(["user"]), orderController.getMyOrders); // Done
@@ -17,5 +16,3 @@ route.get("/:id", createAuthMiddleware(["user", "seller"]), orderController.getO
 
 route.post('/status/:id', createAuthMiddleware(['seller']), orderController.updateOrderStatus); // Done
 module.exports = route;
-
-// localhost:8083/api/orders/${orderId}/cancel

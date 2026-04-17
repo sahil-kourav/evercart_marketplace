@@ -13,8 +13,10 @@ export default function Orders() {
       setLoading(true); // 🔥 start loading
 
       const response = await axios.get(
-        "http://localhost:8083/api/orders/me",
-        { withCredentials: true }
+        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/me`,
+        {
+          withCredentials: true,
+        }
       );
 
       const rawOrders = response.data.orders;
@@ -26,7 +28,7 @@ export default function Orders() {
             order.items.map(async (item) => {
               try {
                 const res = await axios.get(
-                  `http://localhost:8081/api/products/${item.productId}`
+                  `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
                 );
 
                 return {

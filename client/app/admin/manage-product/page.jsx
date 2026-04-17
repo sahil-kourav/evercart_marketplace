@@ -20,7 +20,7 @@ export default function StoreManageProducts() {
     setLoading(true);
     try {
       const res = await axios.get(
-        "http://localhost:8081/api/products/sellers",
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/sellers`,
         {
           withCredentials: true,
         },
@@ -39,7 +39,8 @@ export default function StoreManageProducts() {
   const updateProduct = async (productId, updateData) => {
     try {
       const res = await axios.patch(
-        `http://localhost:8081/api/products/sellers/${productId}`,
+        // `http://localhost:8081/api/products/sellers/${productId}`,
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/sellers/${productId}`,
         updateData,
         { withCredentials: true }
       );
@@ -59,7 +60,8 @@ export default function StoreManageProducts() {
         if (!confirm("Are you sure you want to delete this product?")) return;
 
       const res = await axios.delete(
-        `http://localhost:8081/api/products/${productId}`,
+        // `http://localhost:8081/api/products/${productId}`,
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${productId}`,
         {
           withCredentials: true,
         },

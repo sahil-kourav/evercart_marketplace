@@ -38,9 +38,12 @@ export default function ProfilePage() {
     if (user) return;
     async function fetchUser() {
       try {
-        const res = await axios.get("http://localhost:8080/api/auth/me", {
-          withCredentials: true,
-        });
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/me`,
+          {
+            withCredentials: true,
+          }
+        );
         dispatch(loginSuccess(res.data.user));
       } catch (err) {
         console.error("User fetch failed", err);
@@ -57,7 +60,8 @@ export default function ProfilePage() {
       setAddressLoading(true);
       try {
         const res = await axios.get(
-          "http://localhost:8080/api/auth/users/me/addresses",
+          // "http://localhost:8080/api/auth/users/me/addresses",
+          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
           { withCredentials: true },
         );
         const data = res.data;
@@ -83,7 +87,10 @@ export default function ProfilePage() {
     async function fetchOrders() {
       setOrdersLoading(true);
       try {
-        const res = await axios.get("http://localhost:8083/api/orders/me", {
+        const res = await axios.get(
+          // "http://localhost:8083/api/orders/me", 
+          `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/me`,
+          {
           withCredentials: true,
         });
         const rawOrders = res.data.orders;
@@ -94,7 +101,8 @@ export default function ProfilePage() {
               order.items.map(async (item) => {
                 try {
                   const r = await axios.get(
-                    `http://localhost:8081/api/products/${item.productId}`,
+                    // `http://localhost:8081/api/products/${item.productId}`,
+                    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
                   );
                   return { ...item, product: r.data.product };
                 } catch {
@@ -120,7 +128,8 @@ export default function ProfilePage() {
   const handleSaveAddress = async (data) => {
     try {
       const res = await axios.post(
-        "http://localhost:8080/api/auth/users/me/addresses",
+        // "http://localhost:8080/api/auth/users/me/addresses",
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
         data,
         { withCredentials: true },
       );
@@ -136,7 +145,8 @@ export default function ProfilePage() {
   const handleDeleteAddress = async (id) => {
     try {
       await axios.delete(
-        `http://localhost:8080/api/auth/users/me/addresses/${id}`,
+        // `http://localhost:8080/api/auth/users/me/addresses/${id}`,
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses/${id}`,
         { withCredentials: true },
       );
       setAddresses((prev) => prev.filter((a) => a._id !== id));

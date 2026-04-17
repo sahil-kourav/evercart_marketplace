@@ -31,7 +31,8 @@ const OrderSummary = ({ totalPrice }) => {
   const [showAddressModal, setShowAddressModal] = useState(false);
 
   const api = axios.create({
-    baseURL: "http://localhost:8080/api/auth",
+    // baseURL: "http://localhost:8080/api/auth",
+    baseURL: `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth`,
     withCredentials: true,
   });
 
@@ -49,7 +50,10 @@ const OrderSummary = ({ totalPrice }) => {
     const fetchAddresses = async () => {
       dispatch(setLoading(true));
       try {
-        const res = await api.get("/users/me/addresses");
+        const res = await axios.get(
+          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
+          { withCredentials: true }
+        );
         const list = res.data.addresses || [];
 
         dispatch(setAddresses(list));
@@ -71,7 +75,12 @@ const OrderSummary = ({ totalPrice }) => {
     dispatch(setLoading(true));
     try {
       let res;
-      res = await api.post("/users/me/addresses", data);
+
+      res = await axios.post(
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
+        data,
+        { withCredentials: true }
+      );
 
       dispatch(addAddress(res.data.address));
 
@@ -89,7 +98,10 @@ const OrderSummary = ({ totalPrice }) => {
   const handleDeleteAddress = async (id) => {
     dispatch(setLoading(true));
     try {
-      await api.delete(`/users/me/addresses/${id}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses/${id}`,
+        { withCredentials: true }
+      );
       dispatch(removeAddress(id));
 
       if (selectedAddress?._id === id) {
@@ -135,7 +147,8 @@ const OrderSummary = ({ totalPrice }) => {
     try {
       // Create order
       const orderRes = await axios.post(
-        "http://localhost:8083/api/orders",
+        // "http://localhost:8083/api/orders",
+        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders`,
         orderPayload,
         { withCredentials: true },
       );
@@ -147,7 +160,8 @@ const OrderSummary = ({ totalPrice }) => {
 
       if (paymentMethod === "COD") {
         paymentRes = await axios.post(
-          `http://localhost:8084/api/payments/cod/${orderId}`,
+          // `http://localhost:8084/api/payments/cod/${orderId}`,
+          `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL}/api/payments/cod/${orderId}`,
           {},
           { withCredentials: true },
         );
@@ -168,7 +182,7 @@ const OrderSummary = ({ totalPrice }) => {
 
         // Step 1: create payment on backend
         const { data } = await axios.post(
-          `http://localhost:8084/api/payments/razorpay/${orderId}`,
+          `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL}/api/payments/razorpay/${orderId}`,
           {},
           { withCredentials: true },
         );
@@ -189,7 +203,8 @@ const OrderSummary = ({ totalPrice }) => {
           handler: async function (response) {
             try {
               await axios.post(
-                "http://localhost:8084/api/payments/verify",
+                // "http://localhost:8084/api/payments/verify",
+                `${process.env.NEXT_PUBLIC_PAYMENT_SERVICE_API_URL}/api/payments/verify`,
                 {
                   razorpayOrderId: response.razorpay_order_id,
                   paymentId: response.razorpay_payment_id,

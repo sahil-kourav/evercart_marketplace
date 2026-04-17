@@ -14,7 +14,10 @@ export default function PublicLayout({ children }) {
     console.log("LAYOUT RUNNING 🔥");
     const fetchProducts = async () => {
       try {
-        const res = await axios.get("http://localhost:8081/api/products");
+        const res = await axios.get(
+          // "http://localhost:8081/api/products"
+          `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products`
+        );
         dispatch(setProduct(res.data.data));
       } catch (err) {
         console.error(err);

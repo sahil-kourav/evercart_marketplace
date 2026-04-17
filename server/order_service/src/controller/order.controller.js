@@ -14,7 +14,8 @@ async function createOrder(req, res) {
     }
 
     // fetch order details from cart service
-    const cartResponse = await axios.get("http://localhost:8082/api/cart", {
+      const cartResponse = await axios.get(`https://cart-service-30ho.onrender.com/api/cart`,
+      {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -26,7 +27,8 @@ async function createOrder(req, res) {
       cartResponse.data.cart.items.map(async (item) => {
         return (
           await axios.get(
-            `http://localhost:8081/api/products/${item.productId}`,
+            // `http://localhost:8081/api/products/${item.productId}`,
+            `https://product-service-1irc.onrender.com/api/products/${item.productId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,
@@ -204,38 +206,6 @@ async function cancelOrder(req, res) {
   }
 }
 
-async function getMetrics(req, res) {
-    try {
-        const totalOrders = await orderModel.countDocuments();
-        const ordersByStatus = await orderModel.aggregate([
-            { $group: { _id: "$status", count: { $sum: 1 } } }
-        ]);
-        const topProducts = await orderModel.aggregate([
-            { $unwind: "$items" },
-            { $group: { _id: "$items.productId", totalQuantity: { $sum: "$items.quantity" } } },
-            { $sort: { totalQuantity: -1 } },
-            { $limit: 5 },
-            { $lookup: {
-                from: "products",
-                localField: "_id",
-                foreignField: "_id",
-                as: "product"
-            }},
-            { $unwind: "$product" },
-            { $project: { _id: 0, productId: "$_id", title: "$product.title", totalQuantity: 1 } }
-        ]);
-
-        return res.status(200).json({
-            totalOrders,
-            ordersByStatus,
-            topProducts
-        });
-    } catch (error) {
-        return res
-            .status(500)
-            .json({ message: "Internal Server Error", error: error.message });
-    }
-}
 
 async function updateOrderStatus(req, res) {
   const user = req.user;
@@ -275,7 +245,6 @@ async function updateOrderStatus(req, res) {
       .json({ message: "Internal Server Error", error: error.message });
   }
 }
-
 
 module.exports = {
   createOrder,

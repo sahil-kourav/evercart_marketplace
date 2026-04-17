@@ -59,19 +59,13 @@ export default function StoreAddProduct() {
       formData.append("bestSeller", productInfo.bestSeller);
       formData.append("stock", productInfo.stock);
 
-      // Append images
-      // Object.entries(images).forEach(([key, image]) => {
-      //     if (image) {
-      //         formData.append(`image${key}`, image)
-      //     }
-      // })
       Object.values(images).forEach((image) => {
         if (image) formData.append("images", image);
       });
 
       // Make API request
       const response = await axios.post(
-        "http://localhost:8081/api/products",
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products`,
         formData,
         {
           withCredentials: true,

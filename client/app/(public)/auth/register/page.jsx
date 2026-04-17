@@ -22,55 +22,6 @@ export default function Register() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // async function handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   setError(null);
-  //   setLoading(true);
-
-  //   // loading toast
-  //   const toastId = toast.loading("Creating your account...");
-
-  //   axios
-  //     .post(
-  //       "http://localhost:8080/api/auth/register",
-  //       {
-  //         fullName: {
-  //           firstName,
-  //           lastName,
-  //         },
-  //         email,
-  //         password,
-  //         phone,
-  //       },
-  //       {
-  //         withCredentials: true,
-  //       },
-  //     )
-  //     .then((response) => {
-  //       toast.success("Registration successful!", {
-  //         id: toastId,
-  //       });
-  //       dispatch(loginSuccess(response.data.user));
-
-  //       router.push("/");
-  //     })
-  //     .catch((error) => {
-  //       toast.error(
-  //         error?.response?.data?.message ||
-  //           "Registration failed, try again later",
-  //         {
-  //           id: toastId,
-  //         },
-  //       );
-
-  //       setError(error?.message || "Registration failed");
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }
-
   async function handleSubmit(e) {
   e.preventDefault();
   setError(null);
@@ -80,7 +31,7 @@ export default function Register() {
 
   try {
     const response = await axios.post(
-      "http://localhost:8080/api/auth/register",
+      `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/register`,
       {
         fullName: { firstName, lastName },
         email,

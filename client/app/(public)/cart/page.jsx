@@ -43,7 +43,8 @@ export default function Cart() {
         const responses = await Promise.all(
           cart.items.map((item) =>
             axios.get(
-              `http://localhost:8081/api/products/${item.productId}`,
+               `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
+              
               { withCredentials: true }
             )
           )

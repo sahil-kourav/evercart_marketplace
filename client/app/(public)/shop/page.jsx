@@ -17,7 +17,9 @@ export default function ShopPage() {
   const fetchProducts = async () => {
     setLoading(true);
     try {
-      const res = await axios.get("http://localhost:8081/api/products/", {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/`,
+         {
         withCredentials: true,
       });
 
