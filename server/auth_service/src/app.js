@@ -8,14 +8,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Middleware
-app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+app.use(cors(
+    {
+        origin: 'https://evercart-delta.vercel.app/',
+        credentials: true,
+    }
+));
 
 app.get('/', (req, res) => {
     res.status(200).json({
