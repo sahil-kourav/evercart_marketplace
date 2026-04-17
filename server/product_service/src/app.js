@@ -10,11 +10,10 @@ app.use(cookieParser());
 
 app.use(cors(
     {
-        origin: 'http://localhost:3000',
+        origin: ['http://localhost:3000', 'https://evercart-delta.vercel.app'],
         credentials: true,
     }
 ));
-
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Product Service is running.' });
 });

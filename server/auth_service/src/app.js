@@ -9,23 +9,12 @@ app.use(cookieParser());
 
 // Middleware
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      const allowedOrigins = [
-        "http://localhost:3000",
-        "https://evercart-delta.vercel.app",
-      ];
-
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+app.use(cors(
+    {
+        origin: 'https://evercart-delta.vercel.app',
+        credentials: true,
+    }
+));
 
 app.get('/', (req, res) => {
     res.status(200).json({
