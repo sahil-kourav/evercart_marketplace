@@ -20,10 +20,7 @@ export const fetchCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    const res = await axios.get(
-      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`,
-      { withCredentials: true }
-    );
+    const res = await axios.get("/");
     dispatch(cartLoaded(res.data));
   } catch (error) {
     dispatch(
@@ -46,8 +43,7 @@ export const addItemToCart = ({ productId, qty = 1 }) => async (dispatch) => {
       typeof productId === "object" ? productId._id : productId;
 
     // await api.post("/items",
-    await axios.post(
-      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items`, 
+    await axios.post("/items", 
       {
       productId: id,
       qty,
@@ -74,10 +70,8 @@ export const updateCartQuantity = ({ productId, qty }) => async (dispatch) => {
     const id =
       typeof productId === "object" ? productId._id : productId;
 
-    await axios.patch(
-      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items/${id}`,
+    await axios.patch(`/items/${id}`,
       { qty },
-      { withCredentials: true }
     );
 
     dispatch(fetchCart());
@@ -101,9 +95,7 @@ export const removeItemFromCart = (productId) => async (dispatch) => {
     const id =
       typeof productId === "object" ? productId._id : productId;
 
-    await axios.delete(
-      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart/items/${id}`,
-      { withCredentials: true }
+    await axios.delete(`/items/${id}`,
     );
 
     dispatch(fetchCart());
@@ -124,11 +116,8 @@ export const clearCart = () => async (dispatch) => {
   try {
     dispatch(cartLoading());
 
-    await axios.delete(
-      `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`,
-      { withCredentials: true }
-    );
-
+    await axios.delete("/");
+    
     dispatch(cartCleared());
 
   } catch (error) {
