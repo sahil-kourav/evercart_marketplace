@@ -10,7 +10,7 @@ app.use(cookieParser())
 
 app.use(cors(
     {
-        origin: 'https://evercart-delta.vercel.app',
+        origin: 'https://evercart-marketplace.vercel.app/',
         credentials: true,
     }
 ));
