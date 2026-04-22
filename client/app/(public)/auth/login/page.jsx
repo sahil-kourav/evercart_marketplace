@@ -8,8 +8,6 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/lib/features/auth/authSlice";
 
-
-
 export default function Login() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -20,91 +18,43 @@ export default function Login() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
-  // async function handleSubmit(e) {
-  //   e.preventDefault();
-
-  //   setError(null);
-  //   setLoading(true);
-
-  //   // show loading toast
-  //   const toastId = toast.loading("Logging you in...");
-
-  //   axios
-  //     .post(
-  //       "http://localhost:8080/api/auth/login",
-  //       {
-  //         email,
-  //         // phone,
-  //         password,
-  //       },
-  //       {
-  //         withCredentials: true,
-  //       },
-  //     )
-  //     .then(() => {
-  //       toast.success("Login successful!", {
-  //         id: toastId,
-  //       });
-
-  //       router.push("/");
-  //     })
-  //     .catch((err) => {
-  //       toast.error(
-  //         err?.response?.data?.message ||
-  //           "Invalid email or password please try again later",
-  //         {
-  //           id: toastId,
-  //         },
-  //       );
-
-  //       setError(
-  //         err?.message || "Invalid credentials provided please try again later",
-  //       );
-  //     })
-  //     .finally(() => {
-  //       setLoading(false);
-  //     });
-  // }
-
   async function handleSubmit(e) {
-  e.preventDefault();
+    e.preventDefault();
 
-  setError(null);
-  setLoading(true);
+    setError(null);
+    setLoading(true);
 
-  const toastId = toast.loading("Logging you in...");
+    const toastId = toast.loading("Logging you in...");
 
-  try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/login`,
-      {
-        email,
-        password,
-      },
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      const response = await axios.post(
+        // "http://localhost:8080/api/auth/login",
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/login`,
+        {
+          email,
+          password,
+        },
+        {
+          withCredentials: true,
+        },
+      );
 
-    dispatch(loginSuccess(response.data.user));
+      dispatch(loginSuccess(response.data.user));
 
-    toast.success("Login successful!", { id: toastId });
-    router.push("/");
-  } catch (err) {
-    toast.error(
-      err?.response?.data?.message ||
-        "Invalid email or password. Please try again.",
-      { id: toastId }
-    );
+      toast.success("Login successful!", { id: toastId });
+      router.push("/");
+    } catch (err) {
+      toast.error(
+        err?.response?.data?.message ||
+          "Invalid email or password. Please try again.",
+        { id: toastId },
+      );
 
-    setError(
-      err?.message || "Invalid email or password. Please try again."
-    );
-  } finally {
-    setLoading(false);
+      setError(err?.message || "Invalid email or password. Please try again.");
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
 
   return (
     <div className="flex items-center justify-center py-4 sm:py-6 md:py-8">

@@ -2,13 +2,17 @@
 
 import { useEffect } from "react";
 import axios from "axios";
+import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
 import { loginSuccess, logout, authChecked } from "@/lib/features/auth/authSlice";
 
 export default function AuthInitializer() {
   const dispatch = useDispatch();
+    const pathname = usePathname(); 
 
   useEffect(() => {
+    if (pathname.startsWith("/admin")) return;
+
     const initAuth = async () => {
       try {
         const res = await axios.get(
@@ -25,7 +29,7 @@ export default function AuthInitializer() {
     };
 
     initAuth();
-  }, [dispatch]);
+  }, [dispatch, pathname]);
 
   return null;
 }

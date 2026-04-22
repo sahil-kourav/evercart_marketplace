@@ -8,8 +8,6 @@ import { toast } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { loginSuccess } from "@/lib/features/auth/authSlice";
 
-
-
 export default function Register() {
   const router = useRouter();
   const dispatch = useDispatch();
@@ -23,40 +21,40 @@ export default function Register() {
   const [error, setError] = useState(null);
 
   async function handleSubmit(e) {
-  e.preventDefault();
-  setError(null);
-  setLoading(true);
+    e.preventDefault();
+    setError(null);
+    setLoading(true);
 
-  const toastId = toast.loading("Creating your account...");
+    const toastId = toast.loading("Creating your account...");
 
-  try {
-    const response = await axios.post(
-      `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/register`,
-      {
-        fullName: { firstName, lastName },
-        email,
-        password,
-        phone,
-      },
-      { withCredentials: true }
-    );
+    try {
+      const response = await axios.post(
+        // "http://localhost:8080/api/auth/register",
+        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/register`,
+        {
+          fullName: { firstName, lastName },
+          email,
+          password,
+          phone,
+        },
+        { withCredentials: true },
+      );
 
-    dispatch(loginSuccess(response.data.user));
-   
-    toast.success("Registration successful!", { id: toastId });
-    router.push("/");
-  } catch (error) {
-    toast.error(
-      error?.response?.data?.message ||
-        "Registration failed, try again later",
-      { id: toastId }
-    );
-    setError(error?.message || "Registration failed");
-  } finally {
-    setLoading(false);
+      dispatch(loginSuccess(response.data.user));
+
+      toast.success("Registration successful!", { id: toastId });
+      router.push("/");
+    } catch (error) {
+      toast.error(
+        error?.response?.data?.message ||
+          "Registration failed, try again later",
+        { id: toastId },
+      );
+      setError(error?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
   }
-}
-
 
   return (
     <div className="flex items-center justify-center py-4 sm:py-6 md:py-8">

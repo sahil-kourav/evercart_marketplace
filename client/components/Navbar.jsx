@@ -566,7 +566,7 @@ const Navbar = () => {
             <button
               onClick={handleLogout}
               className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl
-                border-8 border-red-800 text-[13px] font-medium text-red-500 hover:bg-red-50 transition"
+                border border-red-200 text-[13px] font-medium text-red-500 hover:bg-red-50 transition"
             >
               <svg
                 width="14"

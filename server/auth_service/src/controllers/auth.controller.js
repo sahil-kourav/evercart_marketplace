@@ -55,7 +55,7 @@ async function registerUser(req, res) {
         fullName: user.fullName,
         role: user.role,
       })
-  ])
+    ])
 
     const token = jwt.sign(
       {
@@ -72,7 +72,7 @@ async function registerUser(req, res) {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-       sameSite: "none", 
+      sameSite: "none",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
 
@@ -123,7 +123,7 @@ async function loginUser(req, res) {
     res.cookie("token", token, {
       httpOnly: true,
       secure: true,
-      sameSite: "none", 
+      sameSite: "none",
       maxAge: 2 * 24 * 60 * 60 * 1000,
     });
 
@@ -146,6 +146,16 @@ async function loginUser(req, res) {
 
 async function getCurrentUser(req, res) {
   try {
+    if (req.user.role === "seller") {
+      return res.status(200).json({
+        user: {
+          email: req.user.email,
+          role: "seller",
+        },
+      });
+    }
+
+    // 👇 NORMAL USER CASE
     const user = await userModel.findById(req.user.id).select("-password");
 
     if (!user) {
@@ -153,9 +163,9 @@ async function getCurrentUser(req, res) {
     }
 
     return res.status(200).json({
-      message: "Current user fetched successfully",
       user,
     });
+
   } catch (err) {
     return res.status(500).json({ message: "Server error" });
   }
@@ -165,7 +175,6 @@ async function logoutUser(req, res) {
   const token = req.cookies.token;
 
   if (token) {
-    // blacklist token (JWT expiry ke barabar ya thoda kam)
     await redis.set(
       `blacklist_${token}`,
       "true",
@@ -192,17 +201,31 @@ const adminLogin = async (req, res) => {
   try {
     const { email, password } = req.body;
 
-    // Validate admin credentials (stored securely in environment variables)
     if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       const token = jwt.sign(
         {
+          id: "admin",
           email,
-          role: "admin",
+          role: "seller"
         },
         process.env.JWT_SECRET,
-        { expiresIn: "2d" },
+        { expiresIn: "2d" }
       );
-      res.json({ success: true, token });
+
+      res.cookie("token", token, {
+        httpOnly: true,
+        secure: true,
+        sameSite: "none",
+        maxAge: 2 * 24 * 60 * 60 * 1000,
+      });
+
+      res.json({
+        success: true,
+        user: {
+          email,
+          role: "seller"
+        }
+      });
     } else {
       res.status(401).json({ success: false, message: "Invalid credentials" });
     }
@@ -211,7 +234,6 @@ const adminLogin = async (req, res) => {
     res.status(500).json({ success: false, message: "Server error" });
   }
 };
-
 
 
 async function getUserAddresses(req, res) {
