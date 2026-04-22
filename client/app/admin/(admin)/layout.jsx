@@ -60,11 +60,6 @@ import AdminLayout from "@/components/admin/AdminLayout";
 import loading from "@/components/Loading";
 import axios from "axios";
 
-export const metadata = {
-    title: "evercart - Admin",
-    description: "evercart - Admin",
-};
-
 export default function RootAdminLayout({ children }) {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
