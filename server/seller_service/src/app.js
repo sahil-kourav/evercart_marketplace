@@ -8,12 +8,15 @@ const app = express();
 app.use(express.json());
 app.use(cookieParser());
 
-app.use(cors(
-    {
-        origin: ['http://localhost:3000', 'https://evercart-steel.vercel.app/'],
-        credentials: true,
-    }
-));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://evercart-steel.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Seller Dashboard Service is running.' });

@@ -9,12 +9,15 @@ app.use(cookieParser());
 
 // Middleware
 
-app.use(cors(
-    {
-        origin: ['https://evercart-steel.vercel.app/', 'http://localhost:3000'],
-        credentials: true,
-    }
-));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://evercart-steel.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 
 app.get('/', (req, res) => {
     res.status(200).json({

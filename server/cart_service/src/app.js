@@ -8,12 +8,15 @@ const cors = require('cors')
 app.use(express.json())
 app.use(cookieParser())
 
-app.use(cors(
-    {
-        origin: ['https://evercart-steel.vercel.app/', 'http://localhost:3000'],
-        credentials: true,
-    }
-));
+app.use(
+  cors({
+    origin: [
+      "http://localhost:3000",
+      "https://evercart-steel.vercel.app"
+    ],
+    credentials: true,
+  })
+);
 
 app.get('/', (req, res) => {
     res.status(200).json({ message: 'Cart Service is running.' });
