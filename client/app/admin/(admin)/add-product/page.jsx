@@ -247,7 +247,7 @@ import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-import { Loader2 } from "lucide-react"; // ✅ import karo
+// import { Loader2 } from "lucide-react"; // ✅ import karo
 
 const categories = [
   "Electronics",
@@ -272,7 +272,7 @@ export default function StoreAddProduct() {
     stock: 0,
     bestSeller: false,
   });
-  const [loading, setLoading] = useState(false);
+  // const [loading, setLoading] = useState(false);
 
   const onChangeHandler = (e) => {
     setProductInfo({ ...productInfo, [e.target.name]: e.target.value });
@@ -280,7 +280,7 @@ export default function StoreAddProduct() {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault();
-    setLoading(true);
+    // setLoading(true);
 
     try {
       const hasImage = Object.values(images).some((img) => img !== null);
@@ -308,7 +308,7 @@ export default function StoreAddProduct() {
           { withCredentials: true }
         ),
         {
-          loading: "Adding product...",
+          // loading: "Adding product...",
           success: "Product added successfully!",
           error: (err) => err?.response?.data?.message || "Failed to add product",
         }
@@ -327,9 +327,10 @@ export default function StoreAddProduct() {
 
     } catch {
       // toast.promise handles the error toast already
-    } finally {
-      setLoading(false);
-    }
+    } 
+    // finally {
+    //   setLoading(false);
+    // }
   };
 
   return (
@@ -495,14 +496,15 @@ export default function StoreAddProduct() {
         {/* Submit */}
         <button
           type="submit"
-          disabled={loading}
+          // disabled={loading}
           className="flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 disabled:bg-slate-400 disabled:cursor-not-allowed text-white text-sm font-semibold px-8 py-3 rounded-xl transition-colors"
         >
-          {loading ? (
+          {/* {loading ? (
             <><Loader2 className="w-4 h-4 animate-spin" />Adding Product...</>
           ) : (
             "Add Product"
-          )}
+          )} */}
+          Add Product
         </button>
       </form>
     </div>
