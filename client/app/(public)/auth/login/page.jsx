@@ -29,7 +29,7 @@ export default function Login() {
     try {
       const response = await axios.post(
         // "http://localhost:8080/api/auth/login",
-        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login`,
         {
           email,
           password,

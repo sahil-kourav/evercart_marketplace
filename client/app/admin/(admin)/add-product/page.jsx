@@ -240,14 +240,13 @@
 
 
 
-"use client"; // ✅ MUST be first line — ye browser-only APIs use karta hai
+"use client"; 
 
 import { assets } from "@/assets/assets";
 import Image from "next/image";
 import { useState } from "react";
 import { toast } from "react-hot-toast";
 import axios from "axios";
-// import { Loader2 } from "lucide-react"; // ✅ import karo
 
 const categories = [
   "Electronics",
@@ -303,7 +302,7 @@ export default function StoreAddProduct() {
 
       await toast.promise(
         axios.post(
-          `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`,
           formData,
           { withCredentials: true }
         ),

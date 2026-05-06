@@ -17,7 +17,7 @@ export default function AuthInitializer() {
       try {
         const res = await axios.get(
           // "http://localhost:8080/api/auth/me",
-          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`,
           { withCredentials: true }
         );
         dispatch(loginSuccess(res.data.user));

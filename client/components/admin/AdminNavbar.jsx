@@ -16,7 +16,8 @@ const AdminNavbar = () => {
     setLoggingOut(true);
     try {
       await axios.post(
-        `http://localhost:8080/api/auth/logout`,
+        // `http://localhost:8080/api/auth/logout`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/logout`,
         {},
         { withCredentials: true }
       );

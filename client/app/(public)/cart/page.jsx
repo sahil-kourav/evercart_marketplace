@@ -44,7 +44,7 @@ export default function Cart() {
           cart.items.map((item) =>
             axios.get(
               // `http://localhost:8081/api/products/${item.productId}`,
-               `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
+               `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${item.productId}`,
               
               { withCredentials: true }
             )

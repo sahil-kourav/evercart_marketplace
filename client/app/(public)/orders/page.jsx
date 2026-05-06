@@ -13,7 +13,7 @@ export default function Orders() {
       setLoading(true); // 🔥 start loading
 
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/me`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/me`,
         {
           withCredentials: true,
         }
@@ -28,7 +28,8 @@ export default function Orders() {
             order.items.map(async (item) => {
               try {
                 const res = await axios.get(
-                  `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
+                  `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${item.productId}`,
+                  { withCredentials: true }
                 );
 
                 return {

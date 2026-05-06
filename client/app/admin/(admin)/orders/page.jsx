@@ -23,7 +23,7 @@ const enrichOrderItems = async (items) => {
       try {
         const res = await axios.get(
           // `http://localhost:8081/api/products/${item.productId}`
-          `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${item.productId}`,
          { withCredentials: true }
         )
         return { ...item, product: res.data.product }
@@ -47,7 +47,7 @@ export default function StoreOrders() {
     try {
       const res = await axios.get(
         // "http://localhost:8083/api/orders/admin/all",
-        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/admin/all`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/admin/all`,
         { withCredentials: true }
       )
       setOrders(res.data.orders || [])
@@ -80,7 +80,7 @@ export default function StoreOrders() {
     try {
       await axios.post(
         // `http://localhost:8083/api/orders/status/${orderId}`,
-        `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/status/${orderId}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/status/${orderId}`,
         { status },
         { withCredentials: true }
       )

@@ -39,7 +39,7 @@ export default function ProfilePage() {
     async function fetchUser() {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`,
           {
             withCredentials: true,
           }
@@ -61,7 +61,7 @@ export default function ProfilePage() {
       try {
         const res = await axios.get(
           // "http://localhost:8080/api/auth/users/me/addresses",
-          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses`,
           { withCredentials: true },
         );
         const data = res.data;
@@ -89,7 +89,7 @@ export default function ProfilePage() {
       try {
         const res = await axios.get(
           // "http://localhost:8083/api/orders/me", 
-          `${process.env.NEXT_PUBLIC_ORDER_SERVICE_API_URL}/api/orders/me`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/me`,
           {
           withCredentials: true,
         });
@@ -102,7 +102,8 @@ export default function ProfilePage() {
                 try {
                   const r = await axios.get(
                     // `http://localhost:8081/api/products/${item.productId}`,
-                    `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${item.productId}`,
+                    `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${item.productId}`,
+                    { withCredentials: true }
                   );
                   return { ...item, product: r.data.product };
                 } catch {
@@ -129,7 +130,7 @@ export default function ProfilePage() {
     try {
       const res = await axios.post(
         // "http://localhost:8080/api/auth/users/me/addresses",
-        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses`,
         data,
         { withCredentials: true },
       );
@@ -146,7 +147,7 @@ export default function ProfilePage() {
     try {
       await axios.delete(
         // `http://localhost:8080/api/auth/users/me/addresses/${id}`,
-        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/users/me/addresses/${id}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses/${id}`,
         { withCredentials: true },
       );
       setAddresses((prev) => prev.filter((a) => a._id !== id));

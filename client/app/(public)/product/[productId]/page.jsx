@@ -18,7 +18,7 @@ export default function Product() {
     try {
       const res = await axios.get(
         // `http://localhost:8081/api/products/${productId}`
-        `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products/${productId}`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${productId}`,
       );
 
       setProduct(res.data.product || null);

@@ -26,7 +26,7 @@ export default function AdminLoginPage() {
     try {
       const res = await axios.post(
         // "http://localhost:8080/api/auth/login-admin",
-        `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/login-admin`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/login-admin`,
         { email, password },
         { withCredentials: true }
       );

@@ -7,10 +7,11 @@ import {
 } from "./cartSlice";
 
 
-const BASE_URL = `${process.env.NEXT_PUBLIC_CART_SERVICE_API_URL}/api/cart`;
+// const BASE_URL = `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/cart`;
+const BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 const api = axios.create({
-  baseURL: BASE_URL,
+  baseURL: `${BASE_URL}/api/cart`,
   withCredentials: true,
 });
 

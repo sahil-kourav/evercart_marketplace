@@ -348,7 +348,8 @@ export default function OrderDetailPage() {
         setError(null);
 
         const { data } = await axios.get(
-          `http://localhost:8083/api/orders/${id}`,
+          // `http://localhost:8083/api/orders/${id}`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/${id}`,
           { withCredentials: true },
         );
 
@@ -358,7 +359,9 @@ export default function OrderDetailPage() {
           rawOrder.items.map(async (item) => {
             try {
               const res = await axios.get(
-                `http://localhost:8081/api/products/${item.productId}`,
+                // `http://localhost:8081/api/products/${item.productId}`,
+                `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products/${item.productId}`,
+                { withCredentials: true },
               );
               return { ...item, product: res.data.product };
             } catch {
@@ -385,8 +388,8 @@ export default function OrderDetailPage() {
       setCancelError(null);
 
       await axios.post(
-        `http://localhost:8083/api/orders/${id}/cancel`,
-        {},
+        // `http://localhost:8083/api/orders/${id}/cancel`,
+        `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/${id}/cancel`,
         { withCredentials: true },
       );
 

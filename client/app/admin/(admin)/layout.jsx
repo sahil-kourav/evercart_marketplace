@@ -14,7 +14,7 @@ export default function RootAdminLayout({ children }) {
     const checkAuth = async () => {
       try {
         const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_AUTH_SERVICE_API_URL}/api/auth/me`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`,
           { withCredentials: true }
         );
 
