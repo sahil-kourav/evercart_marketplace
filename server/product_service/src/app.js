@@ -23,6 +23,6 @@ app.get('/', (req, res) => {
 });
 
 // Routes setup
-app.use("/api/products", productRoutes);
+app.use("/", productRoutes);
 
 module.exports = app;

@@ -22,6 +22,6 @@ app.get('/', (req, res) => {
     res.status(200).json({ message: 'Payment Service is running.' });
 });
 
-app.use('/api/payments', paymentRoutes);
+app.use('/', paymentRoutes);
 
 module.exports = app;

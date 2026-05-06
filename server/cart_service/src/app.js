@@ -23,6 +23,6 @@ app.get('/', (req, res) => {
 });
 
 // Sample Route
-app.use('/api/cart', cartRoutes)
+app.use('/', cartRoutes)
 
 module.exports = app

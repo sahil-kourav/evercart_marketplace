@@ -5,7 +5,7 @@ async function authMiddleware(req, res, next) {
   const token = req.cookies.token;
 
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Token is required" });
   }
 
   try {
@@ -15,9 +15,17 @@ async function authMiddleware(req, res, next) {
     req.user = user;
     next();
   } catch (error) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.status(401).json({ message: "Invalid token" });
   }
 }
+
+// async function adminMiddleware(req, res, next) {
+//   if (req.user.role !== "admin") {
+//     return res.status(403).json({ message: "Insufficient permissions" });
+//   }
+
+//   next();
+// }
 
 module.exports = {
   authMiddleware,

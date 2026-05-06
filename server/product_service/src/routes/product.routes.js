@@ -8,7 +8,7 @@ const upload = multer({ storage: multer.memoryStorage() });
 const router = express.Router();
 
 // POST /api/products
-router.post("/", upload.array("images", 5), createAuthMiddleware(["admin", "seller"]), productValidators.createProductValidators, productController.createProduct); // Done
+router.post("/", upload.array("images", 5), createAuthMiddleware(["seller"]), productValidators.createProductValidators, productController.createProduct); // Done
 
 // GET /api/products 
 router.get("/", productController.getProducts) // Done 

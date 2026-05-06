@@ -15,6 +15,7 @@ async function createProduct(req, res) {
       bestSeller
     } = req.body;
 
+  
     if (!title || !priceAmount || !category || !stock) {
       return res
         .status(400)
@@ -67,7 +68,7 @@ async function getProducts(req, res) {
     const { q, minprice, maxprice, skip = 0, limit = 20 } = req.query;
 
     const filter = {};
-
+console.log("Products API hit");
     if (q) {
       filter.$text = { $search: q };
     }
