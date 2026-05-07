@@ -36,7 +36,7 @@ async function registerUser(req, res) {
     });
 
     // publish user registration event to RabbitMQ 
-    await Promise.all([
+    Promise.all([
       publishToQueue("AUTH_NOTIFICATION.USER_REGISTERED", {
         id: user._id,
         email: user.email,
@@ -55,7 +55,9 @@ async function registerUser(req, res) {
         fullName: user.fullName,
         role: user.role,
       })
-    ])
+    ]).catch(err => {
+      console.error("Queue error:", err);
+    });
 
     const token = jwt.sign(
       {
