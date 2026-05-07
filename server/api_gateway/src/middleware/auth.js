@@ -2,7 +2,10 @@ const jwt = require("jsonwebtoken");
 
 async function authMiddleware(req, res, next) {
 
-  if (req.path.startsWith("/api/auth")) {
+   if (
+    req.path === "/" ||
+    req.path.startsWith("/api/auth")
+  ) {
     return next();
   }
 
