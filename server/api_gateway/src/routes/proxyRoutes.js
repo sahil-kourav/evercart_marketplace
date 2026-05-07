@@ -1,49 +1,49 @@
-const { createProxyMiddleware } = require("http-proxy-middleware");
-const services = require("../config/services");
+// const { createProxyMiddleware } = require("http-proxy-middleware");
+// const services = require("../config/services");
 
 
-const setupProxy = (app) => {
-  // AUTH
-  app.use("/api/auth", createProxyMiddleware({
-    target: services.AUTH_SERVICE,
-    changeOrigin: true,
-    pathRewrite: { "^/api/auth": "" },
-  }));
+// const setupProxy = (app) => {
+//   // AUTH
+//   app.use("/api/auth", createProxyMiddleware({
+//     target: services.AUTH_SERVICE,
+//     changeOrigin: true,
+//     pathRewrite: { "^/api/auth": "" },
+//   }));
 
-  // PRODUCTS
-  app.use("/api/products", createProxyMiddleware({
-    target: services.PRODUCT_SERVICE,
-    changeOrigin: true,
-    pathRewrite: {
-      "^/api/products": "",
-    }
-  }));
+//   // PRODUCTS
+//   app.use("/api/products", createProxyMiddleware({
+//     target: services.PRODUCT_SERVICE,
+//     changeOrigin: true,
+//     pathRewrite: {
+//       "^/api/products": "",
+//     }
+//   }));
 
-  // CART
-  app.use("/api/cart", createProxyMiddleware({
-    target: services.CART_SERVICE,
-    changeOrigin: true,
-    pathRewrite: {
-      "^/api/cart": ""
-    }
-  }));
+//   // CART
+//   app.use("/api/cart", createProxyMiddleware({
+//     target: services.CART_SERVICE,
+//     changeOrigin: true,
+//     pathRewrite: {
+//       "^/api/cart": ""
+//     }
+//   }));
 
-  // ORDERS
-  app.use("/api/orders", createProxyMiddleware({
-    target: services.ORDER_SERVICE,
-    changeOrigin: true,
-    pathRewrite: { "^/api/orders": "" },
-  }));
+//   // ORDERS
+//   app.use("/api/orders", createProxyMiddleware({
+//     target: services.ORDER_SERVICE,
+//     changeOrigin: true,
+//     pathRewrite: { "^/api/orders": "" },
+//   }));
 
-  // PAYMENTS
-  app.use("/api/payments", createProxyMiddleware({
-    target: services.PAYMENT_SERVICE,
-    changeOrigin: true,
-    pathRewrite: { "^/api/payments": "" }
-  }));
-};
+//   // PAYMENTS
+//   app.use("/api/payments", createProxyMiddleware({
+//     target: services.PAYMENT_SERVICE,
+//     changeOrigin: true,
+//     pathRewrite: { "^/api/payments": "" }
+//   }));
+// };
 
-module.exports = setupProxy;
+// module.exports = setupProxy;
 
 
 
@@ -123,3 +123,74 @@ module.exports = setupProxy;
 // };
 
 // module.exports = setupProxy;
+
+
+
+
+
+
+
+
+
+
+
+
+
+const { createProxyMiddleware } = require("http-proxy-middleware");
+const services = require("../config/services");
+
+// 🔥 body forward function
+const handleBody = (proxyReq, req) => {
+  if (
+    req.body &&
+    Object.keys(req.body).length &&
+    req.headers["content-type"]?.includes("application/json")
+  ) {
+    const bodyData = JSON.stringify(req.body);
+
+    proxyReq.setHeader("Content-Type", "application/json");
+    proxyReq.setHeader("Content-Length", Buffer.byteLength(bodyData));
+
+    proxyReq.write(bodyData);
+  }
+};
+
+const setupProxy = (app) => {
+
+  app.use("/api/auth", createProxyMiddleware({
+    target: services.AUTH_SERVICE,
+    changeOrigin: true,
+    pathRewrite: { "^/api/auth": "" },
+    onProxyReq: handleBody, // ✅ MUST
+  }));
+
+  app.use("/api/products", createProxyMiddleware({
+    target: services.PRODUCT_SERVICE,
+    changeOrigin: true,
+    pathRewrite: { "^/api/products": "" },
+    onProxyReq: handleBody,
+  }));
+
+  app.use("/api/cart", createProxyMiddleware({
+    target: services.CART_SERVICE,
+    changeOrigin: true,
+    pathRewrite: { "^/api/cart": "" },
+    onProxyReq: handleBody,
+  }));
+
+  app.use("/api/orders", createProxyMiddleware({
+    target: services.ORDER_SERVICE,
+    changeOrigin: true,
+    pathRewrite: { "^/api/orders": "" },
+    onProxyReq: handleBody,
+  }));
+
+  app.use("/api/payments", createProxyMiddleware({
+    target: services.PAYMENT_SERVICE,
+    changeOrigin: true,
+    pathRewrite: { "^/api/payments": "" },
+    onProxyReq: handleBody,
+  }));
+};
+
+module.exports = setupProxy;
