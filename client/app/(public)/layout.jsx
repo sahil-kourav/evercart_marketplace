@@ -1,4 +1,3 @@
-
 "use client";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,33 +6,33 @@ import { useDispatch } from "react-redux";
 import axios from "axios";
 import { setProduct } from "@/lib/features/product/productSlice";
 
-export default function PublicLayout({ children }) {    
+export default function PublicLayout({ children }) {
   const dispatch = useDispatch();
 
   useEffect(() => {
-    console.log("LAYOUT RUNNING 🔥");
+    // console.log("LAYOUT RUNNING 🔥");
     const fetchProducts = async () => {
       try {
         const res = await axios.get(
           // "http://localhost:8081/api/products"
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`,
+          { withCredentials: true },
         );
         dispatch(setProduct(res.data.data));
       } catch (err) {
-        console.error(err);
+        console.error("Error fetching products in layout:", err);
       }
     };
 
     fetchProducts();
   }, [dispatch]);
 
- return (
-        <>
-            {/* <Banner /> */}
-            <Navbar />
-            {children}
-            <Footer />
-        </>
-    );
+  return (
+    <>
+      {/* <Banner /> */}
+      <Navbar />
+      {children}
+      <Footer />
+    </>
+  );
 }
-

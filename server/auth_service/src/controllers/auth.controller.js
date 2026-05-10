@@ -36,7 +36,7 @@ async function registerUser(req, res) {
     });
 
     // publish user registration event to RabbitMQ 
-    Promise.all([
+    await Promise.all([
       publishToQueue("AUTH_NOTIFICATION.USER_REGISTERED", {
         id: user._id,
         email: user.email,
@@ -56,8 +56,8 @@ async function registerUser(req, res) {
         role: user.role,
       })
     ]).catch(err => {
-      console.error("Queue error:", err);
-    });
+  console.error("Queue error:", err);
+});
 
     const token = jwt.sign(
       {
@@ -157,7 +157,6 @@ async function getCurrentUser(req, res) {
       });
     }
 
-    // 👇 NORMAL USER CASE
     const user = await userModel.findById(req.user.id).select("-password");
 
     if (!user) {
@@ -165,7 +164,13 @@ async function getCurrentUser(req, res) {
     }
 
     return res.status(200).json({
-      user,
+      user: {
+        id: user._id,
+        email: user.email,
+        phone: user.phone,
+        fullName: user.fullName,
+        role: user.role,
+      },
     });
 
   } catch (err) {
@@ -218,7 +223,7 @@ const adminLogin = async (req, res) => {
         httpOnly: true,
         secure: true,
         sameSite: "none",
-        maxAge: 2 * 24 * 60 * 60 * 1000,
+        maxAge: 6 * 24 * 60 * 60 * 1000,
       });
 
       res.json({

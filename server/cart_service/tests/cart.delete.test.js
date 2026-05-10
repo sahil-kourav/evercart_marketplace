@@ -102,7 +102,7 @@ describe('DELETE /api/cart/items/:productId', () => {
     });
 
     test('403 when role not allowed', async () => {
-        const token = signToken({ _id: userId, role: 'seller' });
+        const token = signToken({ _id: userId, role: 'user' });
         const res = await request(app)
             .delete(`${deleteItemBase}/${productIdA}`)
             .set('Authorization', `Bearer ${token}`);
@@ -162,7 +162,7 @@ describe('DELETE /api/cart', () => {
     });
 
     test('403 when role not allowed', async () => {
-        const token = signToken({ _id: userId, role: 'admin' });
+        const token = signToken({ _id: userId, role: 'user' });
         const res = await request(app)
             .delete(deleteCartEndpoint)
             .set('Authorization', `Bearer ${token}`);

@@ -31,6 +31,8 @@ export default function AdminLoginPage() {
         { withCredentials: true }
       );
 
+      console.log("Admin login response:", res);
+
       if (res.data?.user?.role !== "seller") {
         toast.error("Only admins can access this page", { id: toastId });
         return;
@@ -41,7 +43,7 @@ export default function AdminLoginPage() {
       router.push("/admin");
     } catch (error) {
       toast.error(
-        error?.response?.data?.message || "Login failed",
+        "Invalid credentials please try again.",
         { id: toastId }
       );
     } finally {

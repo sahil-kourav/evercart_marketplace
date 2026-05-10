@@ -14,7 +14,9 @@ async function createOrder(req, res) {
     }
 
     // fetch order details from cart service
-      const cartResponse = await axios.get(`https://cart-service-30ho.onrender.com/api/cart`,
+      const cartResponse = await axios.get(
+        // `https://cart-service-30ho.onrender.com/api/cart`,
+        `http://localhost:8082/api/cart`,
       {
       headers: {
         Authorization: `Bearer ${token}`,
@@ -27,8 +29,8 @@ async function createOrder(req, res) {
       cartResponse.data.cart.items.map(async (item) => {
         return (
           await axios.get(
-            // `http://localhost:8081/api/products/${item.productId}`,
-            `https://product-service-1irc.onrender.com/api/products/${item.productId}`,
+            `http://localhost:8081/api/products/${item.productId}`,
+            // `https://product-service-1irc.onrender.com/api/products/${item.productId}`,
             {
               headers: {
                 Authorization: `Bearer ${token}`,

@@ -124,7 +124,7 @@ describe('PATCH /api/cart/items/:productId', () => {
     });
 
     test('403 when role not allowed', async () => {
-        const token = signToken({ _id: userId, role: 'seller' });
+        const token = signToken({ _id: userId, role: 'user' });
         const res = await request(app)
             .patch(`${patchBase}/${existingProductId}`)
             .set('Authorization', `Bearer ${token}`)

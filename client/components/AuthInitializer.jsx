@@ -2,34 +2,36 @@
 
 import { useEffect } from "react";
 import axios from "axios";
-import { usePathname } from "next/navigation";
 import { useDispatch } from "react-redux";
-import { loginSuccess, logout, authChecked } from "@/lib/features/auth/authSlice";
+import {
+  loginSuccess,
+  logout,
+  authChecked,
+} from "@/lib/features/auth/authSlice";
 
 export default function AuthInitializer() {
   const dispatch = useDispatch();
-    const pathname = usePathname(); 
 
   useEffect(() => {
-    if (pathname.startsWith("/admin")) return;
-
     const initAuth = async () => {
       try {
         const res = await axios.get(
-          // "http://localhost:8080/api/auth/me",
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/me`,
           { withCredentials: true }
         );
+
+        console.log("Backend User:", res.data.user);
+
         dispatch(loginSuccess(res.data.user));
       } catch (error) {
         dispatch(logout());
       } finally {
-         dispatch(authChecked());
+        dispatch(authChecked());
       }
     };
 
     initAuth();
-  }, [dispatch, pathname]);
+  }, [dispatch]);
 
   return null;
 }
