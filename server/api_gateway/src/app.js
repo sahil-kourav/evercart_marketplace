@@ -5,8 +5,8 @@ const helmet = require("helmet");
 const cookieParser = require("cookie-parser");
 
 const authMiddleware = require("./middleware/auth");
-const rateLimiter = require("./middleware/rateLimiter");
 const setupProxy = require("./routes/proxyRoutes");
+const { authLimiter, paymentLimiter, orderLimiter} = require("./middleware/rateLimiter");
 const app = express();
 
 app.use(cookieParser());
@@ -34,7 +34,9 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use(rateLimiter);
+app.use("/api/auth", authLimiter);
+app.use("/api/payments", paymentLimiter);
+app.use("/api/orders", orderLimiter);
 
 // Proxy setup (must be before body parsers)
 setupProxy(app);
@@ -50,7 +52,6 @@ app.use(express.urlencoded({ extended: true }));
 
 // error handler
 app.use((err, req, res, next) => {
-
   res.status(err.status || 500).json({
     success: false,
     message: err.message || "Something went wrong",
