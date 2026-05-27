@@ -302,25 +302,77 @@ function DeliveryAddress({ address }) {
 
 // ─── PaymentInfo ──────────────────────────────────────────────────────────────
 
-function PaymentInfo({ method, status }) {
+// function PaymentInfo({ method, status }) {
+//   return (
+//     <Card>
+//       <div className="flex gap-2 mb-1">
+//         <CreditCard size={14} className="text-gray-400" />
+//         <SectionLabel>Payment info</SectionLabel>
+//       </div>
+//       <div className="space-y-3">
+//         {[
+//           { label: "Payment method", value: method },
+//           { label: "Payment status", value: status },
+//         ].map(({ label, value }) => (
+//           <div key={label} className="flex justify-between items-center text-sm">
+//             <span className="text-gray-400">{label}</span>
+//             <span className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded-full">
+//               {value}
+//             </span>
+//           </div>
+//         ))}
+//       </div>
+//     </Card>
+//   );
+// }
+
+
+
+
+function PaymentInfo({ method }) {
+
+  const paymentStatus =
+    method?.toLowerCase() === "razorpay"
+      ? "Paid"
+      : "Not Paid";
+
   return (
     <Card>
       <div className="flex gap-2 mb-1">
         <CreditCard size={14} className="text-gray-400" />
         <SectionLabel>Payment info</SectionLabel>
       </div>
+
       <div className="space-y-3">
-        {[
-          { label: "Payment method", value: method },
-          { label: "Payment status", value: status },
-        ].map(({ label, value }) => (
-          <div key={label} className="flex justify-between items-center text-sm">
-            <span className="text-gray-400">{label}</span>
-            <span className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded-full">
-              {value}
-            </span>
-          </div>
-        ))}
+
+        {/* Payment method */}
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-400">
+            Payment method
+          </span>
+
+          <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700">
+            {method}
+          </span>
+        </div>
+
+        {/* Payment status */}
+        <div className="flex justify-between items-center text-sm">
+          <span className="text-gray-400">
+            Payment status
+          </span>
+
+          <span
+            className={`text-xs px-2 py-1 rounded-full ${
+              paymentStatus === "Paid"
+                ? "bg-green-50 text-green-700"
+                : "bg-red-50 text-red-700"
+            }`}
+          >
+            {paymentStatus}
+          </span>
+        </div>
+
       </div>
     </Card>
   );
@@ -511,7 +563,7 @@ export default function OrderDetailPage() {
           {/* Address + Payment */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DeliveryAddress address={order.shippingAddress} />
-            <PaymentInfo method={order.paymentMethod} status={order.status} />
+            <PaymentInfo method={order.paymentMethod} status={order.status} paymentStatus={order.paymentStatus} />
           </div>
 
         </div>

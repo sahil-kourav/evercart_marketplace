@@ -15,12 +15,13 @@ async function placeOrderRazorpay(req, res) {
     try {
         const orderId = req.params.orderId;
 
-        const orderResponse = await axios.get('http://localhost:8083/api/orders/' + orderId, {
+        const orderResponse = await axios.get('http://localhost:8088/api/orders/' + orderId, {
         // const orderResponse = await axios.get(`https://order-service-2fuz.onrender.com/api/orders/${orderId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
-        });
+        headers: {
+          Cookie: `token=${req.cookies.token}`,
+        },
+        withCredentials: true,
+      });
 
         // console.log('Order Response:', orderResponse.data.order.totalPrice);
 
@@ -68,11 +69,13 @@ async function placeOrderCOD(req, res) {
     try {
         const orderId = req.params.orderId;
 
-        const orderResponse = await axios.get('http://localhost:8083/api/orders/' + orderId, {
+        const orderResponse = await axios.get(`http://localhost:8088/api/orders/${orderId}`, {
         // const orderResponse = await axios.get(`https://order-service-2fuz.onrender.com/api/orders/${orderId}`, {
-            headers: {
-                Authorization: `Bearer ${token}`,
-            },
+           
+        headers: {
+          Cookie: `token=${req.cookies.token}`,
+        },
+        withCredentials: true,  
         });
 
         const price = orderResponse.data.order.totalPrice;

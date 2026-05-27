@@ -1,5 +1,3 @@
-const jwt = require("jsonwebtoken");
-
 function createAuthMiddleware(roles = ["user", "seller"]) {
   return (req, res, next) => {
 

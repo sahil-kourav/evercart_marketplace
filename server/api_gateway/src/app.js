@@ -44,9 +44,9 @@ app.use(express.urlencoded({ extended: true }));
 // Rate limiter (after proxy is fine)
 app.use(rateLimiter);
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'API Gateway is running.' });
-});
+// app.get('/', (req, res) => {
+//   res.status(200).json({ message: 'API Gateway is running.' });
+// });
 
 // error handler
 app.use((err, req, res, next) => {

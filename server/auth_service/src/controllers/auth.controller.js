@@ -55,9 +55,7 @@ async function registerUser(req, res) {
         fullName: user.fullName,
         role: user.role,
       })
-    ]).catch(err => {
-  console.error("Queue error:", err);
-});
+    ])
 
     const token = jwt.sign(
       {
@@ -151,6 +149,7 @@ async function getCurrentUser(req, res) {
     if (req.user.role === "seller") {
       return res.status(200).json({
         user: {
+          id: req.user.id,
           email: req.user.email,
           role: "seller",
         },
@@ -202,45 +201,6 @@ async function logoutUser(req, res) {
     message: "Logged out successfully",
   });
 }
-
-
-const adminLogin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      const token = jwt.sign(
-        {
-          id: "admin",
-          email,
-          role: "seller"
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "2d" }
-      );
-
-      res.cookie("token", token, {
-        httpOnly: true,
-        secure: true,
-        sameSite: "none",
-        maxAge: 6 * 24 * 60 * 60 * 1000,
-      });
-
-      res.json({
-        success: true,
-        user: {
-          email,
-          role: "seller"
-        }
-      });
-    } else {
-      res.status(401).json({ success: false, message: "Invalid credentials" });
-    }
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
 
 
 async function getUserAddresses(req, res) {
@@ -338,7 +298,6 @@ module.exports = {
   loginUser,
   getCurrentUser,
   logoutUser,
-  adminLogin,
   getUserAddresses,
   addUserAddress,
   deleteUserAddress,

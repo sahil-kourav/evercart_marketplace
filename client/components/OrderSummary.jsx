@@ -30,11 +30,6 @@ const OrderSummary = ({ totalPrice }) => {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddressModal, setShowAddressModal] = useState(false);
 
-  const api = axios.create({
-    // baseURL: "http://localhost:8080/api/auth",
-    baseURL: `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth`,
-    withCredentials: true,
-  });
 
   const loadRazorpay = () => {
     return new Promise((resolve) => {
@@ -52,7 +47,7 @@ const OrderSummary = ({ totalPrice }) => {
       try {
         const res = await axios.get(
           `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses`,
-          { withCredentials: true }
+          { withCredentials: true },
         );
         const list = res.data.addresses || [];
 
@@ -79,7 +74,7 @@ const OrderSummary = ({ totalPrice }) => {
       res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses`,
         data,
-        { withCredentials: true }
+        { withCredentials: true },
       );
 
       dispatch(addAddress(res.data.address));
@@ -100,7 +95,7 @@ const OrderSummary = ({ totalPrice }) => {
     try {
       await axios.delete(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/auth/users/me/addresses/${id}`,
-        { withCredentials: true }
+        { withCredentials: true },
       );
       dispatch(removeAddress(id));
 
@@ -172,7 +167,6 @@ const OrderSummary = ({ totalPrice }) => {
           router.push("/orders");
           toast.success("Order placed successfully!");
         }, 3500);
-
       } else if (paymentMethod === "RAZORPAY") {
         const res = await loadRazorpay();
 
@@ -219,7 +213,6 @@ const OrderSummary = ({ totalPrice }) => {
                 router.push("/orders");
                 toast.success("Order placed successfully!");
               }, 3500);
-
             } catch (err) {
               console.error("Payment verification failed", err);
               toast.error("Payment verification failed");
@@ -255,8 +248,15 @@ const OrderSummary = ({ totalPrice }) => {
         rzp.open();
       }
     } catch (err) {
+      //  catch (err) {
+      //   console.error("Order placement failed", err);
+      //   toast.error("Failed to place order");
+      // }
+
+      console.log(err.response?.data);
       console.error("Order placement failed", err);
-      toast.error("Failed to place order");
+
+      toast.error(err.response?.data?.error || "Failed to place order");
     } finally {
       setPlacingOrder(false);
     }
@@ -411,7 +411,6 @@ const OrderSummary = ({ totalPrice }) => {
       )}
       {/*  Loader Animation */}
       <OrderLoader show={showLoader} paymentMethod={paymentMethod} />
-      
     </div>
   );
 };

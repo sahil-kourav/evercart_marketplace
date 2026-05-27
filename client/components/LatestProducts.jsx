@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 
 const LatestProducts = () => {
   const displayQuantity = 8;
-  const products = useSelector((state) => state.product.list);
+  const products = useSelector((state) => state.product.list || []);
 
   const latestProducts = [...products].sort(
     (a, b) => new Date(b.createdAt) - new Date(a.createdAt),

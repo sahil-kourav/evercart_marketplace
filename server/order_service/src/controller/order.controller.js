@@ -14,28 +14,33 @@ async function createOrder(req, res) {
     }
 
     // fetch order details from cart service
-      const cartResponse = await axios.get(
-        // `https://cart-service-30ho.onrender.com/api/cart`,
-        `http://localhost:8082/api/cart`,
+    const cartResponse = await axios.get(
+      `http://localhost:8088/api/cart`,
       {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+        headers: {
+          Cookie: `token=${req.cookies.token}`,
+        },
+        withCredentials: true,
+      }
+    );
+
 
     // fetch price details from product service
 
     const products = await Promise.all(
       cartResponse.data.cart.items.map(async (item) => {
+
         return (
           await axios.get(
-            `http://localhost:8081/api/products/${item.productId}`,
+            `http://localhost:8088/api/products/${item.productId}`,
             // `https://product-service-1irc.onrender.com/api/products/${item.productId}`,
             {
               headers: {
-                Authorization: `Bearer ${token}`,
+                Cookie: `token=${req.cookies.token}`,
               },
+              withCredentials: true,
             },
+
           )
         ).data.product;
       }),
@@ -46,12 +51,30 @@ async function createOrder(req, res) {
     let totalPrice = 0;
 
     const orderItems = cartResponse.data.cart.items.map((item, index) => {
-      const product = products.find((p) => p._id === item.productId);
+      // const product = products.find((p) => p._id === item.productId);
 
-      // if stock is insufficient then stop order creation
-      if (product.inStock < item.quantity) {
-        throw new Error(`Insufficient stock for product ${product.title}`);
+      // // if stock is insufficient then stop order creation
+      // if (product.inStock < item.quantity) {
+      //   throw new Error(`Insufficient stock for product ${product.title}`);
+      // }
+
+
+      const product = products.find(
+        (p) => p._id.toString() === item.productId.toString()
+      );
+
+      if (!product) {
+        throw new Error(
+          `Product not found: ${item.productId}`
+        );
       }
+
+      if (product.inStock < item.quantity) {
+        throw new Error(
+          `Insufficient stock for ${product.title}`
+        );
+      }
+
 
       const itemTotal = product.price.amount * item.quantity;
       totalPrice += itemTotal;
@@ -76,6 +99,7 @@ async function createOrder(req, res) {
         amount: totalPrice,
         currency: "INR",
       },
+
       shippingAddress: {
         name: req.body.shippingAddress.name,
         email: req.body.shippingAddress.email,
@@ -88,7 +112,7 @@ async function createOrder(req, res) {
       },
     });
 
- await publishToQueue("ORDER_SELLER_DASHBOARD_ORDER_CREATED", newOrder) 
+    await publishToQueue("ORDER_SELLER_DASHBOARD_ORDER_CREATED", newOrder)
 
     return res
       .status(201)
@@ -133,9 +157,9 @@ async function getMyOrders(req, res) {
 
 
 async function getAllOrders(req, res) {
-  const page  = parseInt(req.query.page)  || 1;
+  const page = parseInt(req.query.page) || 1;
   const limit = parseInt(req.query.limit) || 20;
-  const skip  = (page - 1) * limit;
+  const skip = (page - 1) * limit;
 
   try {
     const orders = await orderModel
@@ -164,7 +188,7 @@ async function getOrderById(req, res) {
     if (!order) {
       return res.status(404).json({ message: "Order not found" });
     }
-      if (order.user.toString() !== user.id && user.role !== "seller") {
+    if (order.user.toString() !== user.id && user.role !== "seller") {
       return res.status(403).json({
         message: "Forbidden: You do not have access to this order",
       });
@@ -228,7 +252,7 @@ async function updateOrderStatus(req, res) {
     await order.save();
 
     await publishToQueue('ORDER_SELLER_DASHBOARD_ORDER_UPDATED', order);
-    
+
     if (status === "DELIVERED") {
 
       await publishToQueue("ORDER_NOTIFICATION.ORDER_DELIVERED", {

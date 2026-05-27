@@ -320,7 +320,7 @@ export default function StoreOrders() {
           <div className="flex-1 bg-gray-50 rounded-xl px-4 py-3 flex flex-col gap-2.5">
             {[
               ["Payment Method",  selectedOrder.paymentMethod],
-              ["Payment Status",     selectedOrder.isPaid ? "Paid" : "Not Paid"],
+              ["Payment Status",  selectedOrder.paymentMethod?.toLowerCase() === "razorpay" ? "Paid" : "Not Paid"],
               ["Date",     new Date(selectedOrder.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })],
               ["Time",     new Date(selectedOrder.createdAt).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit" })],
             ].map(([label, value]) => (

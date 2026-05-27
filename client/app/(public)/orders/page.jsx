@@ -94,7 +94,8 @@ export default function Orders() {
 
         <div className="mt-8 space-y-6">
           {orders.map((order) => (
-            <OrderItem key={order._id} order={order} />
+            <OrderItem key={order._id} 
+            order={order} />
           ))}
         </div>
       </div>

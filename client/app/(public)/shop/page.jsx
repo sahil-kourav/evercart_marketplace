@@ -10,7 +10,7 @@ import CategoriesMarquee from "@/components/CategoriesMarquee";
 
 export default function ShopPage() {
   const dispatch = useDispatch();
-  const products = useSelector((state) => state.product.list);
+  const products = useSelector((state) => state.product.list || []);
 
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,9 @@ export default function ShopPage() {
         withCredentials: true,
       });
 
-      dispatch(setProduct(res.data?.data || []));
+      console.log("Fetched products:", res);
+
+      dispatch(setProduct(res.data?.data));
     } catch (error) {
       console.log(error);
     } finally {
