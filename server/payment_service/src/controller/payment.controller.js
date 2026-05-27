@@ -15,15 +15,14 @@ async function placeOrderRazorpay(req, res) {
     try {
         const orderId = req.params.orderId;
 
-        const orderResponse = await axios.get('http://localhost:8088/api/orders/' + orderId, {
-        // const orderResponse = await axios.get(`https://order-service-2fuz.onrender.com/api/orders/${orderId}`, {
+        const orderResponse = await axios.get(`${process.env.API_GATEWAY_URL}/api/orders/${orderId}`, {
+
         headers: {
           Cookie: `token=${req.cookies.token}`,
         },
         withCredentials: true,
       });
 
-        // console.log('Order Response:', orderResponse.data.order.totalPrice);
 
         const price = orderResponse.data.order.totalPrice;
         const order = await razorpay.orders.create({
@@ -69,8 +68,7 @@ async function placeOrderCOD(req, res) {
     try {
         const orderId = req.params.orderId;
 
-        const orderResponse = await axios.get(`http://localhost:8088/api/orders/${orderId}`, {
-        // const orderResponse = await axios.get(`https://order-service-2fuz.onrender.com/api/orders/${orderId}`, {
+        const orderResponse = await axios.get(`${process.env.API_GATEWAY_URL}/api/orders/${orderId}`, {
            
         headers: {
           Cookie: `token=${req.cookies.token}`,

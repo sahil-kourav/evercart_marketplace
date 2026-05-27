@@ -1,317 +1,322 @@
-// import React from "react";
-// import { Award, Rocket, Users, ShieldCheck } from "lucide-react";
+"use client";
+import {
+  Award,
+  Rocket,
+  Users,
+  ShieldCheck,
+  ArrowRight,
+  MapPin,
+  Star,
+  Package,
+  TrendingUp,
+} from "lucide-react";
 
-// export default function AboutUs() {
-//   return (
-//     <main className="bg-white">
-//       {/* HERO */}
-//       <section className="max-w-6xl mx-auto px-6 py-24 text-center">
-//         <h1 className="text-5xl md:text-6xl font-bold text-slate-800 leading-tight">
-//           About <span className="text-green-600">Evercart</span>
-//         </h1>
+const stats = [
+  { value: "50+", label: "Happy Customers", icon: <Users size={20} /> },
+  { value: "80+", label: "Verified Products", icon: <Star size={20} /> },
+  { value: "80+", label: "Products Listed", icon: <Package size={20} /> },
+  { value: "99.9%", label: "Secure Payments", icon: <ShieldCheck size={20} /> },
+];
 
-//         <p className="mt-6 text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-//           Evercart is more than just an online marketplace — it’s a smarter way
-//           to discover, compare, and shop for technology you can trust.
-//           We bring together quality products, transparent pricing, and a
-//           seamless experience for modern shoppers.
-//         </p>
+const features = [
+  {
+    icon: <Award size={22} />,
+    title: "Quality First",
+    desc: "Every seller is vetted, every product reviewed. We don't list it unless we'd buy it ourselves.",
+    color: "bg-emerald-50 text-emerald-600",
+    border: "border-emerald-100",
+  },
+  {
+    icon: <Rocket size={22} />,
+    title: "Fast & Reliable",
+    desc: "From checkout to doorstep — blazing fast delivery, painless returns, zero drama.",
+    color: "bg-sky-50 text-sky-600",
+    border: "border-sky-100",
+  },
+  {
+    icon: <ShieldCheck size={22} />,
+    title: "Secure by Design",
+    desc: "End-to-end encrypted payments and privacy-first data handling. Your trust is non-negotiable.",
+    color: "bg-violet-50 text-violet-600",
+    border: "border-violet-100",
+  },
+  {
+    icon: <TrendingUp size={22} />,
+    title: "Seller Growth",
+    desc: "Powerful analytics, smart inventory tools, and a community to grow your business.",
+    color: "bg-amber-50 text-amber-600",
+    border: "border-amber-100",
+  },
+];
 
-//         <img
-//           src="https://illustrations.popsy.co/gray/online-shopping.svg"
-//           alt="Evercart online shopping"
-//           className="mx-auto mt-14 w-full max-w-lg"
-//         />
-//       </section>
+const timeline = [
+  {
+    year: "2025",
+    title: "The Spark",
+    desc: "Two friends in Indore frustrated by clunky marketplaces — Evercart was sketched on a napkin.",
+  },
+  {
+    year: "2026",
+    title: "First Launch",
+    desc: "Beta launched with 50 sellers and 200 products. Sold out in 3 days.",
+  },
+  {
+    year: "2026",
+    title: "Trust at Scale",
+    desc: "Launched Secure Pay, real-time tracking, and our seller success program.",
+  },
+  {
+    year: "2027",
+    title: "What's Next",
+    desc: "Going global. Same trust, same simplicity — now borderless.",
+  },
+];
 
-//       {/* MISSION STATEMENT */}
-//       <section className="bg-slate-50 border-t border-slate-100">
-//         <div className="max-w-6xl mx-auto px-6 py-20 text-center">
-//           <h2 className="text-3xl font-semibold text-slate-800">
-//             Our Mission
-//           </h2>
-//           <p className="mt-6 text-lg text-slate-600 max-w-4xl mx-auto">
-//             To empower customers and sellers with a secure, transparent, and
-//             delightful shopping ecosystem — where technology meets trust and
-//             growth feels effortless.
-//           </p>
-//         </div>
-//       </section>
-
-//       {/* WHY CHOOSE US */}
-//       <section className="py-24">
-//         <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-//           {/* Left */}
-//           <div>
-//             <h2 className="text-3xl font-semibold text-slate-800 mb-8">
-//               Why choose Evercart?
-//             </h2>
-
-//             <ul className="space-y-6">
-//               <li className="flex items-start gap-5">
-//                 <Award className="text-green-600 mt-1" size={28} />
-//                 <div>
-//                   <h4 className="font-semibold text-slate-800">
-//                     Curated Quality
-//                   </h4>
-//                   <p className="text-slate-600">
-//                     Handpicked products from trusted brands to ensure reliability
-//                     and long-term value.
-//                   </p>
-//                 </div>
-//               </li>
-
-//               <li className="flex items-start gap-5">
-//                 <Rocket className="text-green-600 mt-1" size={28} />
-//                 <div>
-//                   <h4 className="font-semibold text-slate-800">
-//                     Speed & Convenience
-//                   </h4>
-//                   <p className="text-slate-600">
-//                     Fast delivery, smooth checkout, and hassle-free returns.
-//                   </p>
-//                 </div>
-//               </li>
-
-//               <li className="flex items-start gap-5">
-//                 <ShieldCheck className="text-green-600 mt-1" size={28} />
-//                 <div>
-//                   <h4 className="font-semibold text-slate-800">
-//                     Secure by Design
-//                   </h4>
-//                   <p className="text-slate-600">
-//                     Safe payments, protected data, and reliable customer support.
-//                   </p>
-//                 </div>
-//               </li>
-
-//               <li className="flex items-start gap-5">
-//                 <Users className="text-green-600 mt-1" size={28} />
-//                 <div>
-//                   <h4 className="font-semibold text-slate-800">
-//                     Built for Sellers
-//                   </h4>
-//                   <p className="text-slate-600">
-//                     Tools and opportunities for sellers to create, grow, and
-//                     manage their own online stores.
-//                   </p>
-//                 </div>
-//               </li>
-//             </ul>
-//           </div>
-
-//           {/* Right */}
-//           <div className="bg-white rounded-3xl border border-slate-100 p-10 shadow-sm text-slate-600 leading-relaxed">
-//             <p className="mb-5">
-//               Evercart was created with a simple belief — online shopping should
-//               feel confident, transparent, and enjoyable.
-//             </p>
-
-//             <p className="mb-5">
-//               Whether you’re a tech enthusiast searching for the latest gadgets
-//               or a seller looking to reach new customers, Evercart provides the
-//               platform to grow and succeed.
-//             </p>
-
-//             <p>
-//               <span className="font-semibold text-slate-800">
-//                 Founded in Indore, India
-//               </span>
-//               , Evercart proudly supports a growing community of smart shoppers
-//               and innovative sellers across the country.
-//             </p>
-//           </div>
-//         </div>
-//       </section>
-
-//       {/* CLOSING */}
-//       <section className="bg-slate-50 border-t border-slate-100">
-//         <div className="max-w-5xl mx-auto px-6 py-20 text-center">
-//           <h2 className="text-3xl font-semibold text-slate-800">
-//             Let’s shop smarter, together
-//           </h2>
-//           <p className="mt-4 text-lg text-slate-600">
-//             💚 Evercart — where technology meets trust, speed, and simplicity.
-//           </p>
-//         </div>
-//       </section>
-//     </main>
-//   );
-// }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-import React from "react";
-import { Award, Rocket, Users, ShieldCheck } from "lucide-react";
-
-export default function AboutUs() {
-
-  function FeatureCard({ icon, title, desc }) {
+function StatCard({ value, label, icon }) {
   return (
-    <div className="flex gap-4 p-5 bg-white rounded-2xl shadow-sm hover:shadow-md transition">
-      <div className="flex items-center justify-center w-11 h-11 rounded-xl bg-green-100 text-green-600 shrink-0">
+    <div className="flex flex-col items-center gap-2 p-6 bg-white rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-all hover:-translate-y-1">
+      <div className="w-11 h-11 rounded-xl bg-green-50 text-green-600 flex items-center justify-center">
         {icon}
       </div>
+
+      <p className="text-3xl font-bold text-slate-900 tracking-tight">
+        {value}
+      </p>
+
+      <p className="text-sm text-slate-500 font-medium text-center">
+        {label}
+      </p>
+    </div>
+  );
+}
+
+function FeatureCard({ icon, title, desc, color, border }) {
+  return (
+    <div
+      className={`group flex flex-col gap-4 p-6 bg-white rounded-2xl border ${border} hover:shadow-xl hover:-translate-y-1 transition-all duration-300`}
+    >
+      <div
+        className={`w-11 h-11 rounded-xl flex items-center justify-center ${color}`}
+      >
+        {icon}
+      </div>
+
       <div>
-        <h4 className="font-semibold text-slate-800">{title}</h4>
-        <p className="text-sm text-slate-600 mt-1">{desc}</p>
+        <h4 className="font-semibold text-slate-800 text-lg mb-2">
+          {title}
+        </h4>
+
+        <p className="text-sm text-slate-500 leading-relaxed">
+          {desc}
+        </p>
       </div>
     </div>
   );
 }
 
+function TimelineItem({ year, title, desc, isLast }) {
   return (
-    <main className="bg-white text-slate-800">
-      {/* ================= HERO ================= */}
-      <section className="max-w-6xl mx-auto px-6 pt-20 pb-16 text-center">
-        <span className="inline-block mb-4 px-4 py-1 rounded-full bg-green-50 text-green-700 text-sm font-medium">
-          About Evercart
-        </span>
+    <div className="flex gap-6">
+      <div className="flex flex-col items-center">
+        <div className="w-10 h-10 rounded-full bg-green-600 text-white text-xs font-bold flex items-center justify-center shadow-lg shadow-green-200">
+          {year.slice(2)}
+        </div>
 
-        <h1 className="text-4xl md:text-5xl font-bold leading-tight">
-          Smarter shopping for a{" "}
-          <span className="text-green-600">smarter generation</span>
-        </h1>
+        {!isLast && (
+          <div className="w-px flex-1 bg-gradient-to-b from-green-200 to-slate-100 mt-2" />
+        )}
+      </div>
 
-        <p className="mt-5 text-base md:text-lg text-slate-600 max-w-3xl mx-auto leading-relaxed">
-          Evercart is a modern marketplace built for people who value quality,
-          transparency, and speed. From the latest gadgets to everyday
-          essentials — we help you shop with confidence.
+      <div className="pb-10">
+        <p className="text-xs font-semibold text-green-600 tracking-widest uppercase mb-1">
+          {year}
         </p>
 
+        <h4 className="font-semibold text-slate-800 mb-1">
+          {title}
+        </h4>
+
+        <p className="text-sm text-slate-500 leading-relaxed max-w-sm">
+          {desc}
+        </p>
+      </div>
+    </div>
+  );
+}
+
+export default function AboutUs() {
+  return (
+    <main className="bg-white text-slate-800 overflow-hidden">
+
+      {/* HERO */}
+      <section className="relative min-h-[65vh] flex items-center">
+
+        {/* Background */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_80%_80%_at_50%_-20%,rgba(16,185,129,0.12),rgba(255,255,255,0))]" />
+
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-gradient-to-bl from-green-50 to-transparent rounded-full opacity-70 translate-x-1/4 -translate-y-1/4" />
+
+        <div className="relative max-w-6xl mx-auto px-6 py-20 w-full text-center">
+
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-green-50 border border-green-100 text-green-700 text-xs font-semibold tracking-wide uppercase mb-6">
+            <MapPin size={12} />
+            Founded in Indore, India
+          </div>
+
+          <h1 className="text-4xl md:text-6xl font-bold leading-[1.05] text-slate-900">
+            Shopping that{" "}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-green-500 to-emerald-700">
+              actually works.
+            </span>
+          </h1>
+
+          <p className="mt-6 text-md text-slate-500 leading-relaxed max-w-3xl mx-auto">
+            Evercart is a modern Indian marketplace built on one belief —
+            buying online should feel good. Quality products, honest sellers,
+            and zero compromise on trust.
+          </p>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+            <button  className="px-7 py-3.5 rounded-xl bg-green-600 text-white font-semibold hover:bg-green-500 transition shadow-lg shadow-green-200">
+              Start Shopping
+            </button>
+
+            <button className="px-7 py-3.5 rounded-xl border border-slate-200 text-slate-700 font-semibold hover:bg-slate-50 transition">
+              Learn More
+            </button>
+          </div>
+        </div>
       </section>
 
-      {/* ================= STATS ================= */}
-      <section className="border-t border-b border-slate-100 bg-slate-50">
-        <div className="max-w-6xl mx-auto px-6 py-12 grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          {[
-            { value: "10k+", label: "Happy Customers" },
-            { value: "500+", label: "Verified Sellers" },
-            { value: "2k+", label: "Products Listed" },
-            { value: "99.9%", label: "Secure Payments" },
-          ].map((item) => (
-            <div key={item.label}>
-              <p className="text-3xl font-bold text-green-600">
-                {item.value}
-              </p>
-              <p className="text-sm text-slate-600 mt-1">{item.label}</p>
-            </div>
+      {/* STATS */}
+      <section className="max-w-6xl mx-auto px-6 -mt-8 relative z-10">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {stats.map((stat) => (
+            <StatCard key={stat.label} {...stat} />
           ))}
         </div>
       </section>
 
- 
-      
-      <section className="relative bg-slate-50 py-24">
-  <div className="max-w-6xl mx-auto px-6 grid grid-cols-1 lg:grid-cols-2 gap-20 items-center">
-    
-    {/* LEFT CONTENT */}
-    <div>
-      <span className="inline-block mb-3 text-sm font-semibold text-green-600 tracking-wide">
-        WHY EVERCART
-      </span>
+      {/* WHY EVERCART */}
+      <section className="max-w-6xl mx-auto px-6 py-24">
 
-      <h2 className="text-4xl font-bold text-slate-900 mb-6 leading-tight">
-        Shopping made simple, <br />
-        <span className="text-green-600">smart & secure</span>
-      </h2>
+        <div className="text-center mb-14">
+          <span className="text-xs font-semibold text-green-600 tracking-widest uppercase">
+            Why Evercart
+          </span>
 
-      <p className="text-slate-600 max-w-xl mb-10">
-        Evercart is built to give you confidence in every purchase — from quality
-        products to reliable delivery and secure payments.
-      </p>
-
-      {/* FEATURES */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-        <FeatureCard
-          icon={<Award />}
-          title="Quality First"
-          desc="Carefully verified products from trusted sellers."
-        />
-        <FeatureCard
-          icon={<Rocket />}
-          title="Fast & Reliable"
-          desc="Smooth checkout, quick delivery & easy returns."
-        />
-        <FeatureCard
-          icon={<ShieldCheck />}
-          title="Secure Shopping"
-          desc="Your data & payments are protected end-to-end."
-        />
-        <FeatureCard
-          icon={<Users />}
-          title="Seller Friendly"
-          desc="Powerful tools to grow and manage your store."
-        />
-      </div>
-    </div>
-
-    {/* RIGHT IMAGE */}
-    <div className="relative max-w-md mx-auto">
-      {/* soft background glow */}
-      <div className="absolute inset-0 bg-gradient-to-br from-green-100 to-emerald-200 rounded-3xl blur-2xl opacity-60" />
-
-      <div className="relative bg-white rounded-3xl p-6 shadow-xl">
-        <img
-          src="https://illustrations.popsy.co/gray/shopping-cart.svg"
-          alt="Evercart shopping experience"
-          className="w-full h-64 object-contain"
-        />
-      </div>
-    </div>
-  </div>
-</section>
-
-
-      {/* ================= CLOSING ================= */}
-      <section className="bg-slate-900 text-white">
-        <div className="max-w-5xl mx-auto px-6 py-16 text-center">
-          <h2 className="text-2xl md:text-3xl font-semibold mb-3">
-            Built in India. Trusted everywhere.
+          <h2 className="mt-3 text-4xl font-bold text-slate-900">
+            Built different.{" "}
+            <span className="text-green-600">On purpose.</span>
           </h2>
-          <p className="text-slate-300 max-w-2xl mx-auto">
-            Founded in Indore, Evercart is growing with a community that believes
-            in smarter choices and better technology.
-          </p>
 
-          <p className="mt-5 text-green-400 font-medium">
-            💚 Evercart — Where technology meets trust
+          <p className="mt-4 text-slate-500 max-w-2xl mx-auto leading-relaxed">
+            We didn't just build another marketplace. We built the one we always wished existed.
           </p>
         </div>
-      </section>
-    </main>
-  );
-}
 
-/* ===== Small Feature Component ===== */
-function Feature({ icon, title, desc }) {
-  return (
-    <div className="flex gap-4 items-start">
-      <div className="mt-1">{icon}</div>
-      <div>
-        <h4 className="font-medium text-slate-800">{title}</h4>
-        <p className="text-slate-600 text-sm">{desc}</p>
-      </div>
-    </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+          {features.map((f) => (
+            <FeatureCard key={f.title} {...f} />
+          ))}
+        </div>
+      </section>
+
+      {/* JOURNEY */}
+      <section className="bg-slate-50 py-16">
+
+        <div className="max-w-6xl mx-auto px-6 grid lg:grid-cols-2 gap-12 items-start">
+
+          {/* Left */}
+          <div>
+            <span className="text-xs font-semibold text-green-600 tracking-widest uppercase">
+              Our Journey
+            </span>
+
+            <h2 className="mt-3 text-4xl font-bold text-slate-900 leading-tight">
+              From a napkin sketch <br /> to a national platform.
+            </h2>
+
+            <p className="mt-5 text-slate-500 leading-relaxed">
+              Every great marketplace has a messy origin story. Ours started
+              with two founders tired of bad UX, shady sellers, and checkout
+              flows that felt like 2004.
+            </p>
+
+            <div className="mt-8 inline-flex items-center gap-2 text-green-600 font-semibold hover:text-green-700 cursor-pointer group">
+              Read the full story
+              <ArrowRight
+                size={16}
+                className="group-hover:translate-x-1 transition-transform"
+              />
+            </div>
+          </div>
+
+          {/* Right */}
+          <div className="pt-2">
+            {timeline.map((item, i) => (
+              <TimelineItem
+                key={item.year}
+                {...item}
+                isLast={i === timeline.length - 1}
+              />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* MISSION */}
+      <section className="max-w-6xl mx-auto px-6 py-4">
+
+        <div className="relative bg-gradient-to-br from-slate-900 to-slate-800 rounded-3xl p-10 md:p-16 overflow-hidden text-center">
+
+          <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_120%,rgba(16,185,129,0.25),transparent)]" />
+
+          <div className="relative">
+
+            <p className="text-green-400 font-semibold text-sm tracking-widest uppercase mb-4">
+              Our Mission
+            </p>
+
+            <h2 className="text-3xl md:text-5xl font-bold text-white leading-tight max-w-3xl mx-auto">
+              Make great products accessible to every Indian home.
+            </h2>
+
+            <p className="mt-5 text-slate-400 max-w-2xl mx-auto leading-relaxed">
+              Big city or small town — everyone deserves a marketplace they can trust.
+            </p>
+
+            {/* FEATURES */}
+            <div className="mt-8 flex items-center justify-center gap-6 text-sm text-slate-400 flex-wrap">
+              <span>✔ Trusted sellers</span>
+              <span>✔ Secure payments</span>
+              <span>✔ Fast delivery</span>
+            </div>
+
+            {/* BUTTONS */}
+            <div className="mt-10 flex flex-wrap gap-4 justify-center">
+
+              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl bg-green-500 text-white font-semibold hover:bg-green-400 transition shadow-lg shadow-green-900/30">
+                Join the Community
+                <ArrowRight size={16} />
+              </button>
+
+              <button className="inline-flex items-center gap-2 px-7 py-3.5 rounded-xl border border-slate-600 text-slate-200 font-semibold hover:border-slate-400 hover:text-white transition">
+                Sell on Evercart
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FOOTER */}
+     <section className="border-t border-slate-100 py-8">
+        <div className="max-w-6xl mx-auto px-6 flex flex-col md:flex-row items-center justify-between gap-3 text-sm text-slate-400">
+          <p>💚 <span className="font-bold text-green-600">Evercart</span> — Where technology meets trust.</p>
+          <p>Built in Indore, trusted across India.</p>
+        </div>
+      </section>
+
+    </main>
   );
 }

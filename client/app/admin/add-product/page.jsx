@@ -14,8 +14,6 @@ export default function StoreAddProduct() {
     "Toys & Games",
     "Sports & Outdoors",
     "Books & Media",
-    "Food & Drink",
-    "Hobbies & Crafts",
     "Others",
   ];
 
@@ -65,7 +63,6 @@ export default function StoreAddProduct() {
 
       // Make API request
       const response = await axios.post(
-        // `${process.env.NEXT_PUBLIC_PRODUCT_SERVICE_API_URL}/api/products`,
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`,
         formData,
         {

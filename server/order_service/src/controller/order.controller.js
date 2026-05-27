@@ -15,7 +15,7 @@ async function createOrder(req, res) {
 
     // fetch order details from cart service
     const cartResponse = await axios.get(
-      `http://localhost:8088/api/cart`,
+      `${process.env.API_GATEWAY_URL}/api/cart`,
       {
         headers: {
           Cookie: `token=${req.cookies.token}`,
@@ -32,8 +32,8 @@ async function createOrder(req, res) {
 
         return (
           await axios.get(
-            `http://localhost:8088/api/products/${item.productId}`,
-            // `https://product-service-1irc.onrender.com/api/products/${item.productId}`,
+            `${process.env.API_GATEWAY_URL}/api/products/${item.productId}`,
+           
             {
               headers: {
                 Cookie: `token=${req.cookies.token}`,
@@ -51,13 +51,6 @@ async function createOrder(req, res) {
     let totalPrice = 0;
 
     const orderItems = cartResponse.data.cart.items.map((item, index) => {
-      // const product = products.find((p) => p._id === item.productId);
-
-      // // if stock is insufficient then stop order creation
-      // if (product.inStock < item.quantity) {
-      //   throw new Error(`Insufficient stock for product ${product.title}`);
-      // }
-
 
       const product = products.find(
         (p) => p._id.toString() === item.productId.toString()

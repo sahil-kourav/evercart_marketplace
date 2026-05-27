@@ -302,33 +302,6 @@ function DeliveryAddress({ address }) {
 
 // ─── PaymentInfo ──────────────────────────────────────────────────────────────
 
-// function PaymentInfo({ method, status }) {
-//   return (
-//     <Card>
-//       <div className="flex gap-2 mb-1">
-//         <CreditCard size={14} className="text-gray-400" />
-//         <SectionLabel>Payment info</SectionLabel>
-//       </div>
-//       <div className="space-y-3">
-//         {[
-//           { label: "Payment method", value: method },
-//           { label: "Payment status", value: status },
-//         ].map(({ label, value }) => (
-//           <div key={label} className="flex justify-between items-center text-sm">
-//             <span className="text-gray-400">{label}</span>
-//             <span className="text-xs text-green-700 bg-green-50 px-2 py-1 rounded-full">
-//               {value}
-//             </span>
-//           </div>
-//         ))}
-//       </div>
-//     </Card>
-//   );
-// }
-
-
-
-
 function PaymentInfo({ method }) {
 
   const paymentStatus =
@@ -450,7 +423,7 @@ export default function OrderDetailPage() {
       setShowModal(false);
     } catch (err) {
       setCancelError(
-        err.response?.data?.message ?? "Could not cancel order. Please try again.",
+        "Could not cancel order. Please try again.",
       );
     } finally {
       setCancelling(false);
