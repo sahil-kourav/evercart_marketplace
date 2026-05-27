@@ -34,6 +34,8 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use(rateLimiter);
+
 // Proxy setup (must be before body parsers)
 setupProxy(app);
 
@@ -41,8 +43,6 @@ setupProxy(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Rate limiter (after proxy is fine)
-app.use(rateLimiter);
 
 // app.get('/', (req, res) => {
 //   res.status(200).json({ message: 'API Gateway is running.' });
