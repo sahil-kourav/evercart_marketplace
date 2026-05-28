@@ -50,6 +50,8 @@ export default function Register() {
           "Registration failed, try again later",
         { id: toastId },
       );
+      console.error("Registration error:", error);
+      
       setError(error?.message || "Registration failed");
     } finally {
       setLoading(false);
