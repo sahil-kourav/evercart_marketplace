@@ -34,12 +34,12 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("/api/auth", authLimiter);
-// app.use("/api/payments", paymentLimiter);
-// app.use("/api/orders", orderLimiter);
-
 // Proxy setup (must be before body parsers)
 setupProxy(app);
+
+app.use("/api/auth", authLimiter);
+app.use("/api/payments", paymentLimiter);
+app.use("/api/orders", orderLimiter);
 
 // Body parsers (AFTER proxy only)
 app.use(express.json());

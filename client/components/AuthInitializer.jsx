@@ -20,8 +20,6 @@ export default function AuthInitializer() {
           { withCredentials: true }
         );
 
-        console.log("Backend User:", res.data.user);
-
         dispatch(loginSuccess(res.data.user));
       } catch (error) {
         dispatch(logout());

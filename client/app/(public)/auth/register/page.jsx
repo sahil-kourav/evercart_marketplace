@@ -45,14 +45,12 @@ export default function Register() {
       toast.success("Registration successful!", { id: toastId });
       router.push("/");
     } catch (error) {
-      toast.error(
-        error?.response?.data?.message ||
-          "Registration failed, try again later",
+      toast.error("Registration failed, try again later",
         { id: toastId },
       );
-      console.error("Registration error:", error);
+      // console.error("Registration error:", error);
       
-      setError(error?.message || "Registration failed");
+      setError("Registration failed");
     } finally {
       setLoading(false);
     }
@@ -135,7 +133,7 @@ export default function Register() {
                 onChange={(e) => setPhone(e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 type="tel"
-                placeholder="+91 9876543210"
+                placeholder="+91 123-456-7890"
                 required
               />
             </div>
@@ -156,7 +154,7 @@ export default function Register() {
             </div>
 
             {/* Error Message */}
-            {error && <div className="text-sm text-red-500">{error}</div>}
+            {/* {error && <div className="text-sm text-red-500">{error}</div>} */}
 
             {/* Submit */}
             <button

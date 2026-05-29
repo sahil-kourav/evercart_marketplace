@@ -238,7 +238,7 @@ const Footer = () => {
               <ul className="space-y-3 text-slate-600">
                 <li className="flex items-center gap-3">
                   <PhoneIcon />
-                  <span>+91-913-426-7890</span>
+                  <span>+91-123-456-7890</span>
                 </li>
 
                 <li className="flex items-center gap-3">
@@ -257,7 +257,7 @@ const Footer = () => {
 
         {/* Bottom Bar */}
         <div className="border-t border-slate-200 py-4 text-center text-sm text-slate-500">
-          © 2025 Evercart. All rights reserved.
+          © 2026 Evercart. All rights reserved.
         </div>
       </div>
     </footer>

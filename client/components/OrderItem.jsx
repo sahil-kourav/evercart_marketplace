@@ -18,7 +18,7 @@ const OrderItem = ({ order }) => {
   const badgeClass = statusStyles[order.status] || "bg-gray-100 text-gray-600";
 
   return (
-    <div className="bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-sm transition-shadow">
+    <div className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-sm transition-shadow">
       {/* Top row: date + order id + status */}
       <div className="flex justify-between items-start mb-4">
         <div>

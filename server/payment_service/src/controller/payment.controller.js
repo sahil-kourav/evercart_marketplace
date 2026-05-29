@@ -17,11 +17,11 @@ async function placeOrderRazorpay(req, res) {
 
         const orderResponse = await axios.get(`${process.env.API_GATEWAY_URL}/api/orders/${orderId}`, {
 
-        headers: {
-          Cookie: `token=${req.cookies.token}`,
-        },
-        withCredentials: true,
-      });
+            headers: {
+                Cookie: `token=${req.cookies.token}`,
+            },
+            withCredentials: true,
+        });
 
 
         const price = orderResponse.data.order.totalPrice;
@@ -57,7 +57,7 @@ async function placeOrderRazorpay(req, res) {
         res.status(201).json({ message: 'Payment initiated successfully', payment });
 
     } catch (error) {
-        console.error('Error creating payment:', error);
+        // console.error('Error creating payment:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
@@ -69,11 +69,11 @@ async function placeOrderCOD(req, res) {
         const orderId = req.params.orderId;
 
         const orderResponse = await axios.get(`${process.env.API_GATEWAY_URL}/api/orders/${orderId}`, {
-           
-        headers: {
-          Cookie: `token=${req.cookies.token}`,
-        },
-        withCredentials: true,  
+
+            headers: {
+                Cookie: `token=${req.cookies.token}`,
+            },
+            withCredentials: true,
         });
 
         const price = orderResponse.data.order.totalPrice;
@@ -101,7 +101,7 @@ async function placeOrderCOD(req, res) {
         res.status(201).json({ message: 'Payment initiated successfully', payment });
 
     } catch (error) {
-        console.error('Error creating payment:', error);
+        // console.error('Error creating payment:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }
@@ -111,7 +111,7 @@ async function verifyPayment(req, res) {
     const secret = process.env.RAZORPAY_KEY_SECRET;
 
     try {
-        // ✅ Generate expected signature
+        // Generate expected signature
         const body = razorpayOrderId + "|" + paymentId;
 
         const expectedSignature = crypto
@@ -156,7 +156,7 @@ async function verifyPayment(req, res) {
             .json({ message: "Payment verified successfully", payment });
 
     } catch (error) {
-        console.error("Error verifying payment:", error);
+        // console.error("Error verifying payment:", error);
 
         await publishToQueue("PAYMENT_NOTIFICATION.PAYMENT_FAILED", {
             email: req.user.email,
@@ -195,7 +195,7 @@ async function updatePaymentStatus(req, res) {
         res.status(200).json({ message: 'Payment status updated successfully', payment });
 
     } catch (error) {
-        console.error('Error updating payment status:', error);
+        // console.error('Error updating payment status:', error);
         res.status(500).json({ message: 'Internal server error' });
     }
 }

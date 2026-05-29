@@ -23,7 +23,6 @@ export default function Product() {
 
       setProduct(res.data.product || null);
     } catch (error) {
-      console.error(error);
       setProduct(null);
     }
   };
@@ -43,7 +42,6 @@ export default function Product() {
   if (!product) return <Loading />;
 
   return (
-    <div className="mx-6">
       <div className="max-w-7xl px-6 lg:px-8 mx-auto">
         <div className="text-gray-600 text-sm mt-8 mb-5">
           Home / Products / {product.category}
@@ -52,6 +50,5 @@ export default function Product() {
         <ProductDetails product={product} />
         <ProductDescription product={product} />
       </div>
-    </div>
   );
 }

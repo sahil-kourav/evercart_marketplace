@@ -10,7 +10,7 @@ export default function Orders() {
 
   const fetchOrders = async () => {
     try {
-      setLoading(true); // 🔥 start loading
+      setLoading(true);
 
       const response = await axios.get(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/me`,
@@ -51,9 +51,9 @@ export default function Orders() {
 
       setOrders(enrichedOrders);
     } catch (error) {
-      console.error("Error fetching orders:", error);
+      // console.error("Error fetching orders:", error);
     } finally {
-      setLoading(false); // ✅ IMPORTANT FIX
+      setLoading(false);
     }
   };
 
@@ -61,7 +61,7 @@ export default function Orders() {
     fetchOrders();
   }, []);
 
-  // 🔥 1. Loading state (highest priority)
+  // Loading state (highest priority)
   if (loading) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center gap-3 text-gray-400">
@@ -71,7 +71,7 @@ export default function Orders() {
     );
   }
 
-  // 🔥 2. Empty state
+  // Empty state
   if (orders.length === 0) {
     return (
       <div className="min-h-[80vh] flex items-center justify-center text-slate-400">
@@ -82,10 +82,10 @@ export default function Orders() {
     );
   }
 
-  // 🔥 3. Success state
+  // Success state
   return (
     <div className="min-h-[70vh]">
-      <div className="my-10 max-w-7xl mx-auto px-6 lg:px-10">
+      <div className="my-10 max-w-7xl mx-auto px-6 lg:px-8">
         <PageTitle
           heading="My Orders"
           text={`Showing total ${orders.length} orders`}

@@ -35,23 +35,23 @@ const ProductDetails = ({ product }) => {
 
   const [mainImage, setMainImage] = useState(images[0]);
 
- const addToCartHandler = async () => {
-  try {
-    await dispatch(addItemToCart({ productId, qty: 1 }));
+  const addToCartHandler = async () => {
+    try {
+      await dispatch(addItemToCart({ productId, qty: 1 }));
 
-    toast.success("Item added to cart 🛒");
-  } catch (error) {
-    toast.error("Failed to add item ❌");
-  }
-};
+      toast.success("Item added to cart 🛒");
+    } catch (error) {
+      toast.error("Failed to add item ❌");
+    }
+  };
 
   useEffect(() => {
     dispatch(fetchCart());
   }, [dispatch]);
 
   // demo rating
-  const averageRating = 4;
-  const totalReviews = 6;
+  const averageRating = 4.5;
+  const totalReviews = 8;
 
   return (
     <div className="flex max-lg:flex-col gap-12">
@@ -78,50 +78,30 @@ const ProductDetails = ({ product }) => {
           {product.title}
         </h1>
 
-        <div className="flex items-center mt-2">
-          {Array(5)
-            .fill("")
-            .map((_, index) => (
-              <StarIcon
-                key={index}
-                size={14}
-                className="text-transparent mt-0.5"
-                fill={averageRating >= index + 1 ? "#00C950" : "#D1D5DB"}
-              />
-            ))}
-          <p className="text-sm ml-3 text-slate-500">{totalReviews} Reviews</p>
+        <div className="flex items-center gap-2 mt-2">
+          <div className="flex items-center gap-0.5">
+            {Array(5)
+              .fill("")
+              .map((_, index) => (
+                <StarIcon
+                  key={index}
+                  size={14}
+                  className="text-transparent"
+                  fill={averageRating >= index - 1 ? "#00C950" : "#D1D5DB"}
+                />
+              ))}
+          </div>
+          <p className="text-sm font-medium text-slate-700">
+            {averageRating}{" "}
+          </p>
+          <span className="text-slate-500">·</span>
+          <p className="text-sm font-normal text-slate-800">{totalReviews} reviews</p>
         </div>
 
         <div className="flex items-start my-5 gap-3 text-2xl font-semibold text-slate-800">
           <p>
             {currency} {product.price?.amount?.toLocaleString()}
           </p>
-        </div>
-
-        <div className="flex items-center gap-2 text-slate-500">
-          <TagIcon size={14} />
-          <p>Category: {product.category}</p>
-        </div>
-
-        <div className="mt-3 text-sm flex items-center gap-2">
-          {product.stock === 0 ? (
-            <>
-              <XCircle size={16} className="text-red-500" />
-              <span className="text-red-500">Out of stock</span>
-            </>
-          ) : product.stock <= 10 ? (
-            <>
-              <AlertTriangle size={16} className="text-orange-500" />
-              <span className="text-orange-500">
-                Hurry! Only {product.stock} left
-              </span>
-            </>
-          ) : (
-            <>
-              <Package size={16} className="text-slate-500" />
-              <span className="text-slate-500">{product.stock} available</span>
-            </>
-          )}
         </div>
 
         <div className="flex items-end gap-5 mt-6">
@@ -144,15 +124,19 @@ const ProductDetails = ({ product }) => {
 
         <hr className="border-gray-300 my-5" />
 
-        <div className="flex flex-col gap-4 text-slate-500">
-          <p className="flex gap-3 text-md">
-            <EarthIcon size={20} /> Free shipping worldwide
+        <div className="flex flex-col gap-2 text-slate-500">
+          <p className="flex items-center gap-3 text-md">
+            <Package size={18} /> Estimated delivery within 3-5 business days
           </p>
-          <p className="flex gap-3 text-md">
-            <CreditCardIcon size={20} /> 100% Secured Payment
+          <p className="flex items-center gap-3 text-md">
+            <TagIcon size={18} /> Easy returns within 6 days of delivery
           </p>
-          <p className="flex gap-3 text-md">
-            <UserIcon size={20} /> Trusted by top brands
+          <p className="flex items-center gap-3 text-md">
+            <XCircle size={20} /> No hidden charges, what you see is what you
+            pay
+          </p>
+          <p className="flex items-center gap-3 text-md">
+            <UserIcon size={18} /> 24/7 customer support, we're here to help
           </p>
         </div>
       </div>

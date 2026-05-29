@@ -46,7 +46,6 @@ export default function ProfilePage() {
         );
         dispatch(loginSuccess(res.data.user));
       } catch (err) {
-        console.error("User fetch failed", err);
         dispatch(authChecked());
       }
     }
@@ -73,7 +72,6 @@ export default function ProfilePage() {
         setAddresses(addrArray);
         setSelectedAddress(addrArray[0] || null);
       } catch (err) {
-        console.error(err);
         setAddresses([]);
       }
       setAddressLoading(false);
@@ -117,7 +115,6 @@ export default function ProfilePage() {
 
         setOrders(enrichedOrders);
       } catch (err) {
-        console.error("Error fetching orders:", err);
       } finally {
         setOrdersLoading(false);
       }
@@ -139,7 +136,6 @@ export default function ProfilePage() {
       setSelectedAddress(newAddress);
       setShowAddressModal(false);
     } catch (err) {
-      console.error("Failed to save address:", err);
     }
   };
 
@@ -153,7 +149,6 @@ export default function ProfilePage() {
       setAddresses((prev) => prev.filter((a) => a._id !== id));
       if (selectedAddress?._id === id) setSelectedAddress(null);
     } catch (err) {
-      console.error("Failed to delete address:", err);
     }
   };
 

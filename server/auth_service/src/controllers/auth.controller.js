@@ -88,7 +88,7 @@ async function registerUser(req, res) {
       },
     });
   } catch (error) {
-    console.error("Error registering user:", error);
+    // console.error("Error registering user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -139,7 +139,7 @@ async function loginUser(req, res) {
       },
     });
   } catch (error) {
-    console.error("Error logging in user:", error);
+    // console.error("Error logging in user:", error);
     res.status(500).json({ message: "Internal server error" });
   }
 }

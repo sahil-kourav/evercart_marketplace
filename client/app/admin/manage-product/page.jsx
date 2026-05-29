@@ -26,7 +26,6 @@ export default function StoreManageProducts() {
         },
       );
       setProducts(res.data.data || []);
-      console.log(res.data);
     } catch (error) {
       toast.error(error.message || "Error fetching products");
     } finally {

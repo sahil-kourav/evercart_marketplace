@@ -15,7 +15,7 @@ async function createProduct(req, res) {
       bestSeller
     } = req.body;
 
-  
+
     if (!title || !priceAmount || !category || !stock) {
       return res
         .status(400)
@@ -58,7 +58,7 @@ async function createProduct(req, res) {
       .status(201)
       .json({ message: "Product created successfully", data: newProduct });
   } catch (error) {
-    console.error("Error creating product:", error.message);
+    // console.error("Error creating product:", error.message);
     return res.status(500).json({ message: "Internal server error" });
   }
 }
@@ -68,7 +68,7 @@ async function getProducts(req, res) {
     const { q, minprice, maxprice, skip = 0, limit = 20 } = req.query;
 
     const filter = {};
-console.log("Products API hit");
+
     if (q) {
       filter.$text = { $search: q };
     }

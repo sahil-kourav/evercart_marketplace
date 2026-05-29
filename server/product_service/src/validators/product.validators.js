@@ -13,6 +13,8 @@ const createProductValidators = [
     body('title')
         .isString()
         .trim()
+        .isLength({ min: 2, max: 200 })
+        .withMessage('title must be a string between 2 and 200 characters')
         .notEmpty()
         .withMessage('title is required'),
 
@@ -21,8 +23,8 @@ const createProductValidators = [
         .isString()
         .withMessage('description must be a string')
         .trim()
-        .isLength({ max: 500 })
-        .withMessage('description max length is 500 characters'),
+        .isLength({ max: 800 })
+        .withMessage('description max length is 800 characters'),
 
     body('category')
         .isString()

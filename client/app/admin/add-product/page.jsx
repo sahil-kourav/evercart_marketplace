@@ -70,8 +70,6 @@ export default function StoreAddProduct() {
         },
       );
 
-      console.log(response);
-
       if (response.status !== 200 && response.status !== 201) {
         throw new Error(response.data.message || "Failed to add product");
       }
@@ -310,7 +308,6 @@ export default function StoreAddProduct() {
 //         }
 //       );
 
-//       console.log("Product added successfully", response);
 
 //       // Reset form
 //       setProductInfo({

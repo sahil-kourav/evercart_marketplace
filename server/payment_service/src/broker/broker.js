@@ -11,7 +11,7 @@ async function connect() {
         channel = await connection.createChannel()
 
     } catch (error) {
-        console.log("Error in connecting to RabbitMQ", error)
+        // console.log("Error in connecting to RabbitMQ", error)
     }
 }
 

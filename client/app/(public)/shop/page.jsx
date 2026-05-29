@@ -23,11 +23,10 @@ export default function ShopPage() {
         withCredentials: true,
       });
 
-      console.log("Fetched products:", res);
 
       dispatch(setProduct(res.data?.data));
     } catch (error) {
-      console.log(error);
+     
     } finally {
       setLoading(false);
     }

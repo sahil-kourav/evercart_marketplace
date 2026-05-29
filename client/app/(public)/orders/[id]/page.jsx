@@ -15,29 +15,30 @@ import {
   AlertTriangle,
 } from "lucide-react";
 import axios from "axios";
+import Link from "next/link";
 
 // ─── Constants ───────────────────────────────────────────────────────────────
 
 const STATUS_STYLES = {
-  PENDING:    "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
+  PENDING: "bg-amber-50 text-amber-700 ring-1 ring-amber-200",
   PROCESSING: "bg-blue-50 text-blue-700 ring-1 ring-blue-200",
-  SHIPPED:    "bg-purple-50 text-purple-700 ring-1 ring-purple-200",
-  DELIVERED:  "bg-green-50 text-green-700 ring-1 ring-green-200",
-  CANCELLED:  "bg-red-50 text-red-700 ring-1 ring-red-200",
+  SHIPPED: "bg-purple-50 text-purple-700 ring-1 ring-purple-200",
+  DELIVERED: "bg-green-50 text-green-700 ring-1 ring-green-200",
+  CANCELLED: "bg-red-50 text-red-700 ring-1 ring-red-200",
 };
 
 const NORMAL_STEPS = [
-  { key: "PENDING",    label: "Pending",    Icon: Clock        },
+  { key: "PENDING", label: "Pending", Icon: Clock },
   { key: "PROCESSING", label: "Processing", Icon: PackageCheck },
-  { key: "SHIPPED",    label: "Shipped",    Icon: Truck        },
-  { key: "DELIVERED",  label: "Delivered",  Icon: CheckCircle2 },
+  { key: "SHIPPED", label: "Shipped", Icon: Truck },
+  { key: "DELIVERED", label: "Delivered", Icon: CheckCircle2 },
 ];
 
 const CANCEL_STEPS = [
-  { key: "PENDING",    label: "Pending",    Icon: Clock        },
+  { key: "PENDING", label: "Pending", Icon: Clock },
   { key: "PROCESSING", label: "Processing", Icon: PackageCheck },
-  { key: "SHIPPED",    label: "Shipped",    Icon: Truck        },
-  { key: "CANCELLED",  label: "Cancelled",  Icon: X            },
+  { key: "SHIPPED", label: "Shipped", Icon: Truck },
+  { key: "CANCELLED", label: "Cancelled", Icon: X },
 ];
 
 // Orders can only be cancelled before shipping
@@ -49,7 +50,9 @@ const CURRENCY = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
 
 function Card({ children, className = "" }) {
   return (
-    <div className={`bg-white border border-gray-100 rounded-2xl p-6 ${className}`}>
+    <div
+      className={`bg-white border border-gray-100 rounded-2xl p-6 ${className}`}
+    >
       {children}
     </div>
   );
@@ -71,76 +74,83 @@ function CancelModal({ onConfirm, onClose, loading, error }) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/30 backdrop-blur-sm px-4"
       onClick={onClose}
     >
-     <div
-  className="bg-white rounded-2xl w-full max-w-sm border border-gray-100 overflow-hidden"
-  onClick={(e) => e.stopPropagation()}
->
-  {/* Red top bar */}
-  <div className="h-[3px] bg-red-500" />
-
-  <div className="p-6">
-    {/* Header row — icon + title + subtitle */}
-    <div className="flex items-center gap-3 mb-5">
-      <div className="w-9 h-9 rounded-[10px] bg-red-50 flex items-center justify-center flex-shrink-0">
-        <AlertTriangle size={16} className="text-red-700" />
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-gray-900 leading-none mb-1">Cancel this order?</p>
-        <p className="text-xs text-gray-400">This action cannot be undone.</p>
-      </div>
-    </div>
-
-    {/* Info note */}
-    <div className="border-l-[3px] border-amber-400 bg-gray-50 rounded-r-lg px-3 py-2.5 mb-5">
-      <p className="text-xs text-gray-500 leading-relaxed">
-        Cancellation is only allowed while the order is{" "}
-        <span className="font-medium text-gray-700">
-           pending or processing  
-        </span>.
-      </p>
-    </div>
-
-    {/* API error */}
-    {error && (
-      <div className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-red-50
-        text-red-600 text-xs font-medium mb-4">
-        <AlertTriangle size={12} className="flex-shrink-0" />
-        {error}
-      </div>
-    )}
-
-    {/* Buttons */}
-    <div className="flex gap-2">
-      <button
-        onClick={onClose}
-        disabled={loading}
-        className="flex-1 py-2.5 text-sm font-medium border border-gray-200 rounded-xl
-          text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+      <div
+        className="bg-white rounded-2xl w-full max-w-sm border border-gray-100 overflow-hidden"
+        onClick={(e) => e.stopPropagation()}
       >
-        Keep order
-      </button>
-      <button
-        onClick={onConfirm}
-        disabled={loading}
-        className="flex-1 py-2.5 text-sm font-medium rounded-xl bg-red-500
+        {/* Red top bar */}
+        <div className="h-[3px] bg-red-500" />
+
+        <div className="p-6">
+          {/* Header row — icon + title + subtitle */}
+          <div className="flex items-center gap-3 mb-5">
+            <div className="w-9 h-9 rounded-[10px] bg-red-50 flex items-center justify-center flex-shrink-0">
+              <AlertTriangle size={16} className="text-red-700" />
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-gray-900 leading-none mb-1">
+                Cancel this order?
+              </p>
+              <p className="text-xs text-gray-400">
+                This action cannot be undone.
+              </p>
+            </div>
+          </div>
+
+          {/* Info note */}
+          <div className="border-l-[3px] border-amber-400 bg-gray-50 rounded-r-lg px-3 py-2.5 mb-5">
+            <p className="text-xs text-gray-500 leading-relaxed">
+              Cancellation is only allowed while the order is{" "}
+              <span className="font-medium text-gray-700">
+                pending or processing
+              </span>
+              .
+            </p>
+          </div>
+
+          {/* API error */}
+          {error && (
+            <div
+              className="flex items-center gap-2 px-3 py-2.5 rounded-lg bg-red-50
+        text-red-600 text-xs font-medium mb-4"
+            >
+              <AlertTriangle size={12} className="flex-shrink-0" />
+              {error}
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="flex gap-2">
+            <button
+              onClick={onClose}
+              disabled={loading}
+              className="flex-1 py-2.5 text-sm font-medium border border-gray-200 rounded-xl
+          text-gray-700 hover:bg-gray-50 transition disabled:opacity-50"
+            >
+              Keep order
+            </button>
+            <button
+              onClick={onConfirm}
+              disabled={loading}
+              className="flex-1 py-2.5 text-sm font-medium rounded-xl bg-red-500
           hover:bg-red-600 text-white transition disabled:opacity-60
           flex items-center justify-center gap-1.5"
-      >
-        {loading ? (
-          <>
-            <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
-            Cancelling…
-          </>
-        ) : (
-          <>
-            <X size={13} />
-            Yes, cancel
-          </>
-        )}
-      </button>
-    </div>
-  </div>
-</div>
+            >
+              {loading ? (
+                <>
+                  <div className="w-3.5 h-3.5 border-2 border-white/40 border-t-white rounded-full animate-spin" />
+                  Cancelling…
+                </>
+              ) : (
+                <>
+                  <X size={13} />
+                  Yes, cancel
+                </>
+              )}
+            </button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
@@ -157,10 +167,10 @@ function OrderTimeline({ currentStatus }) {
     currentIndex <= 0 ? 0 : (currentIndex / (steps.length - 1)) * 100;
 
   const lineColor = isCancelled
-    ? "bg-gray-200"        // ← grey line when cancelled
+    ? "bg-gray-200" // ← grey line when cancelled
     : isDelivered
-    ? "bg-green-500"
-    : "bg-gray-800";
+      ? "bg-green-500"
+      : "bg-gray-800";
 
   return (
     <Card>
@@ -183,25 +193,28 @@ function OrderTimeline({ currentStatus }) {
           const dotStyle = isLastCancelled
             ? "bg-red-50 border-red-300 text-red-400"
             : isCancelled
-            ? "bg-gray-50 border-gray-200 text-gray-300"   // ← muted
-            : done
-            ? "bg-green-500 border-green-500 text-white"
-            : active
-            ? "bg-white border-gray-800 text-gray-800"
-            : "bg-white border-gray-200 text-gray-300";
+              ? "bg-gray-50 border-gray-200 text-gray-300" // ← muted
+              : done
+                ? "bg-green-500 border-green-500 text-white"
+                : active
+                  ? "bg-white border-gray-800 text-gray-800"
+                  : "bg-white border-gray-200 text-gray-300";
 
           const labelStyle = isLastCancelled
             ? "text-red-400 font-medium"
             : isCancelled
-            ? "text-gray-300"                              // ← muted
-            : done
-            ? "text-green-600 font-medium"
-            : active
-            ? "text-gray-800 font-medium"
-            : "text-gray-400";
+              ? "text-gray-300" // ← muted
+              : done
+                ? "text-green-600 font-medium"
+                : active
+                  ? "text-gray-800 font-medium"
+                  : "text-gray-400";
 
           return (
-            <div key={step.key} className="relative z-10 flex flex-col items-center gap-2 flex-1">
+            <div
+              key={step.key}
+              className="relative z-10 flex flex-col items-center gap-2 flex-1"
+            >
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center border-2 transition-all duration-500 ${dotStyle}`}
               >
@@ -237,14 +250,16 @@ function OrderTimeline({ currentStatus }) {
   );
 }
 
-
 // ─── OrderItems ───────────────────────────────────────────────────────────────
 
 function OrderItems({ items }) {
   return (
     <div className="divide-y divide-gray-50">
       {items?.map((item, i) => (
-        <div key={item._id ?? i} className="flex items-center gap-4 py-3 first:pt-0 last:pb-0">
+        <div
+          key={item._id ?? i}
+          className="flex items-center gap-4 py-3 first:pt-0 last:pb-0"
+        >
           <div className="w-14 h-14 relative rounded-xl overflow-hidden bg-gray-50 border border-gray-100 flex-shrink-0">
             {item.product?.images?.[0]?.url && (
               <Image
@@ -261,11 +276,13 @@ function OrderItems({ items }) {
             </p>
             <p className="text-sm text-gray-400 mt-0.5">Qty: {item.quantity}</p>
             <p className="text-sm text-gray-600 flex-shrink-0 md:hidden">
-              {CURRENCY}{item.price?.amount?.toLocaleString()}
+              {CURRENCY}
+              {item.price?.amount?.toLocaleString()}
             </p>
           </div>
           <p className="text-sm font-medium text-gray-900 flex-shrink-0 sm:block hidden">
-            {CURRENCY}{item.price?.amount?.toLocaleString()}
+            {CURRENCY}
+            {item.price?.amount?.toLocaleString()}
           </p>
         </div>
       ))}
@@ -285,15 +302,19 @@ function DeliveryAddress({ address }) {
         <SectionLabel>Delivery address</SectionLabel>
       </div>
       <div className="text-sm text-gray-600 space-y-1 leading-relaxed">
-        {name   && <p className="font-medium text-gray-800">{name}</p>}
-        {email  && <p className="text-gray-500">{email}</p>}
-        {phone  && <p className="text-gray-500">{phone}</p>}
+        {name && <p className="font-medium text-gray-800">{name}</p>}
+        {email && <p className="text-gray-500">{email}</p>}
+        {phone && <p className="text-gray-500">{phone}</p>}
         {street && <p className="text-gray-500">{street}</p>}
         {(city || state) && (
-          <p className="text-gray-500">{[city, state].filter(Boolean).join(", ")}</p>
+          <p className="text-gray-500">
+            {[city, state].filter(Boolean).join(", ")}
+          </p>
         )}
         {(pincode || country) && (
-          <p className="text-gray-500">{[pincode, country].filter(Boolean).join(", ")}</p>
+          <p className="text-gray-500">
+            {[pincode, country].filter(Boolean).join(", ")}
+          </p>
         )}
       </div>
     </Card>
@@ -303,11 +324,8 @@ function DeliveryAddress({ address }) {
 // ─── PaymentInfo ──────────────────────────────────────────────────────────────
 
 function PaymentInfo({ method }) {
-
   const paymentStatus =
-    method?.toLowerCase() === "razorpay"
-      ? "Paid"
-      : "Not Paid";
+    method?.toLowerCase() === "razorpay" ? "Paid" : "Not Paid";
 
   return (
     <Card>
@@ -317,12 +335,9 @@ function PaymentInfo({ method }) {
       </div>
 
       <div className="space-y-3">
-
         {/* Payment method */}
         <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-400">
-            Payment method
-          </span>
+          <span className="text-gray-400">Payment method</span>
 
           <span className="text-xs px-2 py-1 rounded-full bg-blue-50 text-blue-700">
             {method}
@@ -331,9 +346,7 @@ function PaymentInfo({ method }) {
 
         {/* Payment status */}
         <div className="flex justify-between items-center text-sm">
-          <span className="text-gray-400">
-            Payment status
-          </span>
+          <span className="text-gray-400">Payment status</span>
 
           <span
             className={`text-xs px-2 py-1 rounded-full ${
@@ -345,7 +358,6 @@ function PaymentInfo({ method }) {
             {paymentStatus}
           </span>
         </div>
-
       </div>
     </Card>
   );
@@ -354,14 +366,14 @@ function PaymentInfo({ method }) {
 // ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function OrderDetailPage() {
-  const { id }  = useParams();
-  const router  = useRouter();
+  const { id } = useParams();
+  const router = useRouter();
 
-  const [order,       setOrder      ] = useState(null);
-  const [loading,     setLoading    ] = useState(true);
-  const [error,       setError      ] = useState(null);
-  const [showModal,   setShowModal  ] = useState(false);
-  const [cancelling,  setCancelling ] = useState(false);
+  const [order, setOrder] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+  const [cancelling, setCancelling] = useState(false);
   const [cancelError, setCancelError] = useState(null);
 
   useEffect(() => {
@@ -422,9 +434,7 @@ export default function OrderDetailPage() {
       setOrder((prev) => ({ ...prev, status: "CANCELLED" }));
       setShowModal(false);
     } catch (err) {
-      setCancelError(
-        "Could not cancel order. Please try again.",
-      );
+      setCancelError("Could not cancel order. Please try again.");
     } finally {
       setCancelling(false);
     }
@@ -457,7 +467,8 @@ export default function OrderDetailPage() {
 
   // ── Derived ──
   const badgeClass =
-    STATUS_STYLES[order.status] ?? "bg-gray-100 text-gray-600 ring-1 ring-gray-200";
+    STATUS_STYLES[order.status] ??
+    "bg-gray-100 text-gray-600 ring-1 ring-gray-200";
   const itemCount = order.items?.length ?? 0;
   const canCancel = CANCELLABLE_STATUSES.includes(order.status);
 
@@ -466,43 +477,60 @@ export default function OrderDetailPage() {
       {showModal && (
         <CancelModal
           onConfirm={handleCancelOrder}
-          onClose={() => { setShowModal(false); setCancelError(null); }}
+          onClose={() => {
+            setShowModal(false);
+            setCancelError(null);
+          }}
           loading={cancelling}
           error={cancelError}
         />
       )}
 
-      <div className="min-h-screen bg-gray-50 py-10 px-4 md:px-8">
-        <div className="max-w-3xl mx-auto space-y-4">
-
-          {/* Back */}
-          <button
-            onClick={() => router.back()}
-            className="flex items-center gap-2 text-sm text-green-500 hover:text-green-800 transition mb-2"
-          >
-            <ArrowLeft size={15} />
-            Back to orders
-          </button>
+      <div className="min-h-screen py-10 px-6 md:px-8">
+        <div className="max-w-6xl mx-auto space-y-4">
+          <div className="flex items-center gap-2 text-sm text-slate-400 mb-5">
+            <Link href="/" className="hover:text-slate-600 transition-colors">
+              Home
+            </Link>
+            <span>/</span>
+            <Link
+              href="/orders"
+              className="hover:text-slate-600 transition-colors"
+            >
+              Orders
+            </Link>
+            <span>/</span>
+            <span className="text-slate-700 font-medium">Order Details</span>
+          </div>
 
           {/* Header card */}
           <Card className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h1 className="text-lg font-semibold text-gray-900">Order details</h1>
-              <p className="text-xs text-gray-400 font-mono mt-1">#{order._id}</p>
+              <h1 className="text-lg font-semibold text-gray-900">
+                Order details
+              </h1>
+              <p className="text-xs text-gray-400 font-mono mt-1">
+                #{order._id}
+              </p>
               <p className="text-sm text-gray-400 mt-1">
                 Placed on {new Date(order.createdAt).toLocaleString()}
               </p>
             </div>
 
             <div className="flex items-center gap-3 self-start sm:self-center flex-wrap">
-              <span className={`text-xs font-medium px-3 py-1.5 rounded-full ${badgeClass}`}>
+              <span
+                className={`text-xs font-medium px-3 py-1.5 rounded-full ${badgeClass}`}
+              >
                 {order.status}
               </span>
 
               {/* Cancel button — only visible for PENDING / PROCESSING */}
               {canCancel && (
                 <button
-                  onClick={() => { setCancelError(null); setShowModal(true); }}
+                  onClick={() => {
+                    setCancelError(null);
+                    setShowModal(true);
+                  }}
                   className="text-xs font-medium px-3 py-1.5 rounded-full border border-red-200
                     text-red-500 hover:bg-red-50 transition"
                 >
@@ -525,9 +553,12 @@ export default function OrderDetailPage() {
                 {itemCount} item{itemCount !== 1 ? "s" : ""}
               </p>
               <div className="text-right">
-                <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">Total</p>
+                <p className="text-xs text-gray-400 uppercase tracking-wide mb-0.5">
+                  Total
+                </p>
                 <p className="text-xl font-semibold text-gray-900">
-                  {CURRENCY}{order.totalPrice?.amount?.toLocaleString() ?? "—"}
+                  {CURRENCY}
+                  {order.totalPrice?.amount?.toLocaleString() ?? "—"}
                 </p>
               </div>
             </div>
@@ -536,9 +567,12 @@ export default function OrderDetailPage() {
           {/* Address + Payment */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <DeliveryAddress address={order.shippingAddress} />
-            <PaymentInfo method={order.paymentMethod} status={order.status} paymentStatus={order.paymentStatus} />
+            <PaymentInfo
+              method={order.paymentMethod}
+              status={order.status}
+              paymentStatus={order.paymentStatus}
+            />
           </div>
-
         </div>
       </div>
     </>

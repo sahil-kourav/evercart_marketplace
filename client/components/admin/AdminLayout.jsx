@@ -1,8 +1,6 @@
 "use client";
 
 import Loading from "../Loading";
-import Link from "next/link";
-import { ArrowRightIcon } from "lucide-react";
 import AdminNavbar from "./AdminNavbar";
 import AdminSidebar from "./AdminSidebar";
 import { useSelector } from "react-redux";
@@ -15,21 +13,18 @@ const AdminLayout = ({ children }) => {
   }
 
   if (user?.role !== "seller") {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center text-center px-6">
-        <h1 className="text-2xl sm:text-4xl font-semibold text-slate-400">
-          You are not authorized to access this page
-        </h1>
-
-        <Link
-          href="/"
-          className="bg-slate-700 text-white flex items-center gap-2 mt-8 p-2 px-6 max-sm:text-sm rounded-full"
-        >
-          Go to home <ArrowRightIcon size={18} />
-        </Link>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-black px-6">
+      <div className="flex items-center gap-6">
+        <h1 className="text-2xl font-semibold text-white">401</h1>
+        <div className="w-px h-10 bg-white/30" />
+        <p className="text-md text-white">
+          You are not authorized to access this page.
+        </p>
       </div>
-    );
-  }
+    </div>
+  );
+}
 
   return (
     <div className="flex flex-col h-screen">

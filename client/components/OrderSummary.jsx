@@ -214,7 +214,6 @@ const OrderSummary = ({ totalPrice }) => {
                 toast.success("Order placed successfully!");
               }, 3500);
             } catch (err) {
-              console.error("Payment verification failed", err);
               toast.error("Payment verification failed");
             }
           },
@@ -238,7 +237,6 @@ const OrderSummary = ({ totalPrice }) => {
 
         const rzp = new window.Razorpay(options);
         rzp.on("payment.failed", function (response) {
-          console.log("Payment failed:", response);
 
           toast.error("Payment failed. Please try again.");
 
@@ -248,14 +246,6 @@ const OrderSummary = ({ totalPrice }) => {
         rzp.open();
       }
     } catch (err) {
-      //  catch (err) {
-      //   console.error("Order placement failed", err);
-      //   toast.error("Failed to place order");
-      // }
-
-      console.log(err.response?.data);
-      console.error("Order placement failed", err);
-
       toast.error(err.response?.data?.error || "Failed to place order");
     } finally {
       setPlacingOrder(false);
@@ -263,7 +253,7 @@ const OrderSummary = ({ totalPrice }) => {
   };
 
   return (
-    <div className="w-full max-w-lg lg:max-w-[360px] p-4 border rounded-2xl shadow-sm bg-white">
+    <div className="w-full max-w-lg lg:max-w-[420px] p-4 border rounded-2xl shadow-sm bg-white">
       <h2 className="text-xl font-semibold text-slate-700">Payment Summary</h2>
       {/* PAYMENT */}
       <div className="mt-2 space-y-2">

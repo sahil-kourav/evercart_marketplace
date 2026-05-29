@@ -21,7 +21,7 @@ export default function ContactUs() {
 
           <div className="mt-8 flex flex-col gap-3">
             {[
-              { icon: <Phone size={18} />, label: "Phone", value: "+91-913-426-7890" },
+              { icon: <Phone size={18} />, label: "Phone", value: "+91-123-456-7890" },
               { icon: <Mail size={18} />, label: "Email", value: "evercart@gmail.com" },
               { icon: <MapPin size={18} />, label: "Location", value: "Indore, India" },
             ].map(({ icon, label, value }) => (
@@ -65,7 +65,7 @@ export default function ContactUs() {
               icon: <PhoneCall size={22} />,
               title: "Call us",
               desc: "Speak directly with our support team for fast help with orders, returns, or account issues.",
-              cta: "+91-913-426-7890",
+              cta: "+91-123-456-7890",
             },
             {
               icon: <MailCheck size={22} />,
