@@ -175,7 +175,7 @@ export default function ProfilePage() {
       <div className="w-full max-w-3xl space-y-8">
 
         {/* ── PROFILE HEADER ── */}
-        <section className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6">
+        {/* <section className="bg-white rounded-2xl shadow-md p-6 flex items-center gap-6">
           <Image
             src={assets.AVATAR}
             alt="User Avatar"
@@ -194,7 +194,38 @@ export default function ProfilePage() {
               {user?.phone || "N/A"}
             </p>
           </div>
-        </section>
+        </section> */}
+
+
+        <section className="bg-white rounded-2xl border border-neutral-100 p-6 flex items-center gap-5">
+  {/* Avatar with online indicator */}
+  <div className="relative shrink-0">
+    <Image
+      src={assets.AVATAR}
+      alt="User Avatar"
+      className="w-20 h-20 rounded-full object-cover ring-4 ring-neutral-50"
+    />
+    <span className="absolute bottom-0.5 right-0.5 w-3.5 h-3.5 rounded-full bg-emerald-400 ring-2 ring-white" />
+  </div>
+
+  {/* Info */}
+  <div className="min-w-0 flex-1">
+    <h2 className="text-lg font-semibold text-neutral-900 leading-tight">
+    <span className="text-gray-500">Hello, </span> {user?.fullName
+        ? `${user.fullName.firstName} ${user.fullName.lastName}`
+        : "No Name"}
+    </h2>
+
+    <div className="mt-2 flex flex-col gap-1">
+      <span className="flex items-center gap-1.5 text-sm text-neutral-500 ">
+        {user?.email || "user@example.com"}
+      </span>
+      <span className="flex items-center gap-1.5 text-sm text-neutral-500">
+        {user?.phone || "—"}
+      </span>
+    </div>
+  </div>
+</section>
 
         {/* ── ORDERS ── */}
         <section className="bg-white rounded-2xl shadow-lg overflow-hidden">

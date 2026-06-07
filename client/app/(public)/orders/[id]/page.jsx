@@ -409,7 +409,7 @@ export default function OrderDetailPage() {
 
         setOrder({ ...rawOrder, items: itemsWithProducts });
       } catch (err) {
-        setError(err.response?.data?.message ?? "Failed to load order.");
+        setError("Could not load order details. Please try again.");
       } finally {
         setLoading(false);
       }
@@ -425,7 +425,6 @@ export default function OrderDetailPage() {
       setCancelError(null);
 
       await axios.post(
-        // `http://localhost:8083/api/orders/${id}/cancel`,
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/${id}/cancel`,
         { withCredentials: true },
       );
@@ -486,7 +485,7 @@ export default function OrderDetailPage() {
         />
       )}
 
-      <div className="min-h-screen py-10 px-6 md:px-8">
+      <div className="min-h-screen py-10 px-4 sm:px-6 lg:px-5">
         <div className="max-w-6xl mx-auto space-y-4">
           <div className="flex items-center gap-2 text-sm text-slate-400 mb-5">
             <Link href="/" className="hover:text-slate-600 transition-colors">

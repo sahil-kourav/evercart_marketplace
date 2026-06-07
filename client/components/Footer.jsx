@@ -151,14 +151,14 @@ const Footer = () => {
 
   return (
     <footer className="bg-white border-t border-slate-200">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-5 ">
         {/* Top Section */}
         <div className="flex flex-col lg:flex-row justify-between gap-12 py-14 text-slate-600">
           {/* Brand */}
           <div className="max-w-md">
-            <Link href="/" className="text-3xl font-semibold text-slate-800">
+            <Link href="/" className="text-[26px] font-semibold text-slate-800">
               <span className="text-green-600">ever</span>cart
-              <span className="text-green-600 text-4xl leading-none">.</span>
+              <span className="text-green-600 text-3xl leading-none">.</span>
             </Link>
 
             <p className="mt-5 text-sm leading-relaxed text-slate-500">

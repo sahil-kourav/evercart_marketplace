@@ -79,7 +79,7 @@ export default function CheckoutPage() {
                   className="flex items-center gap-4 px-4 py-4 hover:bg-slate-50/60 transition-colors"
                 >
                   {/* Image */}
-                  <div className="w-18 h-16 rounded-lg bg-slate-200 border border-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <div className="w-16 h-16 rounded-md bg-slate-200 border border-slate-100 flex items-center justify-center flex-shrink-0 overflow-hidden">
                     <Image
                       src={item.images?.[0] || "/no-image.png"}
                       alt={item.name}
@@ -119,7 +119,7 @@ export default function CheckoutPage() {
           </div>
 
           {/* Right — Payment Summary */}
-          <div className="w-full lg:w-[380px] flex-shrink-0 lg:sticky lg:top-6">
+          <div className="w-full lg:w-[370px] flex-shrink-0 lg:sticky lg:top-6">
             <OrderSummary totalPrice={totalPrice} items={cartArray} />
           </div>
 

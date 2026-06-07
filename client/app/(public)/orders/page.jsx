@@ -84,8 +84,8 @@ export default function Orders() {
 
   // Success state
   return (
-    <div className="min-h-[70vh]">
-      <div className="my-10 max-w-7xl mx-auto px-6 lg:px-8">
+    <div className="min-h-[80vh]">
+      <div className="my-10 max-w-7xl mx-auto px-4 lg:px-8">
         <PageTitle
           heading="My Orders"
           text={`Showing total ${orders.length} orders`}

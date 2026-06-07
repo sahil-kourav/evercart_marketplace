@@ -75,18 +75,16 @@ export default function Cart() {
   }
 
   return (
-    <div className="min-h-[80vh]">
-      <div className="max-w-7xl px-4 sm:px-6 lg:px-8 my-8 mx-auto">
-        <div className="flex items-center gap-2 text-sm mb-5">
+    <div className="min-h-[70vh]">
+      <div className="my-10 max-w-7xl mx-auto px-4 lg:px-8">
           <PageTitle
             heading="My Cart"
-            text={`Showing ${cartArray.length} items in your cart`}
+            text={`You have ${cartArray.length} items in your cart`}
             linkText={"Go to home"}
           />
-        </div>
 
         {/* Cart Items */}
-        <div className="flex flex-col gap-2.5">
+        <div className="flex flex-col gap-3 mt-8">
           {cartArray.map((item) => (
             <div
               key={item.productId}
@@ -108,38 +106,28 @@ export default function Cart() {
                 <p className="text-md font-medium text-slate-800 truncate leading-snug">
                   {item.name}
                 </p>
-                <p className="text-sm text-slate-400 mt-0.5">{item.category}</p>
+                <p className="text-sm text-slate-400 mt-0.5">Quantity: {item.quantity}</p>
                 <p className="text-sm font-semibold text-slate-700 mt-1">
                   {currency}
                   {item.price.toLocaleString()}
                 </p>
               </div>
 
-              {/* <div className="flex items-center gap-12">
-                
-                <div className="flex-shrink-0">
-                  <Counter
-                    productId={item.productId}
-                    quantity={item.quantity}
-                  />
-                </div> */}
-
-               
                 <button
                   onClick={() => dispatch(removeItemFromCart(item.productId))}
-                  className="p-1.5 rounded-lg text-slate-300 hover:text-red-400 hover:bg-red-50 transition-colors flex-shrink-0"
+                  className="p-1.5 rounded-lg text-slate-500 bg-slate-100 hover:text-red-400 hover:bg-red-50 transition-colors flex-shrink-0"
                   aria-label={`Remove ${item.name}`}
                 >
                   <Trash2Icon size={18} />
                 </button>
-              {/* </div> */}
+              
             </div>
           ))}
         </div>
 
         {/* Order Summary */}
-        <div className="flex justify-end mt-6">
-          <div className="w-full sm:w-72 lg:w-98 bg-white border border-slate-100 rounded-2xl p-5">
+        <div className="flex justify-end mt-16">
+          <div className="w-full sm:w-72 lg:w-98 bg-white border border-slate-100 rounded-2xl p-4">
             <h2 className="text-lg font-semibold text-slate-700 mb-4 pb-3 border-b border-slate-100 tracking-wide uppercase">
               Order Summary
             </h2>

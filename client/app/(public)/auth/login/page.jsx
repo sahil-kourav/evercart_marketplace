@@ -114,7 +114,7 @@ export default function Login() {
             </div>
 
             {/* Error */}
-            {error && <div className="text-sm text-red-500">{error}</div>}
+            {/* {error && <div className="text-sm text-red-500">{error}</div>} */}
 
             <button
               disabled={loading}

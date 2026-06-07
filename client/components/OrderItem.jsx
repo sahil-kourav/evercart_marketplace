@@ -21,17 +21,20 @@ const OrderItem = ({ order }) => {
     <div className="bg-white border border-gray-100 rounded-2xl p-4 hover:shadow-sm transition-shadow">
       {/* Top row: date + order id + status */}
       <div className="flex justify-between items-start mb-4">
-        <div>
-          <p className="text-sm text-gray-500">
-            {new Date(order.createdAt).toDateString()}
+        <div className="flex flex-1 justify-between items-center gap-1">
+          <p className="text-xs text-gray-400 uppercase tracking-wide">
+            {new Date(order.createdAt).toLocaleDateString(undefined, {
+              year: "numeric",
+              month: "short",
+              day: "numeric",
+            })}
           </p>
-          <p className="text-xs text-gray-400 font-mono mt-0.5">#{order._id}</p>
-        </div>
         <span
           className={`text-xs font-medium px-3 py-1 rounded-full ${badgeClass}`}
         >
           {order.status}
         </span>
+        </div>
       </div>
 
       {/* Items */}
@@ -39,7 +42,7 @@ const OrderItem = ({ order }) => {
         {order.items?.map((item) => (
           <div
             key={item.productId}
-            className="flex items-center gap-3 bg-gray-100 rounded-xl p-3"
+            className="flex items-center gap-3 bg-gray-50 rounded-xl p-3"
           >
             <div className="w-14 h-14 relative rounded-lg overflow-hidden bg-white border border-gray-100 flex-shrink-0">
               {item.product?.images?.[0]?.url && (
@@ -85,10 +88,10 @@ const OrderItem = ({ order }) => {
       {/* Total + CTA — in a pill container so they breathe */}
       <div className="flex items-center justify-between bg-gray-50 rounded-xl px-2 py-3">
         <div>
-          <p className="text-sm text-gray-400 uppercase tracking-wide m-0.5">
+          <p className="text-xs text-gray-400 uppercase tracking-wide m-0.5">
             Order total
           </p>
-          <p className="text-xl font-semibold text-gray-900">
+          <p className="text-lg font-semibold text-gray-900">
             {currency}
             {order.totalPrice?.amount?.toLocaleString()}
           </p>

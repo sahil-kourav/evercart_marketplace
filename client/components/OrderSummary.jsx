@@ -142,7 +142,6 @@ const OrderSummary = ({ totalPrice }) => {
     try {
       // Create order
       const orderRes = await axios.post(
-        // "http://localhost:8083/api/orders",
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders`,
         orderPayload,
         { withCredentials: true },
@@ -246,7 +245,7 @@ const OrderSummary = ({ totalPrice }) => {
         rzp.open();
       }
     } catch (err) {
-      toast.error(err.response?.data?.error || "Failed to place order");
+      toast.error("Failed to place order");
     } finally {
       setPlacingOrder(false);
     }

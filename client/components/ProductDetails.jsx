@@ -11,6 +11,7 @@ import {
   XCircle,
   AlertTriangle,
   Package,
+  EarthLockIcon,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -91,11 +92,11 @@ const ProductDetails = ({ product }) => {
                 />
               ))}
           </div>
-          <p className="text-sm font-medium text-slate-700">
-            {averageRating}{" "}
-          </p>
+          <p className="text-sm font-medium text-slate-700">{averageRating} </p>
           <span className="text-slate-500">·</span>
-          <p className="text-sm font-normal text-slate-800">{totalReviews} reviews</p>
+          <p className="text-sm font-normal text-slate-800">
+            {totalReviews} reviews
+          </p>
         </div>
 
         <div className="flex items-start my-5 gap-3 text-2xl font-semibold text-slate-800">
@@ -124,18 +125,18 @@ const ProductDetails = ({ product }) => {
 
         <hr className="border-gray-300 my-5" />
 
-        <div className="flex flex-col gap-2 text-slate-500">
-          <p className="flex items-center gap-3 text-md">
+        <div className="flex flex-col gap-2 text-slate-600">
+          <p className="flex items-center gap-3 text-md font-normal">
             <Package size={18} /> Estimated delivery within 3-5 business days
           </p>
-          <p className="flex items-center gap-3 text-md">
+          <p className="flex items-center gap-3 text-md font-normal">
             <TagIcon size={18} /> Easy returns within 6 days of delivery
           </p>
-          <p className="flex items-center gap-3 text-md">
-            <XCircle size={20} /> No hidden charges, what you see is what you
-            pay
+
+          <p className="flex items-center gap-3 text-md font-normal">
+            <EarthLockIcon size={18} /> We ship worldwide, wherever you are
           </p>
-          <p className="flex items-center gap-3 text-md">
+          <p className="flex items-center gap-3 text-md font-normal">
             <UserIcon size={18} /> 24/7 customer support, we're here to help
           </p>
         </div>

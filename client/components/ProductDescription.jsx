@@ -127,7 +127,7 @@ const ProductDescription = ({ product }) => {
         <div className="flex-1">
           <h2 className="text-base font-semibold text-slate-800 mb-3">About this product</h2>
           <hr className="border-slate-100 mb-5" />
-          <p className="text-md text-slate-600 leading-7">{product.description}</p>
+          <p className="text-md font-normal text-slate-600 leading-7">{product.description}</p>
         </div>
 
         {/* RIGHT — Reviews */}
