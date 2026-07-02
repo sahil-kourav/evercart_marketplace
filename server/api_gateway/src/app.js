@@ -9,6 +9,8 @@ const setupProxy = require("./routes/proxyRoutes");
 const { authLimiter, paymentLimiter, orderLimiter} = require("./middleware/rateLimiter");
 const app = express();
 
+app.set("trust proxy", 1)
+
 app.use(cookieParser());
 app.use(helmet());
 
