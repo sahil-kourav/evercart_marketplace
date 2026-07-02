@@ -63,7 +63,7 @@ describe('POST /api/orders/:id/cancel — Cancel order', () => {
 
   it('cancels the order if status is PENDING', async () => {
     const res = await request(app)
-      .post(`/api/orders/${order._id}/cancel`)
+      .post(`/api/orders/${id}/cancel`)
       .set('Authorization', `Bearer ${token}`)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -75,7 +75,7 @@ describe('POST /api/orders/:id/cancel — Cancel order', () => {
     order.status = 'CONFIRMED';
     await order.save();
     const res = await request(app)
-      .post(`/api/orders/${order._id}/cancel`)
+      .post(`/api/orders/${id}/cancel`)
       .set('Authorization', `Bearer ${token}`)
       .expect('Content-Type', /json/)
       .expect(200);
@@ -86,7 +86,7 @@ describe('POST /api/orders/:id/cancel — Cancel order', () => {
     order.status = 'SHIPPED';
     await order.save();
     const res = await request(app)
-      .post(`/api/orders/${order._id}/cancel`)
+      .post(`/api/orders/${id}/cancel`)
       .set('Authorization', `Bearer ${token}`)
       .expect('Content-Type', /json/)
       .expect(400);
@@ -106,7 +106,7 @@ describe('POST /api/orders/:id/cancel — Cancel order', () => {
   it('returns 403 if user does not own the order', async () => {
     const otherToken = createAuthToken({ userId: new mongoose.Types.ObjectId().toHexString() });
     const res = await request(app)
-      .post(`/api/orders/${order._id}/cancel`)
+      .post(`/api/orders/${id}/cancel`)
       .set('Authorization', `Bearer ${otherToken}`)
       .expect('Content-Type', /json/)
       .expect(403);
@@ -115,7 +115,7 @@ describe('POST /api/orders/:id/cancel — Cancel order', () => {
 
   it('returns 401 if not authenticated', async () => {
     const res = await request(app)
-      .post(`/api/orders/${order._id}/cancel`)
+      .post(`/api/orders/${id}/cancel`)
       .expect('Content-Type', /json/)
       .expect(401);
     expect(res.body.message || res.body.error).toBeDefined();

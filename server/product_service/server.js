@@ -8,6 +8,9 @@ const port = process.env.PORT || 3001;
 connectDB()
 connect()
 
+const redis = require("./src/db/redis");
+
+
 app.listen(port, () => {
   console.log('Product service is running on port ' + port);
 })

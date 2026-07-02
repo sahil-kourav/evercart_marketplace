@@ -2,6 +2,19 @@ const mongoose = require("mongoose");
 const productModel = require("../models/product.model");
 const { uploadImage } = require("../services/imagekit.service");
 const { publishToQueue } = require("../broker/broker");
+const redis = require("../db/redis");
+
+
+async function invalidateProductCache(productId){
+  await redis.del(`product:${productId}`)
+
+  const keys = await redis.keys("products:*")
+
+  if(keys.length > 0){
+    await redis.del(...keys)
+  }
+}
+
 
 async function createProduct(req, res) {
   try {
@@ -12,14 +25,15 @@ async function createProduct(req, res) {
       priceCurrency = "INR",
       stock,
       category,
-      bestSeller
+      bestSeller,
     } = req.body;
-
 
     if (!title || !priceAmount || !category || !stock) {
       return res
         .status(400)
-        .json({ message: "Title, Price Amount, Category, and Stock are required." });
+        .json({
+          message: "Title, Price Amount, Category, and Stock are required.",
+        });
     }
 
     const seller = req.user.id;
@@ -45,14 +59,19 @@ async function createProduct(req, res) {
     });
 
     // publish product created event to RabbitMQ
-    await publishToQueue("PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED", newProduct);
+    await publishToQueue(
+      "PRODUCT_SELLER_DASHBOARD.PRODUCT_CREATED",
+      newProduct,
+    );
     await publishToQueue("PRODUCT_NOTIFICATION.PRODUCT_CREATED", {
       email: req.user.email,
       productId: newProduct._id,
       title: newProduct.title,
       category: newProduct.category,
-      sellerId: seller
+      sellerId: seller,
     });
+
+    await invalidateProductCache(newProduct._id);
 
     return res
       .status(201)
@@ -65,7 +84,7 @@ async function createProduct(req, res) {
 
 async function getProducts(req, res) {
   try {
-    const { q, minprice, maxprice, skip = 0, limit = 20 } = req.query;
+    const { q, minprice, maxprice } = req.query;
 
     const filter = {};
 
@@ -87,11 +106,23 @@ async function getProducts(req, res) {
       };
     }
 
-    const product = await productModel
-      .find(filter)
-      .sort({ createdAt: -1 })
-      .skip(Number(skip))
-      .limit(Math.min(Number(limit), 20));
+    const cacheKey = `products:q=${q}:min=${minprice}:max=${maxprice}`;
+
+    const cachedProduct = await redis.get(cacheKey);
+
+    if (cachedProduct) {
+      console.log("cached hittttttt");
+
+      return res.status(200).json({
+        data: JSON.parse(cachedProduct),
+      });
+    }
+
+    console.log("cache misss");
+
+    const product = await productModel.find(filter).sort({ createdAt: -1 });
+
+    await redis.set(cacheKey, JSON.stringify(product), "EX", 300);
 
     return res.status(200).json({ data: product });
   } catch (error) {
@@ -103,6 +134,20 @@ async function getProductById(req, res) {
   try {
     const { id } = req.params;
 
+    const cacheKey = `product:${id}`;
+
+    const cachedProduct = await redis.get(cacheKey);
+
+    if (cachedProduct) {
+      console.log("Cache Hit");
+
+      return res.status(200).json({
+        product: JSON.parse(cachedProduct),
+      });
+    }
+
+    console.log("Cache Miss");
+
     const product = await productModel.findById(id);
 
     if (!product) {
@@ -110,6 +155,8 @@ async function getProductById(req, res) {
         message: "Products not found",
       });
     }
+
+    await redis.set(cacheKey, JSON.stringify(product), "EX", 300);
 
     return res.status(200).json({
       product: product,
@@ -145,7 +192,13 @@ async function updateProduct(req, res) {
       });
     }
 
-    const allowedUpdates = ["title", "description", "price", "stock", "category"];
+    const allowedUpdates = [
+      "title",
+      "description",
+      "price",
+      "stock",
+      "category",
+    ];
     for (const key of Object.keys(req.body)) {
       if (allowedUpdates.includes(key)) {
         if (key === "price" && typeof req.body.price === "object") {
@@ -162,6 +215,9 @@ async function updateProduct(req, res) {
     }
 
     await product.save();
+
+    await invalidateProductCache(id);
+
     return res.status(200).json({
       message: "Product updated successfully",
       data: product,
@@ -197,6 +253,8 @@ async function deleteProduct(req, res) {
 
     await productModel.findOneAndDelete({ _id: id });
 
+    await invalidateProductCache(id);
+
     return res.status(200).json({
       message: "Product deleted successfully",
     });
@@ -209,12 +267,7 @@ async function getProductsBySeller(req, res) {
   try {
     const seller = req.user;
 
-    const { skip = 0, limit = 20 } = req.query;
-
-    const products = await productModel
-      .find({ seller: seller.id })
-      .skip(Number(skip))
-      .limit(Math.min(Number(limit), 20));
+    const products = await productModel.find({ seller: seller.id });
 
     return res.status(200).json({ data: products });
   } catch (error) {

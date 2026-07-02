@@ -426,6 +426,7 @@ export default function OrderDetailPage() {
 
       await axios.post(
         `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/orders/${id}/cancel`,
+        {},
         { withCredentials: true },
       );
 
