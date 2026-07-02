@@ -172,10 +172,7 @@ export default function Register() {
               <div className="flex-1 h-px bg-gray-300" />
             </div>
 
-            {/* Google */}
-            <button className="w-full py-2 px-3 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition">
-              Continue with Google
-            </button>
+           
           </form>
 
           {/* Login Link */}

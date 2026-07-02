@@ -84,9 +84,7 @@ export default function Login() {
           <form className="space-y-4" onSubmit={handleSubmit}>
             {/* Email */}
             <div>
-              <p className="text-sm text-gray-500 mb-4">
-                Use email <span className="text-gray-400">or</span> phone number
-              </p>
+             
               <label className="block text-sm text-gray-700 mb-2">Email*</label>
               <input
                 value={email}
@@ -136,10 +134,6 @@ export default function Login() {
               <div className="flex-1 h-px bg-gray-300" />
             </div>
 
-            {/* Google */}
-            <button className="w-full py-2 px-3 border border-gray-300 rounded-md text-sm text-gray-700 hover:bg-gray-50 transition">
-              Continue with Google
-            </button>
           </form>
 
           {/* Register */}
