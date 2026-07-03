@@ -18,8 +18,13 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Product Service is running.' });
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "Product Service",
+    status: "UP",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 // Routes setup

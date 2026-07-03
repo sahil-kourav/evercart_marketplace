@@ -18,10 +18,13 @@ connect().then(() => {
     setListners()
 })
 
-app.get('/', (req, res) => {
-    res.status(200).json({ message: 'Notification Service is running.' });
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "Notification Service",
+    status: "UP",
+    timestamp: new Date().toISOString(),
+  });
 });
-
-
 
 module.exports = app;

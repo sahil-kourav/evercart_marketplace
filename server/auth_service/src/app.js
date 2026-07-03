@@ -18,9 +18,14 @@ app.use(
   })
 );
 
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'Auth Service is running.' });
-})
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "Auth Service",
+    status: "UP",
+    timestamp: new Date().toISOString(),
+  });
+});
 
 app.use('/', authRoutes);
 

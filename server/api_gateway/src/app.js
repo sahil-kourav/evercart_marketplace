@@ -34,21 +34,25 @@ app.use((req, res, next) => {
   next();
 });
 
-// Proxy setup (must be before body parsers)
 app.use("/api/auth", authLimiter);
 app.use("/api/payments", paymentLimiter);
 app.use("/api/orders", orderLimiter);
 app.use("/api/me", meLimiter);
 
+// Proxy setup (must be before body parsers)
 setupProxy(app);
 
 // Body parsers (AFTER proxy only)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-
-app.get('/', (req, res) => {
-  res.status(200).json({ message: 'API Gateway is running.' });
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "API Gateway",
+    status: "UP",
+    timestamp: new Date().toISOString(),
+  });
 });
 
 module.exports = app;
