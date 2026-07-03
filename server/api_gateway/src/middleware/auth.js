@@ -30,10 +30,10 @@ async function authMiddleware(req, res, next) {
 
   } catch (error) {
 
-    // console.error(
-    //   "JWT verification failed:",
-    //   error.message
-    // );
+    console.error(
+      "JWT verification failed:",
+      error.message
+    );
 
     return res.status(401).json({
       message: "Invalid token"

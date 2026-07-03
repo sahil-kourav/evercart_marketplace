@@ -6,10 +6,10 @@ const cookieParser = require("cookie-parser");
 
 const authMiddleware = require("./middleware/auth");
 const setupProxy = require("./routes/proxyRoutes");
-const { authLimiter, paymentLimiter, orderLimiter} = require("./middleware/rateLimiter");
+const { authLimiter, paymentLimiter, orderLimiter, meLimiter } = require("./middleware/rateLimiter");
 const app = express();
 
-app.set("trust proxy", 1)
+app.set("trust proxy", 1); // trust first proxy
 
 app.use(cookieParser());
 app.use(helmet());
@@ -36,12 +36,18 @@ app.use((req, res, next) => {
   next();
 });
 
+app.use((req, res, next) => {
+  console.log("req.ip:", req.ip, "| XFF:", req.headers["x-forwarded-for"]);
+  next();
+});
+
 // Proxy setup (must be before body parsers)
-setupProxy(app);
 
 app.use("/api/auth", authLimiter);
 app.use("/api/payments", paymentLimiter);
 app.use("/api/orders", orderLimiter);
+app.use("/api/me", meLimiter);
+setupProxy(app);
 
 // Body parsers (AFTER proxy only)
 app.use(express.json());

@@ -6,6 +6,12 @@ const authLimiter = rateLimit({
   message: "Too many auth requests. Try again later.",
 });
 
+const meLimiter = rateLimit({ 
+  windowMs: 60 * 1000, 
+  max: 60, 
+  message: "Too many requests to /api/auth/me. Try again later."
+});
+
 const paymentLimiter = rateLimit({
   windowMs: 60 * 1000,
   max: 10,
@@ -22,4 +28,5 @@ module.exports = {
   authLimiter,
   paymentLimiter,
   orderLimiter,
+  meLimiter
 };
