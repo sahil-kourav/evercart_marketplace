@@ -18,9 +18,9 @@ app.use(
   })
 );
 
-// app.get('/', (req, res) => {
-//     res.status(200).json({ message: 'Cart Service is running.' });
-// });
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'Cart Service is running.' });
+});
 
 // Sample Route
 app.use('/', cartRoutes)

@@ -9,8 +9,6 @@ const setupProxy = require("./routes/proxyRoutes");
 const { authLimiter, paymentLimiter, orderLimiter, meLimiter } = require("./middleware/rateLimiter");
 const app = express();
 
-app.set("trust proxy", true); // trust first proxy
-
 app.use(cookieParser());
 app.use(helmet());
 
@@ -36,17 +34,12 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use((req, res, next) => {
-  console.log("req.ip:", req.ip, "| XFF:", req.headers["x-forwarded-for"]);
-  next();
-});
-
 // Proxy setup (must be before body parsers)
-
 app.use("/api/auth", authLimiter);
 app.use("/api/payments", paymentLimiter);
 app.use("/api/orders", orderLimiter);
 app.use("/api/me", meLimiter);
+
 setupProxy(app);
 
 // Body parsers (AFTER proxy only)
@@ -54,16 +47,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 
-// app.get('/', (req, res) => {
-//   res.status(200).json({ message: 'API Gateway is running.' });
-// });
-
-// error handler
-app.use((err, req, res, next) => {
-  res.status(err.status || 500).json({
-    success: false,
-    message: err.message || "Something went wrong",
-  });
+app.get('/', (req, res) => {
+  res.status(200).json({ message: 'API Gateway is running.' });
 });
 
 module.exports = app;

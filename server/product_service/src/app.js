@@ -18,9 +18,9 @@ app.use(
   })
 );
 
-// app.get('/', (req, res) => {
-//     res.status(200).json({ message: 'Product Service is running.' });
-// });
+app.get('/', (req, res) => {
+    res.status(200).json({ message: 'Product Service is running.' });
+});
 
 // Routes setup
 app.use("/", productRoutes);
