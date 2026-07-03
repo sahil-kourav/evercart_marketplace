@@ -22,6 +22,15 @@ app.use(cors({
 
 app.use(morgan("dev"));
 
+app.get("/health", (req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "API Gateway",
+    status: "UP",
+    timestamp: new Date().toISOString(),
+  });
+});
+
 // Auth middleware (header read only - must be before proxy)
 app.use(authMiddleware);
 
@@ -34,10 +43,10 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use("/api/auth", authLimiter);
+app.use("/api/auth/me", meLimiter);     
+app.use("/api/auth", authLimiter);    
 app.use("/api/payments", paymentLimiter);
 app.use("/api/orders", orderLimiter);
-app.use("/api/me", meLimiter);
 
 // Proxy setup (must be before body parsers)
 setupProxy(app);
@@ -45,14 +54,5 @@ setupProxy(app);
 // Body parsers (AFTER proxy only)
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
-app.get("/health", (req, res) => {
-  res.status(200).json({
-    success: true,
-    service: "API Gateway",
-    status: "UP",
-    timestamp: new Date().toISOString(),
-  });
-});
 
 module.exports = app;
