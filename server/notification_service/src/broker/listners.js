@@ -27,7 +27,7 @@ module.exports = function () {
 
       <div style="margin:25px 0;">
         <a
-          href="https://yourfrontendurl.com"
+          href="https://evercart-steel.vercel.app"
           style="
             display:inline-block;
             padding:10px 18px;

@@ -11,7 +11,7 @@ async function connect() {
         channel = await connection.createChannel()
 
     } catch (error) {
-        // console.log("Error in connecting to RabbitMQ", error)
+        console.log("Error in connecting to RabbitMQ", error)
     }
 }
 
@@ -23,7 +23,7 @@ async function publishToQueue(queueName, data = {}) {
     })
 
     channel.sendToQueue(queueName, Buffer.from(JSON.stringify(data)))
-    // console.log("Message sent to queue", queueName, data)
+    console.log("Message sent to queue", queueName, data)
 
 }
 
