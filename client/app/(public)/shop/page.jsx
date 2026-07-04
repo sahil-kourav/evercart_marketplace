@@ -5,11 +5,13 @@ import axios from "axios";
 import Link from "next/link";
 import Loading from "@/components/Loading";
 import { useDispatch, useSelector } from "react-redux";
+import Login from "../auth/login/page";
 import { setProduct } from "@/lib/features/product/productSlice";
 
 export default function ShopPage() {
   const dispatch = useDispatch();
   const products = useSelector((state) => state.product.list || []);
+  const { user } = useSelector((state) => state.auth);
 
   const [loading, setLoading] = useState(true);
 
@@ -33,6 +35,12 @@ export default function ShopPage() {
   useEffect(() => {
     fetchProducts();
   }, []);
+
+
+
+  if (!user) {
+    return <Login />;
+  }
 
   if (loading) return <Loading />;
 
