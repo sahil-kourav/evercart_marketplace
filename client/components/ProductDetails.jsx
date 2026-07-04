@@ -25,6 +25,7 @@ const ProductDetails = ({ product }) => {
   const currency = process.env.NEXT_PUBLIC_CURRENCY_SYMBOL || "$";
 
   const { cart } = useSelector((state) => state.cart);
+  const { user } = useSelector((state) => state.auth);
 
   const quantity =
     cart?.items?.find((item) => item.productId === productId)?.quantity || 0;
@@ -37,12 +38,18 @@ const ProductDetails = ({ product }) => {
   const [mainImage, setMainImage] = useState(images[0]);
 
   const addToCartHandler = async () => {
+    if (!user) {
+      toast.error("Please login to add items to cart");
+      router.push(`/auth/login?redirect=/product/${productId}`);
+      return;
+    }
+
     try {
       await dispatch(addItemToCart({ productId, qty: 1 }));
 
-      toast.success("Item added to cart 🛒");
+      toast.success("Item added to cart");
     } catch (error) {
-      toast.error("Failed to add item ❌");
+      toast.error("Failed to add item to cart");
     }
   };
 
@@ -105,23 +112,23 @@ const ProductDetails = ({ product }) => {
           </p>
         </div>
 
-        <div className="flex items-end gap-5 mt-6">
-          {quantity > 0 && (
-            <div className="flex flex-col gap-3">
-              <p className="text-lg font-semibold">Quantity</p>
-              <Counter productId={productId} quantity={quantity} />
-            </div>
-          )}
+          <div className="flex items-end gap-5 mt-6">
+            {quantity > 0 && (
+              <div className="flex flex-col gap-3">
+                <p className="text-lg font-semibold">Quantity</p>
+                <Counter productId={productId} quantity={quantity} />
+              </div>
+            )}
 
-          <button
-            onClick={() =>
-              quantity === 0 ? addToCartHandler() : router.push("/cart")
-            }
-            className="bg-slate-800 text-white px-10 py-3 text-sm font-medium rounded hover:bg-slate-900 active:scale-95 transition"
-          >
-            {quantity === 0 ? "Add to Cart" : "View Cart"}
-          </button>
-        </div>
+            <button
+              onClick={() =>
+                quantity === 0 ? addToCartHandler() : router.push("/cart")
+              }
+              className="bg-slate-800 text-white px-10 py-3 text-sm font-medium rounded hover:bg-slate-900 active:scale-95 transition"
+            >
+              {quantity === 0 ? "Add to Cart" : "View Cart"}
+            </button>
+          </div>
 
         <hr className="border-gray-300 my-5" />
 

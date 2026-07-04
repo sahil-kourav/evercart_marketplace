@@ -18,7 +18,7 @@ export default function PublicLayout({ children }) {
       try {
         const res = await axios.get(
           // "http://localhost:8081/api/products"
-          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`,
+          `${process.env.NEXT_PUBLIC_API_BASE_URL}/api/products`, 
           { withCredentials: true },
         );
         dispatch(setProduct(res.data.data));
