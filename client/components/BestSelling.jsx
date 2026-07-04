@@ -19,6 +19,7 @@ const BestSelling = () => {
         {bestSeller.length === 0 ? (
           <div className="col-span-full text-center text-slate-400">
             <p className="text-md font-medium">
+             Sign in to unlock our products.
               No best selling products available at the moment.
             </p>
           </div>

@@ -4,8 +4,8 @@ async function authMiddleware(req, res, next) {
 
   if (
     req.path === "/" ||
-    req.path.startsWith("/api/auth") ||
-    req.path.startsWith("/api/products") 
+    req.path.startsWith("/api/auth")
+    // req.path.startsWith("/api/products") 
   ) {
     return next();
   }
