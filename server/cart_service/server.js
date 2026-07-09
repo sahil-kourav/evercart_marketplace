@@ -1,6 +1,6 @@
 require('dotenv').config()
-const server = require('../cart_service/src/app')
-const connectDB = require('../cart_service/src/database/db')
+const server = require("./src/app");
+const connectDB = require("./src/database/db");
 
 // Connect to Database
 connectDB()

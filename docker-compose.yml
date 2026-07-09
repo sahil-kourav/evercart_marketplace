@@ -1,0 +1,82 @@
+version: "3.9"
+
+services:
+  api-gateway:
+    build: ./server/api_gateway
+    container_name: api-gateway
+    ports:
+      - "8088:8088"
+    env_file:
+      - ./server/api_gateway/.env
+      
+    restart: unless-stopped
+
+  auth-service:
+    build: ./server/auth_service
+    container_name: auth-service
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./server/auth_service/.env
+      
+    restart: unless-stopped
+
+  product-service:
+    build: ./server/product_service
+    container_name: product-service
+    ports:
+      - "8081:8081"
+    env_file:
+      - ./server/product_service/.env
+      
+    restart: unless-stopped
+  
+  cart-service:
+    build: ./server/cart_service
+    container_name: cart-service
+    ports:
+      - "8082:8082"
+    env_file:
+      - ./server/cart_service/.env
+
+    restart: unless-stopped
+
+  order-service:
+    build: ./server/order_service
+    container_name: order-service
+    ports:
+      - "8083:8083"
+    env_file:
+      - ./server/order_service/.env
+
+    restart: unless-stopped
+
+  payment-service:
+    build: ./server/payment_service
+    container_name: payment-service
+    ports:
+      - "8084:8084"
+    env_file:
+      - ./server/payment_service/.env
+
+    restart: unless-stopped
+
+  seller-service:
+    build: ./server/seller_service
+    container_name: seller-service
+    ports:
+      - "8087:8087"
+    env_file:
+      - ./server/seller_service/.env
+
+    restart: unless-stopped        
+
+  notification-service:
+    build: ./server/notification_service
+    container_name: notification-service
+    ports:
+      - "8086:8086"
+    env_file:
+      - ./server/notification_service/.env
+
+    restart: unless-stopped
