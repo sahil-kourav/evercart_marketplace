@@ -53,6 +53,10 @@ if (process.env.NODE_ENV === "test") {
     password: process.env.REDIS_PASSWORD,
   });
 
+  redis.on("connect", () => {
+  console.log("✅ Connected to Redis");
+});
+
   redis.on("error", (err) => {
     console.error("Redis Error:", err.message);
   });
