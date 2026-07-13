@@ -1,36 +1,86 @@
 services:
   api-gateway:
-    build: ./server/api_gateway
+    build:
+      context: ./server/api_gateway
+      dockerfile: Dockerfile
+
     container_name: api-gateway
     ports:
       - "8088:8088"
     env_file:
       - ./server/api_gateway/.env
-      
+
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8088/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    depends_on:
+      - auth-service
+      - product-service
+      - cart-service
+      - order-service
+      - payment-service
+      - seller-service
+      - notification-service
+    
+    networks:
+      - evercart-network
+
   auth-service:
-    build: ./server/auth_service
+    build:
+      context: ./server/auth_service
+      dockerfile: Dockerfile
+      
     container_name: auth-service
     ports:
       - "8080:8080"
     env_file:
       - ./server/auth_service/.env
-      
+
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8080/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
   product-service:
-    build: ./server/product_service
+    build:
+      context: ./server/product_service
+      dockerfile: Dockerfile
+
     container_name: product-service
     ports:
       - "8081:8081"
     env_file:
       - ./server/product_service/.env
-      
+
     restart: unless-stopped
-  
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8081/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
   cart-service:
-    build: ./server/cart_service
+    build: 
+      context: ./server/cart_service
+      dockerfile: Dockerfile
     container_name: cart-service
     ports:
       - "8082:8082"
@@ -39,8 +89,21 @@ services:
 
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8082/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
   order-service:
-    build: ./server/order_service
+    build:
+      context: ./server/order_service
+      dockerfile: Dockerfile
+
     container_name: order-service
     ports:
       - "8083:8083"
@@ -49,8 +112,21 @@ services:
 
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8083/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
   payment-service:
-    build: ./server/payment_service
+    build:
+      context: ./server/payment_service
+      dockerfile: Dockerfile
+
     container_name: payment-service
     ports:
       - "8084:8084"
@@ -59,17 +135,43 @@ services:
 
     restart: unless-stopped
 
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8084/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
   seller-service:
-    build: ./server/seller_service
+    build:
+      context: ./server/seller_service
+      dockerfile: Dockerfile
+      
     container_name: seller-service
     ports:
       - "8087:8087"
     env_file:
       - ./server/seller_service/.env
-    restart: unless-stopped        
+    restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8087/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
 
   notification-service:
-    build: ./server/notification_service
+    build:
+      context: ./server/notification_service
+      dockerfile: Dockerfile
+
     container_name: notification-service
     ports:
       - "8086:8086"
@@ -77,3 +179,17 @@ services:
       - ./server/notification_service/.env
 
     restart: unless-stopped
+
+    healthcheck:
+      test: ["CMD", "node", "-e", "fetch('http://localhost:8086/health').then(r => process.exit(r.ok ? 0 : 1)).catch(() => process.exit(1))"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+    networks:
+      - evercart-network
+
+networks:
+  evercart-network:
+    driver: bridge

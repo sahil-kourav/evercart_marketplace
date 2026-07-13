@@ -111,14 +111,11 @@ async function getProducts(req, res) {
     const cachedProduct = await redis.get(cacheKey);
 
     if (cachedProduct) {
-      console.log("cached hittttttt");
-
       return res.status(200).json({
         data: JSON.parse(cachedProduct),
       });
     }
 
-    console.log("cache misss");
 
     const product = await productModel.find(filter).sort({ createdAt: -1 });
 
@@ -139,14 +136,11 @@ async function getProductById(req, res) {
     const cachedProduct = await redis.get(cacheKey);
 
     if (cachedProduct) {
-      console.log("Cache Hit");
-
       return res.status(200).json({
         product: JSON.parse(cachedProduct),
       });
     }
 
-    console.log("Cache Miss");
 
     const product = await productModel.findById(id);
 
